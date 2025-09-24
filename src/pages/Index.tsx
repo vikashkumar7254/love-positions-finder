@@ -4,6 +4,7 @@ import LoveHero from "@/components/LoveHero"
 import PositionSelector from "@/components/PositionSelector"
 import ScratchCards from "@/components/ScratchCards"
 import LoveCategories from "@/components/LoveCategories"
+import Navigation from "@/components/Navigation"
 
 const Index = () => {
   const [isVerified, setIsVerified] = useState(false)
@@ -14,6 +15,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <Navigation />
       <LoveHero />
       <PositionSelector />
       <ScratchCards />
