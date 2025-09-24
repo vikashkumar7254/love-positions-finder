@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Heart, Menu, X, Home, BookOpen, Gamepad2, Sparkles, ChevronDown, MapPin } from "lucide-react"
+import { Heart, Menu, X, Home, BookOpen, Gamepad2, Sparkles, ChevronDown, MapPin, Gift } from "lucide-react"
 import { Button } from "@/components/ui/enhanced-button"
 
 const Navigation = () => {
@@ -23,6 +23,7 @@ const Navigation = () => {
       { path: "/positions/random-generator", label: "Random Position Generator" }
     ]},
     { path: "/journey-planner", label: "Journey Planner", icon: MapPin },
+    { path: "/scratch-cards", label: "Scratch Cards", icon: Gift },
     { path: "/custom-poster", label: "Custom Poster", icon: Heart }
   ]
 

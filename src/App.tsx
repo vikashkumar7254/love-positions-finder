@@ -25,6 +25,7 @@ import RandomGenerator from "./pages/positions/RandomGenerator";
 // Other Pages  
 import CustomPoster from "./pages/CustomPoster";
 import JourneyPlanner from "./pages/JourneyPlanner";
+import ScratchCards from "./pages/ScratchCards";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
           {/* Other Routes */}
           <Route path="/custom-poster" element={<CustomPoster />} />
           <Route path="/journey-planner" element={<JourneyPlanner />} />
+          <Route path="/scratch-cards" element={<ScratchCards />} />
           
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
