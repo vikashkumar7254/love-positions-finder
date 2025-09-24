@@ -22,8 +22,9 @@ import MostPopular from "./pages/positions/MostPopular";
 import AllPositions from "./pages/positions/AllPositions";
 import RandomGenerator from "./pages/positions/RandomGenerator";
 
-// Other Pages
+// Other Pages  
 import CustomPoster from "./pages/CustomPoster";
+import JourneyPlanner from "./pages/JourneyPlanner";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
           
           {/* Other Routes */}
           <Route path="/custom-poster" element={<CustomPoster />} />
+          <Route path="/journey-planner" element={<JourneyPlanner />} />
           
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
