@@ -665,7 +665,7 @@ const CustomPoster = () => {
                   
                   <div className="mt-4 space-y-2">
                     <Button 
-                      variant="sensual" 
+                      variant="romantic" 
                       className="w-full"
                       onClick={loadRandomPositions}
                       data-testid="button-random-positions"
@@ -698,7 +698,7 @@ const CustomPoster = () => {
                         </Button>
                         
                         <Button 
-                          variant="warm" 
+                          variant="passionate" 
                           className="w-full"
                           onClick={sharePoster}
                           data-testid="button-share-poster"
@@ -778,8 +778,8 @@ const CustomPoster = () => {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {filteredPositions.slice(0, 50).map((position) => {
-                      const isSelected = selectedPositions.find(p => p.id === position.id)
-                      const canAdd = selectedPositions.length < maxPositions
+                        const isSelected = selectedPositions.find(p => p.id === position.id)
+                        const canAdd = selectedPositions.length < maxPositions
                       
                       return (
                         <Card
@@ -813,10 +813,10 @@ const CustomPoster = () => {
                             
                             <div className="flex items-center justify-between text-xs gap-2">
                               <div className="flex gap-1">
-                                <Badge className={getDifficultyColor(position.difficulty)} size="sm">
+                                <Badge className={getDifficultyColor(position.difficulty)}>
                                   {position.difficulty}
                                 </Badge>
-                                <Badge variant="outline" size="sm">
+                                <Badge variant="outline">
                                   {position.style}
                                 </Badge>
                               </div>
@@ -830,6 +830,7 @@ const CustomPoster = () => {
                       )
                     })}
                   </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -939,7 +940,7 @@ const CustomPoster = () => {
                   </Button>
                   
                   <Button 
-                    variant="warm" 
+                    variant="passionate" 
                     onClick={sharePoster}
                     data-testid="button-share-poster-final"
                   >
