@@ -17,6 +17,7 @@ const Navigation = () => {
       { path: "/games/long-distance", label: "Long Distance Relationship" }
     ]},
     { path: "/love-languages", label: "Love Languages", icon: Heart },
+    { path: "/romantic-guides", label: "Romantic Guides", icon: BookOpen },
     { path: "/blog", label: "Blogs", icon: BookOpen },
     { path: "/positions", label: "Positions", icon: Sparkles, submenu: [
       { path: "/positions/most-popular", label: "Most Popular" },
