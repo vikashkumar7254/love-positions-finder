@@ -22,7 +22,13 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          hover: "hsl(var(--primary-hover))",
         },
+        romantic: "hsl(var(--romantic))",
+        passionate: "hsl(var(--passionate))",
+        sensual: "hsl(var(--sensual))",
+        tender: "hsl(var(--tender))",
+        warm: "hsl(var(--warm))",
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -84,6 +90,33 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float": "float 6s ease-in-out infinite",
+        "heart-pulse": "heartPulse 2s ease-in-out infinite",
+        "romantic-glow": "romanticGlow 3s ease-in-out infinite alternate",
+        "fade-in": "fadeIn 0.6s ease-out",
+        "slide-up": "slideUp 0.8s ease-out",
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        heartPulse: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.1)' },
+        },
+        romanticGlow: {
+          '0%': { boxShadow: '0 0 20px hsl(var(--romantic) / 0.3)' },
+          '100%': { boxShadow: '0 0 40px hsl(var(--romantic) / 0.6)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(40px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
     },
   },

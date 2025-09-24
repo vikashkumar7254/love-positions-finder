@@ -2,39 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Love-themed design system with romantic colors and gradients */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 350 100% 98%;
+    --foreground: 350 15% 10%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 350 50% 97%;
+    --card-foreground: 350 15% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 350 100% 98%;
+    --popover-foreground: 350 15% 10%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 340 82% 52%;
+    --primary-foreground: 350 100% 98%;
+    --primary-hover: 340 82% 48%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 350 30% 92%;
+    --secondary-foreground: 350 15% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 350 20% 95%;
+    --muted-foreground: 350 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 320 60% 85%;
+    --accent-foreground: 350 15% 15%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 350 100% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 350 20% 90%;
+    --input: 350 20% 94%;
+    --ring: 340 82% 52%;
+
+    /* Love theme colors */
+    --romantic: 340 82% 52%;
+    --passionate: 355 90% 45%;
+    --sensual: 320 60% 65%;
+    --tender: 350 40% 85%;
+    --warm: 30 80% 60%;
+    
+    /* Gradients */
+    --gradient-romantic: linear-gradient(135deg, hsl(340 82% 52%), hsl(320 60% 65%));
+    --gradient-passionate: linear-gradient(135deg, hsl(355 90% 45%), hsl(340 82% 52%));
+    --gradient-hero: linear-gradient(135deg, hsl(340 82% 52%) 0%, hsl(320 60% 65%) 50%, hsl(350 40% 85%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(350 50% 97%), hsl(350 30% 95%));
+    
+    /* Shadows */
+    --shadow-romantic: 0 10px 30px -5px hsl(340 82% 52% / 0.3);
+    --shadow-soft: 0 4px 20px -2px hsl(350 20% 80% / 0.4);
+    --shadow-card: 0 8px 25px -8px hsl(340 60% 50% / 0.15);
 
     --radius: 0.5rem;
 
@@ -56,33 +73,52 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 350 15% 8%;
+    --foreground: 350 20% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 350 15% 10%;
+    --card-foreground: 350 20% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 350 15% 8%;
+    --popover-foreground: 350 20% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 340 82% 58%;
+    --primary-foreground: 350 15% 8%;
+    --primary-hover: 340 82% 54%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 350 10% 15%;
+    --secondary-foreground: 350 20% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 350 8% 12%;
+    --muted-foreground: 350 10% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 320 60% 25%;
+    --accent-foreground: 350 20% 95%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 350 20% 95%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 350 10% 18%;
+    --input: 350 10% 15%;
+    --ring: 340 82% 58%;
+
+    /* Dark theme love colors */
+    --romantic: 340 82% 58%;
+    --passionate: 355 90% 55%;
+    --sensual: 320 60% 45%;
+    --tender: 350 30% 25%;
+    --warm: 30 70% 50%;
+    
+    /* Dark gradients */
+    --gradient-romantic: linear-gradient(135deg, hsl(340 82% 58%), hsl(320 60% 45%));
+    --gradient-passionate: linear-gradient(135deg, hsl(355 90% 55%), hsl(340 82% 58%));
+    --gradient-hero: linear-gradient(135deg, hsl(340 82% 58%) 0%, hsl(320 60% 45%) 50%, hsl(350 30% 25%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(350 15% 10%), hsl(350 8% 12%));
+    
+    /* Dark shadows */
+    --shadow-romantic: 0 10px 30px -5px hsl(340 82% 58% / 0.4);
+    --shadow-soft: 0 4px 20px -2px hsl(350 10% 5% / 0.6);
+    --shadow-card: 0 8px 25px -8px hsl(340 60% 30% / 0.25);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +136,112 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
+
+  /* Beautiful scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--romantic));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary-hover));
+  }
+}
+
+@layer components {
+  /* Love-themed animations */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-heart-pulse {
+    animation: heartPulse 2s ease-in-out infinite;
+  }
+  
+  .animate-romantic-glow {
+    animation: romanticGlow 3s ease-in-out infinite alternate;
+  }
+  
+  /* Romantic hover effects */
+  .hover-romantic {
+    @apply transition-all duration-300 hover:shadow-[var(--shadow-romantic)] hover:scale-105;
+  }
+  
+  .hover-tender {
+    @apply transition-all duration-300 hover:bg-tender/20;
+  }
+  
+  .hover-tender:hover {
+    transform: scale(1.02);
+  }
+}
+
+@layer utilities {
+  /* Gradient backgrounds */
+  .bg-gradient-romantic {
+    background: var(--gradient-romantic);
+  }
+  
+  .bg-gradient-passionate {
+    background: var(--gradient-passionate);
+  }
+  
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  /* Love theme colors */
+  .text-romantic {
+    color: hsl(var(--romantic));
+  }
+  
+  .text-passionate {
+    color: hsl(var(--passionate));
+  }
+  
+  .text-sensual {
+    color: hsl(var(--sensual));
+  }
+  
+  .bg-romantic {
+    background-color: hsl(var(--romantic));
+  }
+  
+  .bg-passionate {
+    background-color: hsl(var(--passionate));
+  }
+  
+  .bg-sensual {
+    background-color: hsl(var(--sensual));
+  }
+}
+
+/* Keyframes for love-themed animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes romanticGlow {
+  0% { box-shadow: 0 0 20px hsl(var(--romantic) / 0.3); }
+  100% { box-shadow: 0 0 40px hsl(var(--romantic) / 0.6); }
 }
