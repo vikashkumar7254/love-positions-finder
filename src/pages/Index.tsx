@@ -1,21 +1,11 @@
-import { useState } from "react"
-import AgeVerification from "@/components/AgeVerification"
 import LoveHero from "@/components/LoveHero"
 import PositionSelector from "@/components/PositionSelector"
 import ScratchCards from "@/components/ScratchCards"
 import LoveCategories from "@/components/LoveCategories"
-import Navigation from "@/components/Navigation"
 
 const Index = () => {
-  const [isVerified, setIsVerified] = useState(false)
-
-  if (!isVerified) {
-    return <AgeVerification onVerified={() => setIsVerified(true)} />
-  }
-
   return (
-    <div className="min-h-screen">
-      <Navigation />
+    <div>
       <LoveHero />
       <PositionSelector />
       <ScratchCards />

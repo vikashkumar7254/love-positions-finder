@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "@/components/Layout";
+import AgeVerification from "@/components/AgeVerification";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -31,46 +34,64 @@ import RomanticGuides from "./pages/RomanticGuides";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          
-          {/* Games Routes */}
-          <Route path="/games" element={<Games />} />
-          <Route path="/games/truth-or-dare" element={<TruthOrDare />} />
-          <Route path="/games/foreplay-dice" element={<ForeplayDice />} />
-          <Route path="/games/all-games" element={<AllGames />} />
-          <Route path="/games/long-distance" element={<LongDistance />} />
-          <Route path="/games/love-quiz" element={<LoveQuiz />} />
-          
-          {/* Positions Routes */}
-          <Route path="/positions" element={<Positions />} />
-          <Route path="/positions/most-popular" element={<MostPopular />} />
-          <Route path="/positions/all" element={<AllPositions />} />
-          <Route path="/positions/random-generator" element={<RandomGenerator />} />
-          
-          {/* Blog Routes */}
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          
-          {/* Other Routes */}
-          <Route path="/custom-poster" element={<CustomPoster />} />
-          <Route path="/journey-planner" element={<JourneyPlanner />} />
-          <Route path="/scratch-cards" element={<ScratchCards />} />
-          <Route path="/love-languages" element={<LoveLanguageExplorer />} />
-          <Route path="/romantic-guides" element={<RomanticGuides />} />
-          
-          {/* 404 Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const [isVerified, setIsVerified] = useState(false);
+
+  if (!isVerified) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AgeVerification onVerified={() => setIsVerified(true)} />
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              
+              {/* Games Routes */}
+              <Route path="/games" element={<Games />} />
+              <Route path="/games/truth-or-dare" element={<TruthOrDare />} />
+              <Route path="/games/foreplay-dice" element={<ForeplayDice />} />
+              <Route path="/games/all-games" element={<AllGames />} />
+              <Route path="/games/long-distance" element={<LongDistance />} />
+              <Route path="/games/love-quiz" element={<LoveQuiz />} />
+              
+              {/* Positions Routes */}
+              <Route path="/positions" element={<Positions />} />
+              <Route path="/positions/most-popular" element={<MostPopular />} />
+              <Route path="/positions/all" element={<AllPositions />} />
+              <Route path="/positions/random-generator" element={<RandomGenerator />} />
+              
+              {/* Blog Routes */}
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              
+              {/* Other Routes */}
+              <Route path="/custom-poster" element={<CustomPoster />} />
+              <Route path="/journey-planner" element={<JourneyPlanner />} />
+              <Route path="/scratch-cards" element={<ScratchCards />} />
+              <Route path="/love-languages" element={<LoveLanguageExplorer />} />
+              <Route path="/romantic-guides" element={<RomanticGuides />} />
+              
+              {/* 404 Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
