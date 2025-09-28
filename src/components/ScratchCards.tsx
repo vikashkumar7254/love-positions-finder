@@ -77,6 +77,37 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
     })
   }, [ensureStateFor, revealed])
 
+  const handleTouchScratch = useCallback((id: string | number, e: React.TouchEvent<HTMLDivElement>) => {
+    if (revealed[id]) return
+    ensureStateFor(id)
+    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect()
+    const touch = e.touches[0] || e.changedTouches[0]
+    const x = touch.clientX - rect.left
+    const y = touch.clientY - rect.top
+    const cols = 4
+    const rows = 4
+    const col = Math.min(cols - 1, Math.max(0, Math.floor((x / rect.width) * cols)))
+    const row = Math.min(rows - 1, Math.max(0, Math.floor((y / rect.height) * rows)))
+    const idx = row * cols + col
+    setTileCleared((prev) => {
+      const current = prev[id] || new Array(16).fill(false)
+      if (current[idx]) return prev
+      const next = { ...prev, [id]: [...current] }
+      next[id][idx] = true
+      return next
+    })
+    // Auto-reveal after threshold of cleared tiles
+    setTileCleared((prev) => {
+      const current = prev[id] || []
+      const cleared = current.filter(Boolean).length
+      if (cleared >= 6) {
+        setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
+      }
+      return prev
+    })
+    e.preventDefault() // Prevent scrolling while scratching
+  }, [ensureStateFor, revealed])
+
   const renderMedia = (mediaUrl?: string | null) => {
     if (!mediaUrl) return null
     const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl)
@@ -101,8 +132,11 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
           <div className="flex items-center justify-center gap-2 text-romantic">
             <Sparkles className="w-5 h-5" />
             <span className="font-medium">Scratch to reveal your romantic surprises</span>
-            <Sparkles className="w-5 h-5" />
           </div>
+          {/* Mobile instructions */}
+          <p className="text-sm text-muted-foreground mt-4 md:hidden">
+            💡 Use your finger to scratch and reveal cards
+          </p>
         </div>
         
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 ${anyMedia ? 'auto-rows-[1fr]' : ''}`}>
@@ -134,6 +168,8 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
                       style={{ backgroundImage: `url(${scratchCardBg})` }}
                       onMouseMove={(e) => handleHoverScratch(card.id, e)}
                       onMouseEnter={(e) => handleHoverScratch(card.id, e)}
+                      onTouchMove={(e) => handleTouchScratch(card.id, e)}
+                      onTouchStart={(e) => handleTouchScratch(card.id, e)}
                     >
                       {/* Base lock/message content under tiles */}
                       <div className="absolute inset-0 bg-romantic/20 flex items-center justify-center pointer-events-none">
