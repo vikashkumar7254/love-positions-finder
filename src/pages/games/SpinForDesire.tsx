@@ -1,0 +1,420 @@
+import { useState, useRef } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
+import { Button } from "@/components/ui/enhanced-button"
+import { RotateCcw, Play, Heart, Star, Sparkles, Zap, Gift, Crown } from "lucide-react"
+
+interface DesireItem {
+  id: string
+  title: string
+  description: string
+  image: string
+  category: 'romantic' | 'passionate' | 'playful' | 'sensual'
+  color: string
+}
+
+const SpinForDesire = () => {
+  const [isSpinning, setIsSpinning] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<DesireItem | null>(null)
+  const [rotation, setRotation] = useState(0)
+  const [showImagePopup, setShowImagePopup] = useState(false)
+  const wheelRef = useRef<HTMLDivElement>(null)
+
+  const desireItems: DesireItem[] = [
+    {
+      id: 'romantic_dinner',
+      title: 'Romantic Candlelight Dinner',
+      description: 'Set up a beautiful candlelit dinner with soft music and intimate conversation',
+      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop&crop=center',
+      category: 'romantic',
+      color: '#ff6b9d'
+    },
+    {
+      id: 'sensual_massage',
+      title: 'Sensual Massage Session',
+      description: 'Give each other relaxing massages with aromatic oils and gentle touches',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
+      category: 'sensual',
+      color: '#c44569'
+    },
+    {
+      id: 'passionate_dance',
+      title: 'Passionate Dance Together',
+      description: 'Dance slowly to romantic music, feeling each other\'s rhythm and heartbeat',
+      image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop&crop=center',
+      category: 'passionate',
+      color: '#f8b500'
+    },
+    {
+      id: 'playful_games',
+      title: 'Playful Intimate Games',
+      description: 'Engage in fun, flirty games that bring you closer together',
+      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop&crop=center',
+      category: 'playful',
+      color: '#6c5ce7'
+    },
+    {
+      id: 'bubble_bath',
+      title: 'Luxurious Bubble Bath',
+      description: 'Share a warm, relaxing bubble bath with candles and champagne',
+      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&crop=center',
+      category: 'romantic',
+      color: '#00b894'
+    },
+    {
+      id: 'stargazing',
+      title: 'Romantic Stargazing',
+      description: 'Lie under the stars together, sharing dreams and intimate whispers',
+      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop&crop=center',
+      category: 'romantic',
+      color: '#0984e3'
+    },
+    {
+      id: 'wine_tasting',
+      title: 'Wine & Chocolate Tasting',
+      description: 'Indulge in fine wines and chocolates while feeding each other',
+      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop&crop=center',
+      category: 'sensual',
+      color: '#e17055'
+    },
+    {
+      id: 'surprise_picnic',
+      title: 'Surprise Indoor Picnic',
+      description: 'Create a romantic picnic setup in your living room with soft blankets',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
+      category: 'playful',
+      color: '#fd79a8'
+    }
+  ]
+
+  const spinWheel = () => {
+    if (isSpinning) return
+
+    setIsSpinning(true)
+    setSelectedItem(null)
+
+    // Calculate random rotation (multiple full rotations + random position)
+    const randomRotation = 1440 + Math.random() * 1440 // 4-8 full rotations
+    const finalRotation = rotation + randomRotation
+    
+    setRotation(finalRotation)
+
+    // Calculate which item was selected
+    const normalizedRotation = finalRotation % 360
+    const itemAngle = 360 / desireItems.length
+    const selectedIndex = Math.floor((360 - normalizedRotation + itemAngle / 2) / itemAngle) % desireItems.length
+    
+    setTimeout(() => {
+      setSelectedItem(desireItems[selectedIndex])
+      setIsSpinning(false)
+    }, 3000) // 3 second spin duration
+  }
+
+  const resetWheel = () => {
+    setRotation(0)
+    setSelectedItem(null)
+    setIsSpinning(false)
+  }
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'romantic': return Heart
+      case 'passionate': return Zap
+      case 'playful': return Star
+      case 'sensual': return Crown
+      default: return Sparkles
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
+      <main className="pt-24 pb-16">
+        <div className="max-w-6xl mx-auto px-6 space-y-8">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <Gift className="w-12 h-12 text-pink-300" />
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
+                Spin for Desire
+              </h1>
+            </div>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+              Spin the wheel of passion and discover your next romantic adventure. Let fate decide your intimate moment!
+            </p>
+          </div>
+
+          {/* Spinning Wheel Section */}
+          <div className="flex flex-col items-center gap-8">
+            {/* Wheel Container */}
+            <div className="flex justify-center">
+              <div className="relative">
+                {/* Wheel Pointer */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-20">
+                  <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-b-[40px] border-l-transparent border-r-transparent border-b-yellow-400 drop-shadow-lg"></div>
+                </div>
+
+                {/* Spinning Wheel */}
+                <div 
+                  ref={wheelRef}
+                  className="relative w-96 h-96 rounded-full border-8 border-yellow-400 shadow-2xl overflow-hidden"
+                  style={{
+                    transform: `rotate(${rotation}deg)`,
+                    transition: isSpinning ? 'transform 3s cubic-bezier(0.23, 1, 0.32, 1)' : 'none'
+                  }}
+                >
+                  {desireItems.map((item, index) => {
+                    const angle = (360 / desireItems.length) * index
+                    const nextAngle = (360 / desireItems.length) * (index + 1)
+                    
+                    return (
+                      <div
+                        key={item.id}
+                        className="absolute inset-0 overflow-hidden"
+                        style={{
+                          clipPath: `polygon(50% 50%, ${50 + 50 * Math.cos((angle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((angle - 90) * Math.PI / 180)}%, ${50 + 50 * Math.cos((nextAngle - 90) * Math.PI / 180)}% ${50 + 50 * Math.sin((nextAngle - 90) * Math.PI / 180)}%)`
+                        }}
+                      >
+                        <div 
+                          className="w-full h-full flex items-center justify-center relative"
+                          style={{ backgroundColor: item.color }}
+                        >
+                          {/* Background Image */}
+                          <img 
+                            src={item.image} 
+                            alt={item.title}
+                            className="absolute inset-0 w-full h-full object-cover opacity-30"
+                          />
+                          
+                          {/* Content */}
+                          <div className="relative z-10 text-center p-4">
+                            <div className="text-white font-bold text-sm transform rotate-0">
+                              {item.title.split(' ')[0]}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                {/* Interactive Center Circle with Selected Image */}
+                <div 
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-6 border-white shadow-2xl overflow-hidden z-10 transition-all duration-300 hover:scale-110 hover:shadow-yellow-400/50 cursor-pointer"
+                  onClick={() => selectedItem && !isSpinning && setShowImagePopup(true)}
+                >
+                  {selectedItem && !isSpinning ? (
+                    <img 
+                      src={selectedItem.image} 
+                      alt={selectedItem.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Sparkles className="w-12 h-12 text-white" />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Spin Controls Below Wheel */}
+            <div className="w-full max-w-md space-y-6">
+              <Card variant="elegant" className="bg-black/20 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
+                <CardHeader>
+                  <CardTitle className="text-white text-2xl text-center">
+                    {isSpinning ? 'Spinning...' : selectedItem ? 'Your Desire Awaits!' : 'Ready to Spin?'}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Spin Button */}
+                  <div className="text-center">
+                    <button
+                      onClick={spinWheel}
+                      disabled={isSpinning}
+                      className="px-10 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 text-white font-bold text-xl rounded-2xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Play className={`w-6 h-6 ${isSpinning ? 'animate-spin' : ''}`} />
+                        <span>{isSpinning ? 'Spinning...' : 'Spin the Wheel'}</span>
+                        <Sparkles className="w-6 h-6" />
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Reset Button */}
+                  {(selectedItem || rotation > 0) && !isSpinning && (
+                    <div className="text-center">
+                      <button
+                        onClick={resetWheel}
+                        className="px-8 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-300"
+                      >
+                        <div className="flex items-center gap-2">
+                          <RotateCcw className="w-5 h-5" />
+                          Reset Wheel
+                        </div>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Instructions */}
+                  {!selectedItem && !isSpinning && (
+                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                      <h4 className="text-blue-300 font-bold mb-2">How to Play:</h4>
+                      <div className="space-y-1 text-blue-200/80 text-sm">
+                        <div>• Click "Spin the Wheel" to start</div>
+                        <div>• Watch as the wheel spins and stops</div>
+                        <div>• Discover your romantic adventure</div>
+                        <div>• Enjoy the moment with your partner!</div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Selected Result - Simple Text Display */}
+          {selectedItem && !isSpinning && (
+            <Card variant="elegant" className="bg-gradient-to-br from-black/40 to-black/60 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
+              <CardContent className="p-8 text-center">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  {(() => {
+                    const IconComponent = getCategoryIcon(selectedItem.category)
+                    return <IconComponent className="w-8 h-8 text-yellow-300" />
+                  })()}
+                  <span className="px-4 py-2 bg-white/20 text-white rounded-full text-lg font-medium capitalize">
+                    {selectedItem.category}
+                  </span>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  {selectedItem.title}
+                </h2>
+                <p className="text-xl text-white/90 max-w-2xl mx-auto mb-6">
+                  {selectedItem.description}
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <div className="px-4 py-2 bg-pink-500/20 text-pink-300 rounded-full text-sm">
+                    ✨ Perfect for Tonight
+                  </div>
+                  <div className="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full text-sm">
+                    💕 Romantic
+                  </div>
+                  <div className="px-4 py-2 bg-red-500/20 text-red-300 rounded-full text-sm">
+                    🔥 Passionate
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* All Options Preview */}
+          <Card variant="elegant" className="bg-black/20 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-white text-xl text-center">All Desire Options</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {desireItems.map((item) => {
+                  const IconComponent = getCategoryIcon(item.category)
+                  return (
+                    <div 
+                      key={item.id} 
+                      className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                        selectedItem?.id === item.id 
+                          ? 'border-yellow-400 bg-yellow-400/10 scale-105' 
+                          : 'border-white/10 bg-white/5 hover:border-white/20'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: item.color }}>
+                          <IconComponent className="w-6 h-6 text-white" />
+                        </div>
+                        <h4 className="text-white font-medium text-sm mb-1">{item.title}</h4>
+                        <p className="text-white/60 text-xs capitalize">{item.category}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+
+      {/* Image Popup Modal */}
+      {showImagePopup && selectedItem && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowImagePopup(false)}
+        >
+          <div 
+            className="relative max-w-4xl max-h-[90vh] bg-gradient-to-br from-black/90 to-black/70 rounded-3xl overflow-hidden border-4 border-yellow-400 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setShowImagePopup(false)}
+              className="absolute top-4 right-4 z-10 w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white hover:text-yellow-300 transition-all duration-300"
+            >
+              ✕
+            </button>
+
+            {/* Large Image */}
+            <div className="relative">
+              <img 
+                src={selectedItem.image} 
+                alt={selectedItem.title}
+                className="w-full h-auto max-h-[70vh] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+              
+              {/* Image Overlay Content */}
+              <div className="absolute bottom-0 left-0 right-0 p-8">
+                <div className="flex items-center gap-3 mb-4">
+                  {(() => {
+                    const IconComponent = getCategoryIcon(selectedItem.category)
+                    return <IconComponent className="w-10 h-10 text-yellow-300" />
+                  })()}
+                  <span className="px-6 py-3 bg-white/20 text-white rounded-full text-xl font-bold capitalize">
+                    {selectedItem.category}
+                  </span>
+                </div>
+                <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                  {selectedItem.title}
+                </h2>
+                <p className="text-2xl text-white/90 max-w-3xl leading-relaxed">
+                  {selectedItem.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Action Area */}
+            <div className="p-8 bg-gradient-to-r from-yellow-400/10 to-orange-500/10">
+              <div className="flex flex-wrap justify-center gap-4 mb-6">
+                <div className="px-6 py-3 bg-pink-500/20 text-pink-300 rounded-full text-lg font-medium">
+                  ✨ Perfect for Tonight
+                </div>
+                <div className="px-6 py-3 bg-purple-500/20 text-purple-300 rounded-full text-lg font-medium">
+                  💕 Romantic
+                </div>
+                <div className="px-6 py-3 bg-red-500/20 text-red-300 rounded-full text-lg font-medium">
+                  🔥 Passionate
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <button
+                  onClick={() => setShowImagePopup(false)}
+                  className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold text-xl rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  Start This Adventure
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default SpinForDesire

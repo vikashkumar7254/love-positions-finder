@@ -208,7 +208,7 @@ const RomanticGuides = () => {
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <span className="text-6xl">{categoryData.icon}</span>
                   <div>
-                    <h1 className="text-4xl md:text-5xl font-bold bg-gradient-romantic bg-clip-text text-transparent" data-testid="text-category-title">
+                    <h1 className="text-4xl md:text-5xl font-bold text-foreground" data-testid="text-category-title">
                       {categoryData.title}
                     </h1>
                     <p className="text-xl text-muted-foreground mt-2">
@@ -291,7 +291,7 @@ const RomanticGuides = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-6">
               <Heart className="w-12 h-12 text-romantic" />
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground">
                 Romantic Guides
               </h1>
               <BookOpen className="w-12 h-12 text-passionate" />

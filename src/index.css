@@ -72,9 +72,29 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
+  /* Optional Night Comfort mode layered on top of dark */
+  .dark.comfort {
+    --background: 345 10% 13%;
+    --foreground: 350 16% 94%;
+    --card: 345 10% 14%;
+    --card-foreground: 350 18% 94%;
+    --muted: 345 8% 16%;
+    --muted-foreground: 350 10% 65%;
+    --border: 345 10% 22%;
+    --input: 345 10% 19%;
+    --primary: 336 60% 55%;
+    --primary-hover: 336 60% 51%;
+    --romantic: 336 60% 55%;
+    --passionate: 354 75% 50%;
+    --sensual: 318 45% 45%;
+    --gradient-hero: linear-gradient(135deg, hsl(336 60% 55%) 0%, hsl(318 45% 45%) 50%, hsl(345 14% 18%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(345 10% 14%), hsl(345 10% 16%));
+  }
+
   .dark {
-    --background: 350 15% 8%;
-    --foreground: 350 20% 95%;
+    /* Softer, cooler dark palette for night comfort */
+    --background: 345 12% 11%;
+    --foreground: 350 18% 94%;
 
     --card: 350 15% 10%;
     --card-foreground: 350 20% 95%;
@@ -82,38 +102,38 @@
     --popover: 350 15% 8%;
     --popover-foreground: 350 20% 95%;
 
-    --primary: 340 82% 58%;
-    --primary-foreground: 350 15% 8%;
-    --primary-hover: 340 82% 54%;
+    --primary: 338 68% 56%;
+    --primary-foreground: 350 14% 10%;
+    --primary-hover: 338 68% 52%;
 
-    --secondary: 350 10% 15%;
-    --secondary-foreground: 350 20% 90%;
+    --secondary: 345 10% 16%;
+    --secondary-foreground: 350 18% 92%;
 
-    --muted: 350 8% 12%;
-    --muted-foreground: 350 10% 60%;
+    --muted: 345 8% 14%;
+    --muted-foreground: 350 10% 62%;
 
-    --accent: 320 60% 25%;
+    --accent: 315 50% 28%;
     --accent-foreground: 350 20% 95%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 350 20% 95%;
 
-    --border: 350 10% 18%;
-    --input: 350 10% 15%;
-    --ring: 340 82% 58%;
+    --border: 350 10% 20%;
+    --input: 350 10% 17%;
+    --ring: 338 68% 56%;
 
-    /* Dark theme love colors */
-    --romantic: 340 82% 58%;
-    --passionate: 355 90% 55%;
-    --sensual: 320 60% 45%;
-    --tender: 350 30% 25%;
-    --warm: 30 70% 50%;
+    /* Dark theme love colors (softened) */
+    --romantic: 338 68% 56%;
+    --passionate: 355 80% 52%;
+    --sensual: 320 50% 44%;
+    --tender: 350 26% 28%;
+    --warm: 28 60% 50%;
     
-    /* Dark gradients */
-    --gradient-romantic: linear-gradient(135deg, hsl(340 82% 58%), hsl(320 60% 45%));
-    --gradient-passionate: linear-gradient(135deg, hsl(355 90% 55%), hsl(340 82% 58%));
-    --gradient-hero: linear-gradient(135deg, hsl(340 82% 58%) 0%, hsl(320 60% 45%) 50%, hsl(350 30% 25%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(350 15% 10%), hsl(350 8% 12%));
+    /* Dark gradients (cooler, less saturated) */
+    --gradient-romantic: linear-gradient(135deg, hsl(338 68% 56%), hsl(320 50% 44%));
+    --gradient-passionate: linear-gradient(135deg, hsl(355 80% 52%), hsl(338 68% 56%));
+    --gradient-hero: linear-gradient(135deg, hsl(338 68% 56%) 0%, hsl(320 50% 44%) 50%, hsl(345 16% 16%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(350 12% 12%), hsl(345 10% 14%));
     
     /* Dark shadows */
     --shadow-romantic: 0 10px 30px -5px hsl(340 82% 58% / 0.4);
@@ -172,6 +192,22 @@
     animation: romanticGlow 3s ease-in-out infinite alternate;
   }
   
+  .animate-fade-in {
+    animation: fade-in 1s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.8s ease-out;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce-slow 3s ease-in-out infinite;
+  }
+  
+  .animate-bounce-slower {
+    animation: bounce-slower 4s ease-in-out infinite;
+  }
+  
   /* Romantic hover effects */
   .hover-romantic {
     @apply transition-all duration-300 hover:shadow-[var(--shadow-romantic)] hover:scale-105;
@@ -202,6 +238,15 @@
   
   .bg-gradient-card {
     background: var(--gradient-card);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
   
   /* Love theme colors */
@@ -244,4 +289,24 @@
 @keyframes romanticGlow {
   0% { box-shadow: 0 0 20px hsl(var(--romantic) / 0.3); }
   100% { box-shadow: 0 0 40px hsl(var(--romantic) / 0.6); }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes bounce-slower {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }

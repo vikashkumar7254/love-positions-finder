@@ -2,7 +2,6 @@ import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Sparkles, Star, Grid3X3, Shuffle, ArrowRight, Heart, TrendingUp } from "lucide-react"
-import Navigation from "@/components/Navigation"
 import { positions, getPopularPositions, getFeaturedPositions } from "@/data/positions"
 
 const Positions = () => {
@@ -18,8 +17,6 @@ const Positions = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
-      <Navigation />
-      
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-20 px-6 text-center">
@@ -102,27 +99,7 @@ const Positions = () => {
                 </Card>
               </Link>
 
-              <Link to="/positions/random-generator">
-                <Card variant="elegant" className="hover-romantic group cursor-pointer h-full">
-                  <CardHeader className="text-center">
-                    <div className="flex justify-center mb-4">
-                      <div className="w-16 h-16 bg-sensual/20 rounded-full flex items-center justify-center group-hover:bg-sensual/30 transition-colors">
-                        <Shuffle className="w-8 h-8 text-sensual" />
-                      </div>
-                    </div>
-                    <CardTitle className="text-xl text-sensual">Random Generator</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-muted-foreground mb-4">
-                      Get random position suggestions for spontaneous moments
-                    </p>
-                    <Button variant="passionate" className="w-full" data-testid="button-random-generator">
-                      <Shuffle className="w-4 h-4" />
-                      Generate
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
+              {/* Random Generator removed */}
             </div>
           </div>
         </section>

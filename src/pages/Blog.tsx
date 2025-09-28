@@ -1,10 +1,9 @@
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { Calendar, Clock, Heart, Search } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
-import Navigation from "@/components/Navigation"
 
 const blogPosts = [
   {
@@ -99,33 +98,94 @@ const blogPosts = [
   }
 ]
 
-const categories = ["All", "Tips & Advice", "Romance", "Communication", "Intimacy", "Science", "Long-term Love"]
+const categories = ["All", "General", "Tips & Advice", "Romance", "Communication", "Intimacy", "Science", "Long-term Love"]
+
+const STORAGE_KEY = "userBlogs"
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
+  const [userPosts, setUserPosts] = useState<Array<any>>([])
+  const [visibleCount, setVisibleCount] = useState(6)
 
-  const filteredPosts = blogPosts.filter(post => {
+  const getCoverFor = useMemo(() => {
+    const map: Record<string, string> = {
+      "Tips & Advice": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=800&auto=format&fit=crop&q=60",
+      "Date Ideas": "https://images.unsplash.com/photo-1519744346362-4566f39e39a2?w=800&auto=format&fit=crop&q=60",
+      "Romance": "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=800&auto=format&fit=crop&q=60",
+      "Communication": "https://images.unsplash.com/photo-1517456793572-7a66b9a7020f?w=800&auto=format&fit=crop&q=60",
+      "Intimacy": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=60",
+      "Science": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=60",
+      "Long-term Love": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop&q=60",
+      "General": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=60"
+    }
+    return (category?: string) => map[category || "General"] || map["General"]
+  }, [])
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY)
+      setUserPosts(raw ? JSON.parse(raw) : [])
+    } catch {
+      setUserPosts([])
+    }
+    // Basic SEO
+    document.title = 'ScratchSexPositions | Love & Intimacy Insights'
+    const desc = 'Expert insights on love, intimacy, and relationships. Tips, science, and romance guides.'
+    let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.name = 'description'
+      document.head.appendChild(meta)
+    }
+    meta.content = desc
+  }, [])
+
+  const approvedUserPosts = userPosts.filter((p: any) => p.approved)
+  const pendingCount = userPosts.filter((p: any) => !p.approved).length
+  const allPosts = [...approvedUserPosts.map((p) => ({
+    id: `user-${p.id}`,
+    title: p.title,
+    excerpt: p.excerpt,
+    date: p.date,
+    readTime: p.readTime,
+    category: p.category || "General",
+    slug: p.slug,
+    isUser: true,
+  })), ...blogPosts]
+
+  const filteredPosts = allPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesCategory = selectedCategory === "All" || post.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
+  const topicPills = [
+    "Most Popular","Romance","Intimacy","Communication","Date Ideas","Science","Mindfulness","Tips & Advice"
+  ]
+
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       
       {/* Header */}
       <section className="pt-24 pb-12 bg-gradient-romantic text-white">
         <div className="container max-w-6xl mx-auto px-4">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Love & Intimacy Insights
+              ScratchSexPositions Blog
             </h1>
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
               Discover expert insights on love, relationships, and intimacy. Our carefully curated articles help couples create deeper connections and more passionate relationships.
             </p>
+          </div>
+          <div className="flex items-center justify-center">
+            <Link to="/blog/new">
+              <Button variant="tender" size="lg" className="shadow-md">
+                <Heart className="w-5 h-5" />
+                Write a Blog
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -158,43 +218,81 @@ const Blog = () => {
               ))}
             </div>
           </div>
+
+          {/* Topics bar */}
+          <div className="mt-6 flex flex-wrap gap-2">
+            {topicPills.map(p => (
+              <span key={p} className="px-3 py-1 rounded-full text-xs bg-gradient-to-r from-romantic/15 to-passionate/15 text-foreground/90 border border-white/10">
+                {p}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Blog Posts Grid */}
       <section className="py-12">
         <div className="container max-w-6xl mx-auto px-4">
+          {pendingCount > 0 && (
+            <div className="mb-6 text-xs text-muted-foreground">
+              {pendingCount} post(s) pending admin approval. Go to /admin/blogs to approve.
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
-              <Card key={post.id} className="group hover-romantic border-0 bg-gradient-card">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(post.date).toLocaleDateString()}</span>
-                    <Clock className="w-4 h-4 ml-2" />
-                    <span>{post.readTime}</span>
+            {filteredPosts.slice(0, visibleCount).map((post) => (
+              <Link key={post.id} to={`/blog/${post.slug}`} className="block group">
+                <Card className="hover-romantic border-0 bg-gradient-card h-full overflow-hidden">
+                  {/* Cover Image */}
+                  <div className="relative">
+                    <div className="w-full aspect-[16/9] overflow-hidden">
+                      <img
+                        src={getCoverFor(post.category)}
+                        alt={post.title}
+                        className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 via-black/20 to-transparent">
+                      <CardTitle className="text-white text-lg leading-snug line-clamp-2">
+                        {post.title}
+                      </CardTitle>
+                    </div>
                   </div>
-                  <CardTitle className="text-xl group-hover:text-romantic transition-colors">
-                    {post.title}
-                  </CardTitle>
-                  <div className="inline-block px-2 py-1 bg-romantic/10 text-romantic text-xs rounded-full">
-                    {post.category}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base mb-4 line-clamp-3">
-                    {post.excerpt}
-                  </CardDescription>
-                  <Link to={`/blog/${post.slug}`}>
-                    <Button variant="tender" size="sm" className="w-full">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                      <Calendar className="w-4 h-4" />
+                      <span>{new Date(post.date).toLocaleDateString()}</span>
+                      <Clock className="w-4 h-4 ml-2" />
+                      <span>{post.readTime}</span>
+                    </div>
+                    <div className="inline-block px-2 py-1 bg-romantic/10 text-romantic text-xs rounded-full">
+                      {post.category}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base mb-4 line-clamp-3">
+                      {post.excerpt}
+                    </CardDescription>
+                    <div className="text-romantic/80 text-sm inline-flex items-center gap-2">
                       <Heart className="w-4 h-4" />
                       Read More
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
+
+          {/* Show More */}
+          {visibleCount < filteredPosts.length && (
+            <div className="text-center mt-10">
+              <Button variant="romantic" onClick={() => setVisibleCount(c => Math.min(c + 6, filteredPosts.length))}>
+                Load More Articles
+              </Button>
+              <div className="text-xs text-muted-foreground mt-2">
+                Showing {Math.min(visibleCount, filteredPosts.length)} of {filteredPosts.length}
+              </div>
+            </div>
+          )}
 
           {filteredPosts.length === 0 && (
             <div className="text-center py-12">

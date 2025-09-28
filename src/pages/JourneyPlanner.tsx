@@ -5,6 +5,7 @@ import { Heart, MapPin, Clock, Star, Shuffle, Play, ArrowRight, Settings, Users,
 import Navigation from "@/components/Navigation"
 import { getPositionsByStyle, getRandomPositions } from "@/data/positions"
 import type { Position, StyleType } from "@/types"
+import ScratchCards from "@/components/ScratchCards"
 
 const JourneyPlanner = () => {
   const [selectedStyle, setSelectedStyle] = useState<StyleType>('romantic')
@@ -47,7 +48,8 @@ const JourneyPlanner = () => {
     }
   ]
 
-  const countOptions = [3, 5, 7, 10, 12, 15]
+  // Updated to 3-6 per your request
+  const countOptions = [3, 4, 5, 6]
   const durationEstimates = {
     quick: '15-30 min',
     medium: '45-60 min',
@@ -58,7 +60,21 @@ const JourneyPlanner = () => {
     setIsGenerating(true)
     
     setTimeout(() => {
-      let availablePositions = getPositionsByStyle(selectedStyle)
+      // Merge base positions with user-added ones
+      const getUserPositions = (): Position[] => {
+        try {
+          const raw = localStorage.getItem('userPositions')
+          const arr = raw ? JSON.parse(raw) : []
+          return Array.isArray(arr) ? arr : []
+        } catch {
+          return []
+        }
+      }
+
+      let availablePositions: Position[] = [
+        ...getPositionsByStyle(selectedStyle),
+        ...getUserPositions().filter(p => p.style === selectedStyle)
+      ]
       
       // Filter by difficulty if not mixed
       if (difficulty !== 'mixed') {
@@ -67,7 +83,11 @@ const JourneyPlanner = () => {
       
       // If not enough positions, fall back to random
       if (availablePositions.length < positionCount) {
-        availablePositions = getRandomPositions(100)
+        const mixedPool: Position[] = [
+          ...getRandomPositions(100),
+          ...getUserPositions()
+        ]
+        availablePositions = mixedPool
       }
       
       // Shuffle and select positions
@@ -126,7 +146,7 @@ const JourneyPlanner = () => {
             <div className="text-center mb-8">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <MapPin className="w-8 h-8 text-romantic" />
-                <h1 className="text-3xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold text-foreground">
                   Your Intimate Journey
                 </h1>
               </div>
@@ -257,12 +277,12 @@ const JourneyPlanner = () => {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
               <MapPin className="w-10 h-10 text-romantic" />
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
-                Intimate Journey Planner
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+                Create Your Perfect Love Journey
               </h1>
             </div>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Create a personalized intimate experience tailored to your preferences. Our intelligent planner will guide you through a curated sequence of positions and activities designed to enhance your connection.
+              Discover the most intimate positions for your next romantic moment together. Select options and generate your personalized journey.
             </p>
           </div>
 
@@ -306,7 +326,7 @@ const JourneyPlanner = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Users className="w-5 h-5" />
-                    Journey Length
+                    Positions
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -380,12 +400,12 @@ const JourneyPlanner = () => {
                 {isGenerating ? (
                   <>
                     <Shuffle className="w-5 h-5 animate-spin" />
-                    Creating Journey...
+                    Generating Love Journey...
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    Create Journey
+                    Generate Love Journey
                   </>
                 )}
               </Button>
@@ -413,49 +433,52 @@ const JourneyPlanner = () => {
                     </div>
                   ) : (
                     <>
-                      {/* Journey Overview */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                        {journey.map((position, index) => (
-                          <Card key={position.id} variant="elegant" className="hover:shadow-md transition-shadow">
-                            <CardContent className="p-4">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-medium">Step {index + 1}</span>
-                                <span className={`px-2 py-1 rounded text-xs ${getDifficultyColor(position.difficulty)}`}>
-                                  {position.difficulty}
-                                </span>
-                              </div>
-                              <h4 className="font-semibold text-sm mb-1">{position.name}</h4>
-                              <p className="text-xs text-muted-foreground">{position.category}</p>
-                              <div className="flex items-center gap-1 mt-2">
-                                <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                                <span className="text-xs">{position.rating}</span>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-
-                      {/* Start Journey Button */}
-                      <div className="text-center">
-                        <Button 
-                          variant="hero" 
-                          size="xl"
-                          onClick={startJourney}
-                          data-testid="button-start-journey"
-                        >
-                          <Play className="w-5 h-5" />
-                          Start Journey
-                        </Button>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          Begin your guided intimate experience
-                        </p>
-                      </div>
+                      {/* Scratch-to-Reveal Cards */}
+                      <ScratchCards 
+                        items={journey.slice(0, positionCount).map((p, idx) => ({
+                          id: p.id || idx,
+                          title: p.name,
+                          description: p.description,
+                          mediaUrl: p.imageUrl || undefined,
+                        }))}
+                        heading="Unlock Your Love Adventure"
+                        subheading={`Discover ${positionCount} exciting intimate position cards. Each card reveals a unique romantic experience.`}
+                      />
                     </>
                   )}
                 </CardContent>
               </Card>
             </div>
           </div>
+
+          {/* Love Desires Guide */}
+          <section className="mt-12">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-bold">Love Desires Guide</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Explore your deepest desires and fantasies together in this intimate journey of pleasure and connection
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                {title: 'Sensual Romance', desc: 'Tender moments of deep connection'},
+                {title: 'Passionate Fire', desc: 'Intense and fiery intimate experiences'},
+                {title: 'Fantasy Dreams', desc: 'Explore your deepest desires together'},
+                {title: 'Luxury Indulgence', desc: 'Premium intimate experiences'},
+                {title: 'Midnight Mysteries', desc: 'Enchanting nocturnal connections'},
+                {title: 'Garden of Love', desc: 'Natural and organic intimacy'},
+                {title: 'Magic Moments', desc: 'Spellbinding romantic adventures'},
+                {title: 'Morning Bliss', desc: 'Start your day with tender love'},
+                {title: 'Special Occasions', desc: 'Perfect for anniversaries and celebrations'},
+                {title: 'Rhythmic Romance', desc: 'Move to the beat of your hearts'},
+              ].map((it, idx) => (
+                <div key={idx} className="p-5 rounded-2xl border bg-gradient-card hover-romantic transition">
+                  <h3 className="font-semibold">{it.title}</h3>
+                  <p className="text-sm text-muted-foreground">{it.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
     </div>

@@ -43,7 +43,7 @@ export interface ScratchCard {
 export interface Game {
   id: string
   name: string
-  type: 'truth_or_dare' | 'foreplay_dice' | 'random_generator' | 'long_distance' | 'quiz'
+  type: 'truth_or_dare' | 'foreplay_dice' | 'random_generator' | 'long_distance' | 'quiz' | 'massage_guide'
   description: string
   icon: string
   difficulty: DifficultyLevel
