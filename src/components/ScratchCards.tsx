@@ -21,101 +21,32 @@ interface ScratchCardsProps {
 }
 
 const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) => {
+  const [expandedCard, setExpandedCard] = useState<string | number | null>(null)
   const [revealed, setRevealed] = useState<Record<string | number, boolean>>(() => {
     const initial: Record<string | number, boolean> = {}
     items.forEach((it, i) => (initial[it.id] = !!it.revealed || i < 2))
     return initial
   })
 
-  // Track 4x4 tile clearing per card for hover-scratch effect
-  const [tileCleared, setTileCleared] = useState<Record<string | number, boolean[]>>(() => {
-    const initial: Record<string | number, boolean[]> = {}
-    items.forEach((it) => (initial[it.id] = new Array(16).fill(false)))
-    return initial
-  })
-
-  // When items change, ensure we have state for new IDs
-  const ensureStateFor = useCallback((id: string | number) => {
-    setTileCleared((prev) => {
-      if (prev[id]) return prev
-      return { ...prev, [id]: new Array(16).fill(false) }
-    })
-  }, [])
-
-  const anyMedia = useMemo(() => items.some(i => i.mediaUrl), [items])
+  const handleCardClick = (id: string | number) => {
+    if (!revealed[id]) {
+      setExpandedCard(id)
+    }
+  }
 
   const handleScratch = (id: string | number) => {
     setRevealed(prev => ({ ...prev, [id]: true }))
+    setExpandedCard(null) // Close expanded view after revealing
   }
 
-  const handleHoverScratch = useCallback((id: string | number, e: React.MouseEvent<HTMLDivElement>) => {
-    if (revealed[id]) return
-    ensureStateFor(id)
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const cols = 4
-    const rows = 4
-    const col = Math.min(cols - 1, Math.max(0, Math.floor((x / rect.width) * cols)))
-    const row = Math.min(rows - 1, Math.max(0, Math.floor((y / rect.height) * rows)))
-    const idx = row * cols + col
-    setTileCleared((prev) => {
-      const current = prev[id] || new Array(16).fill(false)
-      if (current[idx]) return prev
-      const next = { ...prev, [id]: [...current] }
-      next[id][idx] = true
-      return next
-    })
-    // Auto-reveal after threshold of cleared tiles
-    setTileCleared((prev) => {
-      const current = prev[id] || []
-      const cleared = current.filter(Boolean).length
-      if (cleared >= 6) {
-        setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
-      }
-      return prev
-    })
-  }, [ensureStateFor, revealed])
+  const anyMedia = useMemo(() => items.some(i => i.mediaUrl), [items])
 
-  const handleTouchScratch = useCallback((id: string | number, e: React.TouchEvent<HTMLDivElement>) => {
-    if (revealed[id]) return
-    ensureStateFor(id)
-    
-    // Handle both touchstart and touchmove
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect()
-    const touch = e.touches[0] || e.changedTouches[0]
-    
-    // Ensure touch coordinates are within the element
-    const x = Math.max(0, Math.min(rect.width, touch.clientX - rect.left))
-    const y = Math.max(0, Math.min(rect.height, touch.clientY - rect.top))
-    
-    const cols = 4
-    const rows = 4
-    const col = Math.min(cols - 1, Math.max(0, Math.floor((x / rect.width) * cols)))
-    const row = Math.min(rows - 1, Math.max(0, Math.floor((y / rect.height) * rows)))
-    const idx = row * cols + col
-    
-    // Clear the tile
-    if (idx >= 0 && idx < 16) {
-      setTileCleared((prev) => {
-        const current = prev[id] || new Array(16).fill(false)
-        if (current[idx]) return prev // Already cleared
-        const next = { ...prev, [id]: [...current] }
-        next[id][idx] = true
-        return next
-      })
+  const handleHoverScratch = useCallback((id: string | number, e: React.MouseEvent<HTMLDivElement>) => {
+    // Simplified - just reveal on hover for desktop
+    if (!revealed[id]) {
+      setRevealed(prev => ({ ...prev, [id]: true }))
     }
-    
-    // Check if enough tiles are cleared to reveal
-    setTileCleared((prev) => {
-      const current = prev[id] || []
-      const cleared = current.filter(Boolean).length
-      if (cleared >= 3) { // Even lower threshold for mobile
-        setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
-      }
-      return prev
-    })
-  }, [ensureStateFor, revealed])
+  }, [revealed])
 
   const renderMedia = (mediaUrl?: string | null) => {
     if (!mediaUrl) return null
@@ -172,46 +103,19 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
                       </div>
                     </div>
                   ) : (
-                    <div 
-                      className="h-full bg-cover bg-center relative"
+                    <div
+                      className="h-full bg-cover bg-center relative cursor-pointer"
                       style={{ backgroundImage: `url(${scratchCardBg})` }}
-                      onMouseMove={(e) => handleHoverScratch(card.id, e)}
+                      onClick={() => handleCardClick(card.id)}
                       onMouseEnter={(e) => handleHoverScratch(card.id, e)}
-                      onTouchMove={(e) => handleTouchScratch(card.id, e)}
-                      onTouchStart={(e) => handleTouchScratch(card.id, e)}
                     >
-                      {/* Base lock/message content under tiles */}
-                      <div className="absolute inset-0 bg-romantic/20 flex items-center justify-center pointer-events-none">
+                      {/* Simple overlay - tap to reveal */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-romantic/40 to-passionate/40 flex items-center justify-center">
                         <div className="text-center text-white">
-                          <Lock className="w-12 h-12 mx-auto mb-4 animate-float" />
-                          <p className="font-medium text-lg">Scratch to Reveal</p>
-                          <p className="text-sm text-white/80 mt-2">Love Position</p>
+                          <Lock className="w-12 h-12 mx-auto mb-3 animate-float" />
+                          <p className="font-bold text-lg">Tap to Reveal</p>
+                          <p className="text-sm text-white/90">Touch or click</p>
                         </div>
-                      </div>
-
-                      {/* 4x4 scratch tiles overlay */}
-                      <div className="absolute inset-0">
-                        {Array.from({ length: 16 }).map((_, i) => {
-                          const row = Math.floor(i / 4)
-                          const col = i % 4
-                          const cleared = tileCleared[card.id]?.[i]
-                          return (
-                            <div
-                              key={i}
-                              className="absolute transition-opacity duration-200"
-                              style={{
-                                top: `${(row * 100) / 4}%`,
-                                left: `${(col * 100) / 4}%`,
-                                width: `${100 / 4}%`,
-                                height: `${100 / 4}%`,
-                                backgroundImage: `url(${scratchCardBg})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                opacity: cleared ? 0 : 1,
-                              }}
-                            />
-                          )
-                        })}
                       </div>
                     </div>
                   )}
@@ -229,6 +133,52 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
             </Button>
           </Link>
         </div>
+
+        {/* Expanded scratch card modal */}
+        {expandedCard && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-auto">
+              {(() => {
+                const card = items.find(item => item.id === expandedCard)
+                if (!card) return null
+
+                return (
+                  <div>
+                    <div className="relative">
+                      {card.mediaUrl ? (
+                        <img
+                          src={card.mediaUrl}
+                          alt={card.title}
+                          className="w-full h-64 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-64 bg-gradient-romantic flex items-center justify-center">
+                          <Heart className="w-16 h-16 text-white" />
+                        </div>
+                      )}
+                      <button
+                        onClick={() => setExpandedCard(null)}
+                        className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-2">{card.title}</h3>
+                      <p className="text-gray-600 mb-4">{card.description}</p>
+                      <button
+                        onClick={() => handleScratch(card.id)}
+                        className="w-full bg-gradient-romantic text-white py-3 rounded-lg font-medium"
+                      >
+                        Reveal Position
+                      </button>
+                    </div>
+                  </div>
+                )
+              })()}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )
