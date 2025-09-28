@@ -80,41 +80,41 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
   const handleTouchScratch = useCallback((id: string | number, e: React.TouchEvent<HTMLDivElement>) => {
     if (revealed[id]) return
     ensureStateFor(id)
+    
+    // Handle both touchstart and touchmove
     const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect()
     const touch = e.touches[0] || e.changedTouches[0]
-    const x = touch.clientX - rect.left
-    const y = touch.clientY - rect.top
+    
+    // Ensure touch coordinates are within the element
+    const x = Math.max(0, Math.min(rect.width, touch.clientX - rect.left))
+    const y = Math.max(0, Math.min(rect.height, touch.clientY - rect.top))
+    
     const cols = 4
     const rows = 4
     const col = Math.min(cols - 1, Math.max(0, Math.floor((x / rect.width) * cols)))
     const row = Math.min(rows - 1, Math.max(0, Math.floor((y / rect.height) * rows)))
     const idx = row * cols + col
     
-    // Only clear tile if coordinates are valid
+    // Clear the tile
     if (idx >= 0 && idx < 16) {
       setTileCleared((prev) => {
         const current = prev[id] || new Array(16).fill(false)
-        if (current[idx]) return prev
+        if (current[idx]) return prev // Already cleared
         const next = { ...prev, [id]: [...current] }
         next[id][idx] = true
         return next
       })
-      
-      // Auto-reveal after threshold of cleared tiles (lower for mobile)
-      setTileCleared((prev) => {
-        const current = prev[id] || []
-        const cleared = current.filter(Boolean).length
-        if (cleared >= 4) { // Lower threshold for mobile
-          setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
-        }
-        return prev
-      })
     }
     
-    // Only prevent default on move, not start
-    if (e.type === 'touchmove') {
-      e.preventDefault()
-    }
+    // Check if enough tiles are cleared to reveal
+    setTileCleared((prev) => {
+      const current = prev[id] || []
+      const cleared = current.filter(Boolean).length
+      if (cleared >= 3) { // Even lower threshold for mobile
+        setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
+      }
+      return prev
+    })
   }, [ensureStateFor, revealed])
 
   const renderMedia = (mediaUrl?: string | null) => {
@@ -178,11 +178,7 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
                       onMouseMove={(e) => handleHoverScratch(card.id, e)}
                       onMouseEnter={(e) => handleHoverScratch(card.id, e)}
                       onTouchMove={(e) => handleTouchScratch(card.id, e)}
-                      onTouchStart={(e) => {
-                        // Just ensure state is initialized, don't scratch on start
-                        ensureStateFor(card.id)
-                        e.preventDefault()
-                      }}
+                      onTouchStart={(e) => handleTouchScratch(card.id, e)}
                     >
                       {/* Base lock/message content under tiles */}
                       <div className="absolute inset-0 bg-romantic/20 flex items-center justify-center pointer-events-none">
