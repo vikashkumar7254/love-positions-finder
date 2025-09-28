@@ -89,23 +89,32 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
     const col = Math.min(cols - 1, Math.max(0, Math.floor((x / rect.width) * cols)))
     const row = Math.min(rows - 1, Math.max(0, Math.floor((y / rect.height) * rows)))
     const idx = row * cols + col
-    setTileCleared((prev) => {
-      const current = prev[id] || new Array(16).fill(false)
-      if (current[idx]) return prev
-      const next = { ...prev, [id]: [...current] }
-      next[id][idx] = true
-      return next
-    })
-    // Auto-reveal after threshold of cleared tiles
-    setTileCleared((prev) => {
-      const current = prev[id] || []
-      const cleared = current.filter(Boolean).length
-      if (cleared >= 6) {
-        setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
-      }
-      return prev
-    })
-    e.preventDefault() // Prevent scrolling while scratching
+    
+    // Only clear tile if coordinates are valid
+    if (idx >= 0 && idx < 16) {
+      setTileCleared((prev) => {
+        const current = prev[id] || new Array(16).fill(false)
+        if (current[idx]) return prev
+        const next = { ...prev, [id]: [...current] }
+        next[id][idx] = true
+        return next
+      })
+      
+      // Auto-reveal after threshold of cleared tiles (lower for mobile)
+      setTileCleared((prev) => {
+        const current = prev[id] || []
+        const cleared = current.filter(Boolean).length
+        if (cleared >= 4) { // Lower threshold for mobile
+          setRevealed((r) => (r[id] ? r : { ...r, [id]: true }))
+        }
+        return prev
+      })
+    }
+    
+    // Only prevent default on move, not start
+    if (e.type === 'touchmove') {
+      e.preventDefault()
+    }
   }, [ensureStateFor, revealed])
 
   const renderMedia = (mediaUrl?: string | null) => {
@@ -169,7 +178,11 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
                       onMouseMove={(e) => handleHoverScratch(card.id, e)}
                       onMouseEnter={(e) => handleHoverScratch(card.id, e)}
                       onTouchMove={(e) => handleTouchScratch(card.id, e)}
-                      onTouchStart={(e) => handleTouchScratch(card.id, e)}
+                      onTouchStart={(e) => {
+                        // Just ensure state is initialized, don't scratch on start
+                        ensureStateFor(card.id)
+                        e.preventDefault()
+                      }}
                     >
                       {/* Base lock/message content under tiles */}
                       <div className="absolute inset-0 bg-romantic/20 flex items-center justify-center pointer-events-none">
