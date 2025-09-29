@@ -28,12 +28,17 @@ interface RoleplayScenario {
   }[]
 }
 
+interface RoleplayCategory {
+  name: string
+  scenarios: RoleplayScenario[]
+}
+
 const FantasyRoleplay = () => {
   const [currentScenario, setCurrentScenario] = useState<RoleplayScenario | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string>('classic')
   const [isGenerating, setIsGenerating] = useState(false)
 
-  const roleplayCategories = {
+  const roleplayCategories: Record<string, RoleplayCategory> = {
     classic: {
       name: 'Classic Fantasies',
       scenarios: [
@@ -374,7 +379,7 @@ const FantasyRoleplay = () => {
     setIsGenerating(true)
     setTimeout(() => {
       const categories = Object.values(roleplayCategories)
-      const allScenarios: RoleplayScenario[] = categories.flatMap(cat => cat.scenarios)
+      const allScenarios = categories.flatMap((cat: RoleplayCategory) => cat.scenarios) as RoleplayScenario[]
       const randomScenario = allScenarios[Math.floor(Math.random() * allScenarios.length)]
       setCurrentScenario(randomScenario)
       setIsGenerating(false)

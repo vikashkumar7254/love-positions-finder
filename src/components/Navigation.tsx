@@ -1,11 +1,14 @@
 import { Link, useLocation } from "react-router-dom"
-import { Sparkles, Home, BookOpen, Gamepad2 } from "lucide-react"
+import { Sparkles, Home, BookOpen, Gamepad2, Shield } from "lucide-react"
 import { Button } from "@/components/ui/enhanced-button"
+import { useAdminAuth } from "./AdminAuth"
 
 const Navigation = () => {
   const location = useLocation()
+  const { isAuthenticated } = useAdminAuth()
   const isActive = (path: string) => location.pathname === path
   const isGamesActive = location.pathname.startsWith('/games')
+  const isAdminActive = location.pathname.startsWith('/admin')
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur border-b border-border/60">
@@ -34,6 +37,13 @@ const Navigation = () => {
                 <BookOpen className="w-4 h-4" /> Blogs
               </Button>
             </Link>
+            {isAuthenticated && (
+              <Link to="/admin">
+                <Button variant={isAdminActive ? 'romantic' : 'outline'} size="sm" className="rounded-full px-3 py-1 flex items-center gap-2">
+                  <Shield className="w-4 h-4" /> Admin
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
