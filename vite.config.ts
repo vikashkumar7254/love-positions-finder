@@ -12,6 +12,17 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       clientPort: 443,
     },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('API proxy error (this is normal in dev mode):', err.message);
+          });
+        },
+      },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

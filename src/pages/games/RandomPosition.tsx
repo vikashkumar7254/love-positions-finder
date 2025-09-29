@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { getPositions as apiGetPositions } from "@/lib/positionsApi"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Shuffle, RefreshCw, Heart, Sparkles } from "lucide-react"
+import { Shuffle, Heart, Sparkles } from "lucide-react"
 import Navigation from "@/components/Navigation"
 
 type Position = {
@@ -59,11 +59,6 @@ const RandomPosition = () => {
     }, 100)
   }
 
-  const resetGame = () => {
-    setCurrentPosition(null)
-    setHasRevealed(false)
-    setIsRevealing(false)
-  }
 
   if (loading) {
     return (
@@ -154,23 +149,12 @@ const RandomPosition = () => {
                     </div>
 
                     {/* Title */}
-                    <CardContent className="p-4 sm:p-6">
-                      <h3 className={`text-xl sm:text-2xl font-bold text-white text-center transition-all duration-300 ${
+                    <CardContent className="p-2 sm:p-3">
+                      <h3 className={`text-lg sm:text-xl font-bold text-white text-center transition-all duration-300 ${
                         isRevealing ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
                       }`}>
                         {currentPosition.title}
                       </h3>
-                      
-                      {hasRevealed && !isRevealing && (
-                        <div className="mt-4 text-center animate-fade-in">
-                          <div className="inline-flex items-center gap-2 px-3 py-1 bg-pink-500/20 rounded-full">
-                            <Heart className="w-4 h-4 text-pink-300" />
-                            <span className="text-pink-200 text-sm">
-                              {currentPosition.isDefault ? 'Classic Position' : 'Custom Position'}
-                            </span>
-                          </div>
-                        </div>
-                      )}
                     </CardContent>
                   </div>
                 </Card>
@@ -200,28 +184,16 @@ const RandomPosition = () => {
                   )}
                 </Button>
               ) : (
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-                  <Button
-                    onClick={getRandomPosition}
-                    disabled={positions.length === 0 || isRevealing}
-                    variant="romantic"
-                    size="lg"
-                    className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
-                  >
-                    <Shuffle className="w-5 h-5 mr-2" />
-                    Get Another Position
-                  </Button>
-                  
-                  <Button
-                    onClick={resetGame}
-                    variant="outline"
-                    size="lg"
-                    className="px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg border-white/20 text-white hover:bg-white/10 w-full sm:w-auto"
-                  >
-                    <RefreshCw className="w-5 h-5 mr-2" />
-                    Start Over
-                  </Button>
-                </div>
+                <Button
+                  onClick={getRandomPosition}
+                  disabled={positions.length === 0 || isRevealing}
+                  variant="romantic"
+                  size="lg"
+                  className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+                >
+                  <Shuffle className="w-5 h-5 mr-2" />
+                  Get Another Position
+                </Button>
               )}
             </div>
 
