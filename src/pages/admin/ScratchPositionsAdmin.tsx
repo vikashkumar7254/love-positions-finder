@@ -48,7 +48,43 @@ const ScratchPositionsAdminContent = () => {
   ]
 
   useEffect(() => {
-    loadItems()
+    // Initialize with default positions if no data exists
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY)
+      let storedItems: PositionItem[] = []
+
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        storedItems = Array.isArray(parsed) ? parsed : []
+      }
+
+      // If no data or empty, initialize with defaults
+      if (storedItems.length === 0) {
+        console.log('Admin: Initializing with default positions...')
+        setItems(defaultPositions)
+        saveItems(defaultPositions)
+        console.log('Admin: Saved', defaultPositions.length, 'default positions to localStorage')
+      } else {
+        console.log('Admin: Found', storedItems.length, 'existing positions')
+        // Merge defaults with stored items, keeping stored versions if they exist
+        const mergedItems = defaultPositions.map(defaultItem => {
+          const storedItem = storedItems.find(item => item.id === defaultItem.id)
+          return storedItem || defaultItem
+        })
+
+        // Add any custom items that aren't in defaults
+        const customItems = storedItems.filter(item => !defaultPositions.some(def => def.id === item.id))
+        const allItems = [...mergedItems, ...customItems]
+
+        console.log('Admin: Merged to', allItems.length, 'total positions')
+        setItems(allItems)
+        saveItems(allItems) // Save back to ensure defaults are persisted
+      }
+    } catch (error) {
+      console.error('Error loading items:', error)
+      setItems(defaultPositions)
+      saveItems(defaultPositions)
+    }
     document.title = "Scratch Positions Admin | ScratchSexPositions"
   }, [])
 

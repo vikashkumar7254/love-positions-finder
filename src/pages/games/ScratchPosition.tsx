@@ -29,19 +29,38 @@ const ScratchPosition = () => {
       const raw = localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as { id: string; title: string; image: string; isDefault?: boolean }[]
-        if (Array.isArray(parsed)) {
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          console.log('Loaded positions from localStorage:', parsed.length)
           return parsed.map(item => ({ ...item, revealed: false }))
         }
       }
-      // Fallback to empty array if no data
-      return []
-    } catch {
+
+      // Fallback to hardcoded defaults if no data in localStorage
+      console.log('No positions in localStorage, using fallback defaults')
+      const fallbackPositions = [
+        { id: 'enhanced_missionary', title: 'Enhanced Missionary', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'intimate_spooning', title: 'Intimate Spooning', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'empowered_cowgirl', title: 'Empowered Cowgirl', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'passionate_doggy', title: 'Passionate Doggy', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'tantric_lotus', title: 'Tantric Lotus', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'standing_passion', title: 'Standing Passion', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'reverse_cowgirl', title: 'Reverse Cowgirl', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'side_saddle', title: 'Side Saddle', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'butterfly_position', title: 'Butterfly Position', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'bridge_position', title: 'Bridge Position', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'scissors_position', title: 'Scissors Position', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
+        { id: 'pretzel_position', title: 'Pretzel Position', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true }
+      ]
+      return fallbackPositions.map(item => ({ ...item, revealed: false }))
+    } catch (error) {
+      console.error('Error loading positions:', error)
       return []
     }
   }
 
   const refreshCards = () => {
     const positions = loadPositions()
+    console.log('Refresh - positions found:', positions.length)
     setCards(positions)
     canvasRefs.current = canvasRefs.current.slice(0, positions.length)
 
@@ -58,6 +77,7 @@ const ScratchPosition = () => {
   useEffect(() => {
     // Load positions from admin system
     const positions = loadPositions()
+    console.log('Initial load - positions found:', positions.length)
     setCards(positions)
 
     // Initialize canvas scratch effects
@@ -238,11 +258,30 @@ const ScratchPosition = () => {
                 Scratch Positions
               </h1>
               <Button
-                onClick={refreshCards}
+                onClick={() => {
+                  // Force initialize with defaults
+                  const fallbackPositions = [
+                    { id: 'enhanced_missionary', title: 'Enhanced Missionary', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'intimate_spooning', title: 'Intimate Spooning', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'empowered_cowgirl', title: 'Empowered Cowgirl', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'passionate_doggy', title: 'Passionate Doggy', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'tantric_lotus', title: 'Tantric Lotus', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'standing_passion', title: 'Standing Passion', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'reverse_cowgirl', title: 'Reverse Cowgirl', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'side_saddle', title: 'Side Saddle', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'butterfly_position', title: 'Butterfly Position', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'bridge_position', title: 'Bridge Position', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'scissors_position', title: 'Scissors Position', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
+                    { id: 'pretzel_position', title: 'Pretzel Position', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true }
+                  ]
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(fallbackPositions))
+                  refreshCards()
+                  console.log('Force initialized with', fallbackPositions.length, 'positions')
+                }}
                 variant="outline"
                 size="sm"
                 className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                title="Refresh to load new custom positions"
+                title="Initialize with default positions"
               >
                 <RefreshCw className="w-4 h-4" />
               </Button>
