@@ -1,22 +1,7 @@
-// Blog API with Redis support and local fallback - Standard HTTP types for Node.js environment
-import { IncomingMessage, ServerResponse } from 'http'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { Redis } from '@upstash/redis'
 
-// Type definitions for API handler (compatible with Next.js API structure)
-interface NextApiRequest {
-  method: string
-  url: string
-  query: Record<string, string | string[] | undefined>
-  body?: any
-  headers: Record<string, string>
-}
-
-interface NextApiResponse {
-  status(code: number): NextApiResponse
-  json(data: any): NextApiResponse
-  setHeader(name: string, value: string): NextApiResponse
-  end(): void
-}
+// Support local dev without Upstash: fall back to in-memory storage
 const useRedis = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
 
 type KV = Record<string, string>
