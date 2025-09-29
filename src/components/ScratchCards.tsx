@@ -210,12 +210,18 @@ const ScratchCardModal = ({ item, onClose, onReveal }: ScratchCardModalProps) =>
           <h3 className="text-xl font-bold mb-2">{item.title}</h3>
           <p className="text-gray-600 mb-4">{item.description}</p>
           <p className="text-sm text-gray-500">
-            💡 Scratch the silver area above to reveal the position
+            Scratch to reveal the position
           </p>
         </div>
       </div>
     </div>
   )
+}
+
+interface ScratchCardsProps {
+  items?: ScratchItem[]
+  heading?: string
+  subheading?: string
 }
 
 const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) => {
@@ -271,10 +277,6 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
             <Sparkles className="w-5 h-5" />
             <span className="font-medium">Scratch to reveal your romantic surprises</span>
           </div>
-          {/* Mobile instructions */}
-          <p className="text-sm text-muted-foreground mt-4 md:hidden">
-            💡 Use your finger to scratch and reveal cards
-          </p>
         </div>
 
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 ${anyMedia ? 'auto-rows-[1fr]' : ''}`}>

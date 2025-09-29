@@ -245,9 +245,6 @@ const ScratchPosition = () => {
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Unlock your intimate adventure. Scratch to reveal romantic positions and discover new ways to connect.
             </p>
-            <p className="text-sm text-white/60 mt-2">
-              💡 Added new positions in admin? Click refresh to load them!
-            </p>
           </div>
 
           {/* Intro Hero */}

@@ -4,6 +4,7 @@ import { Calendar, Clock, Heart, Search } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
+import { getCategoryImage } from "@/utils/imageManager"
 
 const blogPosts = [
   {
@@ -109,17 +110,20 @@ const Blog = () => {
   const [visibleCount, setVisibleCount] = useState(6)
 
   const getCoverFor = useMemo(() => {
-    const map: Record<string, string> = {
-      "Tips & Advice": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=800&auto=format&fit=crop&q=60",
-      "Date Ideas": "https://images.unsplash.com/photo-1519744346362-4566f39e39a2?w=800&auto=format&fit=crop&q=60",
-      "Romance": "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=800&auto=format&fit=crop&q=60",
-      "Communication": "https://images.unsplash.com/photo-1517456793572-7a66b9a7020f?w=800&auto=format&fit=crop&q=60",
-      "Intimacy": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=60",
-      "Science": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=60",
-      "Long-term Love": "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop&q=60",
-      "General": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=60"
+    return (category?: string) => {
+      const categoryMap: Record<string, string> = {
+        "Tips & Advice": "blog",
+        "Date Ideas": "blog",
+        "Romance": "blog",
+        "Communication": "blog",
+        "Intimacy": "blog",
+        "Science": "blog",
+        "Long-term Love": "blog",
+        "General": "blog"
+      }
+      const imageCategory = categoryMap[category || "General"] || "blog"
+      return getCategoryImage(imageCategory, `https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=800&auto=format&fit=crop&q=60`)
     }
-    return (category?: string) => map[category || "General"] || map["General"]
   }, [])
 
   useEffect(() => {
@@ -129,9 +133,15 @@ const Blog = () => {
     } catch {
       setUserPosts([])
     }
-    // Basic SEO
-    document.title = 'ScratchSexPositions | Love & Intimacy Insights'
-    const desc = 'Expert insights on love, intimacy, and relationships. Tips, science, and romance guides.'
+    // Enhanced SEO for Blog page
+    const title = 'Love & Intimacy Blog | Expert Relationship Advice'
+    const desc = 'Expert insights on love, relationships, and intimacy. Tips, science, and romance guides from relationship experts and couples therapists.'
+    const url = `${window.location.origin}/blog`
+    const image = "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1200&h=630&fit=crop&crop=center"
+
+    document.title = title
+
+    // Basic meta tags
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null
     if (!meta) {
       meta = document.createElement('meta')
@@ -139,6 +149,87 @@ const Blog = () => {
       document.head.appendChild(meta)
     }
     meta.content = desc
+
+    // Canonical URL
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = url
+
+    // Open Graph tags
+    let ogTitle = document.querySelector('meta[property="og:title"]') as HTMLMetaElement | null
+    if (!ogTitle) { ogTitle = document.createElement('meta'); ogTitle.setAttribute('property','og:title'); document.head.appendChild(ogTitle) }
+    ogTitle.content = title
+
+    let ogDesc = document.querySelector('meta[property="og:description"]') as HTMLMetaElement | null
+    if (!ogDesc) { ogDesc = document.createElement('meta'); ogDesc.setAttribute('property','og:description'); document.head.appendChild(ogDesc) }
+    ogDesc.content = desc
+
+    let ogImage = document.querySelector('meta[property="og:image"]') as HTMLMetaElement | null
+    if (!ogImage) { ogImage = document.createElement('meta'); ogImage.setAttribute('property','og:image'); document.head.appendChild(ogImage) }
+    ogImage.content = image
+
+    let ogUrl = document.querySelector('meta[property="og:url"]') as HTMLMetaElement | null
+    if (!ogUrl) { ogUrl = document.createElement('meta'); ogUrl.setAttribute('property','og:url'); document.head.appendChild(ogUrl) }
+    ogUrl.content = url
+
+    let ogType = document.querySelector('meta[property="og:type"]') as HTMLMetaElement | null
+    if (!ogType) { ogType = document.createElement('meta'); ogType.setAttribute('property','og:type'); document.head.appendChild(ogType) }
+    ogType.content = 'website'
+
+    // Twitter Card tags
+    let twitterCard = document.querySelector('meta[name="twitter:card"]') as HTMLMetaElement | null
+    if (!twitterCard) { twitterCard = document.createElement('meta'); twitterCard.name = 'twitter:card'; document.head.appendChild(twitterCard) }
+    twitterCard.content = 'summary_large_image'
+
+    let twitterTitle = document.querySelector('meta[name="twitter:title"]') as HTMLMetaElement | null
+    if (!twitterTitle) { twitterTitle = document.createElement('meta'); twitterTitle.name = 'twitter:title'; document.head.appendChild(twitterTitle) }
+    twitterTitle.content = title
+
+    let twitterDesc = document.querySelector('meta[name="twitter:description"]') as HTMLMetaElement | null
+    if (!twitterDesc) { twitterDesc = document.createElement('meta'); twitterDesc.name = 'twitter:description'; document.head.appendChild(twitterDesc) }
+    twitterDesc.content = desc
+
+    let twitterImage = document.querySelector('meta[name="twitter:image"]') as HTMLMetaElement | null
+    if (!twitterImage) { twitterImage = document.createElement('meta'); twitterImage.name = 'twitter:image'; document.head.appendChild(twitterImage) }
+    twitterImage.content = image
+
+    // Additional SEO meta tags
+    let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null
+    if (!robots) { robots = document.createElement('meta'); robots.name = 'robots'; document.head.appendChild(robots) }
+    robots.content = 'index, follow, max-snippet:-1, max-image-preview:large'
+
+    let keywords = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null
+    if (!keywords) { keywords = document.createElement('meta'); keywords.name = 'keywords'; document.head.appendChild(keywords) }
+    keywords.content = 'relationship advice, love tips, intimacy guide, dating advice, relationship blog, couples therapy, romance tips, relationship experts'
+
+    // Structured Data for Blog
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Love & Intimacy Blog",
+      "description": desc,
+      "url": url,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": url
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "ScratchSexPositions"
+      }
+    }
+
+    let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement | null
+    if (!script) {
+      script = document.createElement('script')
+      script.type = 'application/ld+json'
+      document.head.appendChild(script)
+    }
+    script.textContent = JSON.stringify(structuredData)
   }, [])
 
   const approvedUserPosts = userPosts.filter((p: any) => p.approved)
@@ -233,11 +324,6 @@ const Blog = () => {
       {/* Blog Posts Grid */}
       <section className="py-12">
         <div className="container max-w-6xl mx-auto px-4">
-          {pendingCount > 0 && (
-            <div className="mb-6 text-xs text-muted-foreground">
-              {pendingCount} post(s) pending admin approval. Go to /admin/blogs to approve.
-            </div>
-          )}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.slice(0, visibleCount).map((post) => (
               <Link key={post.id} to={`/blog/${post.slug}`} className="block group">

@@ -91,7 +91,8 @@ const AdminDashboardContent = () => {
       stats: "5 active games",
       actions: [
         { label: "All Games", href: "/games", icon: Eye },
-        { label: "All Positions", href: "/positions/all", icon: Settings }
+        { label: "All Positions", href: "/positions/all", icon: Settings },
+        { label: "Journey Images", href: "/admin/journey-images", icon: Image }
       ]
     },
     {
@@ -113,6 +114,7 @@ const AdminDashboardContent = () => {
       stats: "All systems operational",
       actions: [
         { label: "Site Settings", href: "#", icon: Settings },
+        { label: "Image Management", href: "/admin/images", icon: Image },
         { label: "Database", href: "#", icon: Database }
       ]
     }

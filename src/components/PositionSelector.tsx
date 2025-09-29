@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanc
 import { Badge } from "@/components/ui/badge"
 import { Heart, Flame, Star, Sparkles, Clock, RefreshCw } from "lucide-react"
 import { getPositionsByStyle, getRandomPositions } from "@/data/positions"
+import { getCategoryImage } from "@/utils/imageManager"
+import LazyImage from "@/components/LazyImage"
 import type { Position, StyleType } from "@/types"
 
 const PositionSelector = () => {
@@ -122,15 +124,17 @@ const PositionSelector = () => {
                       <div key={p.id || `${p.name}-${idx}`} className="rounded-xl overflow-hidden bg-gradient-to-b from-romantic/10 to-background/20 border border-romantic/20 shadow-sm">
                         <div className="relative">
                           {(() => {
-                            const base = p.imageUrl || `https://picsum.photos/seed/${encodeURIComponent((p.id || p.name) + '-' + renderStyle)}-idx${idx}/600/400`
-                            const hiRes = p.imageUrl || base.replace('/600/400', '/1200/800')
+                            const base = p.imageUrl || getCategoryImage('journey', `https://picsum.photos/seed/${encodeURIComponent((p.id || p.name) + '-' + renderStyle)}-idx${idx}/600/400`)
+                            const hiRes = p.imageUrl || getCategoryImage('journey', base.replace('/600/400', '/1200/800'))
                             return (
                               // eslint-disable-next-line @next/next/no-img-element
-                              <img 
-                                src={base} 
-                                alt={p.name} 
-                                className="w-full h-44 object-cover cursor-zoom-in" 
+                              <LazyImage
+                                src={base}
+                                alt={p.name}
+                                className="w-full h-44 object-cover cursor-zoom-in"
                                 onClick={() => setLightboxUrl(hiRes)}
+                                width={400}
+                                height={300}
                               />
                             )
                           })()}

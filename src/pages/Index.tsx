@@ -6,12 +6,18 @@ import { Grid3X3, Heart, Star, Sparkles, Dice6, Gamepad2, Quote, Compass, Gift, 
 import PositionSelector from "@/components/PositionSelector"
 import ScratchCards from "@/components/ScratchCards"
 import RomanticIdeas from "@/components/RomanticIdeas"
+import { getCategoryImage } from "@/utils/imageManager"
 
 const Index = () => {
   useEffect(() => {
     const title = "ScratchSexPositions | 500+ Positions, Games & Romantic Ideas"
     const desc = "Explore 500+ intimate positions, interactive games, and romantic guides. Create custom posters and plan your perfect intimate journey."
+    const url = window.location.origin
+    const image = getCategoryImage('homepage', "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&h=630&fit=crop&crop=center")
+
     document.title = title
+
+    // Basic meta tags
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null
     if (!meta) {
       meta = document.createElement('meta')
@@ -19,12 +25,95 @@ const Index = () => {
       document.head.appendChild(meta)
     }
     meta.content = desc
+
+    // Canonical URL
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = url
+
+    // Open Graph tags
     let ogTitle = document.querySelector('meta[property="og:title"]') as HTMLMetaElement | null
     if (!ogTitle) { ogTitle = document.createElement('meta'); ogTitle.setAttribute('property','og:title'); document.head.appendChild(ogTitle) }
     ogTitle.content = title
+
     let ogDesc = document.querySelector('meta[property="og:description"]') as HTMLMetaElement | null
     if (!ogDesc) { ogDesc = document.createElement('meta'); ogDesc.setAttribute('property','og:description'); document.head.appendChild(ogDesc) }
     ogDesc.content = desc
+
+    let ogImage = document.querySelector('meta[property="og:image"]') as HTMLMetaElement | null
+    if (!ogImage) { ogImage = document.createElement('meta'); ogImage.setAttribute('property','og:image'); document.head.appendChild(ogImage) }
+    ogImage.content = image
+
+    let ogUrl = document.querySelector('meta[property="og:url"]') as HTMLMetaElement | null
+    if (!ogUrl) { ogUrl = document.createElement('meta'); ogUrl.setAttribute('property','og:url'); document.head.appendChild(ogUrl) }
+    ogUrl.content = url
+
+    let ogType = document.querySelector('meta[property="og:type"]') as HTMLMetaElement | null
+    if (!ogType) { ogType = document.createElement('meta'); ogType.setAttribute('property','og:type'); document.head.appendChild(ogType) }
+    ogType.content = 'website'
+
+    let ogSiteName = document.querySelector('meta[property="og:site_name"]') as HTMLMetaElement | null
+    if (!ogSiteName) { ogSiteName = document.createElement('meta'); ogSiteName.setAttribute('property','og:site_name'); document.head.appendChild(ogSiteName) }
+    ogSiteName.content = 'ScratchSexPositions'
+
+    // Twitter Card tags
+    let twitterCard = document.querySelector('meta[name="twitter:card"]') as HTMLMetaElement | null
+    if (!twitterCard) { twitterCard = document.createElement('meta'); twitterCard.name = 'twitter:card'; document.head.appendChild(twitterCard) }
+    twitterCard.content = 'summary_large_image'
+
+    let twitterTitle = document.querySelector('meta[name="twitter:title"]') as HTMLMetaElement | null
+    if (!twitterTitle) { twitterTitle = document.createElement('meta'); twitterTitle.name = 'twitter:title'; document.head.appendChild(twitterTitle) }
+    twitterTitle.content = title
+
+    let twitterDesc = document.querySelector('meta[name="twitter:description"]') as HTMLMetaElement | null
+    if (!twitterDesc) { twitterDesc = document.createElement('meta'); twitterDesc.name = 'twitter:description'; document.head.appendChild(twitterDesc) }
+    twitterDesc.content = desc
+
+    let twitterImage = document.querySelector('meta[name="twitter:image"]') as HTMLMetaElement | null
+    if (!twitterImage) { twitterImage = document.createElement('meta'); twitterImage.name = 'twitter:image'; document.head.appendChild(twitterImage) }
+    twitterImage.content = image
+
+    // Additional SEO meta tags
+    let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null
+    if (!robots) { robots = document.createElement('meta'); robots.name = 'robots'; document.head.appendChild(robots) }
+    robots.content = 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'
+
+    let author = document.querySelector('meta[name="author"]') as HTMLMetaElement | null
+    if (!author) { author = document.createElement('meta'); author.name = 'author'; document.head.appendChild(author) }
+    author.content = 'ScratchSexPositions'
+
+    let keywords = document.querySelector('meta[name="keywords"]') as HTMLMetaElement | null
+    if (!keywords) { keywords = document.createElement('meta'); keywords.name = 'keywords'; document.head.appendChild(keywords) }
+    keywords.content = 'sex positions, intimate positions, love positions, romantic games, intimacy guide, relationship tips, adult games, scratch cards, position generator'
+
+    // Structured Data (JSON-LD)
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "ScratchSexPositions",
+      "description": desc,
+      "url": url,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": `${url}/?search={search_term_string}`
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+
+    let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement | null
+    if (!script) {
+      script = document.createElement('script')
+      script.type = 'application/ld+json'
+      document.head.appendChild(script)
+    }
+    script.textContent = JSON.stringify(structuredData)
   }, [])
   const sampleScratchCards = [
     { id: 1, title: "Wrapped Cradle", description: "Close, cozy, and romantic", revealed: false },

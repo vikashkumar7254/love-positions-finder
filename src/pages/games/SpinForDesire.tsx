@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanc
 import { Button } from "@/components/ui/enhanced-button"
 import { RotateCcw, Play, Heart, Star, Sparkles, Zap, Gift, Crown, RefreshCw } from "lucide-react"
 import { desireItems } from "@/data/desireItems"
+import { getCategoryImage } from "@/utils/imageManager"
+import LazyImage from "@/components/LazyImage"
 
 interface DesireItem {
   id: string
@@ -117,21 +119,9 @@ const SpinForDesire = () => {
               <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
                 Spin for Desire
               </h1>
-              <Button
-                onClick={refreshItems}
-                variant="outline"
-                size="sm"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                title="Refresh to load new custom items"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
             </div>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Spin the wheel of passion and discover your next romantic adventure. Let fate decide your intimate moment!
-            </p>
-            <p className="text-sm text-white/60 mt-2">
-              💡 Added new items in admin? Click refresh to load them!
             </p>
           </div>
 
@@ -171,10 +161,12 @@ const SpinForDesire = () => {
                           style={{ backgroundColor: item.color }}
                         >
                           {/* Background Image */}
-                          <img 
-                            src={item.image} 
+                          <LazyImage
+                            src={getCategoryImage('games', item.image)}
                             alt={item.title}
                             className="absolute inset-0 w-full h-full object-cover opacity-30"
+                            width={200}
+                            height={200}
                           />
                           
                           {/* Content */}
@@ -195,10 +187,13 @@ const SpinForDesire = () => {
                   onClick={() => selectedItem && !isSpinning && setShowImagePopup(true)}
                 >
                   {selectedItem && !isSpinning ? (
-                    <img 
-                      src={selectedItem.image} 
+                    <LazyImage
+                      src={getCategoryImage('games', selectedItem.image)}
                       alt={selectedItem.title}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      onClick={() => setShowImagePopup(true)}
+                      width={128}
+                      height={128}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -353,10 +348,12 @@ const SpinForDesire = () => {
 
             {/* Large Image */}
             <div className="relative">
-              <img 
-                src={selectedItem.image} 
+              <LazyImage
+                src={getCategoryImage('games', selectedItem.image)}
                 alt={selectedItem.title}
                 className="w-full h-auto max-h-[70vh] object-cover"
+                width={800}
+                height={600}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               

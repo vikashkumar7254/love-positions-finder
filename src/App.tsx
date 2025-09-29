@@ -46,6 +46,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import SpinForDesireAdmin from "./pages/admin/SpinForDesireAdmin";
 import RomanticGuidesAdmin from "./pages/admin/RomanticGuidesAdmin";
 import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
+import JourneyImagesAdmin from "./pages/admin/JourneyImagesAdmin";
+import ImageManagementAdmin from "./pages/admin/ImageManagementAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
@@ -108,6 +110,8 @@ const App = () => {
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
               <Route path="/admin/spin-for-desire" element={<SpinForDesireAdmin />} />
               <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
+              <Route path="/admin/journey-images" element={<JourneyImagesAdmin />} />
+              <Route path="/admin/images" element={<ImageManagementAdmin />} />
               <Route path="/admin" element={<AdminDashboard />} />
               
               {/* Other Routes */}
