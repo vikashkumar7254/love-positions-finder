@@ -42,41 +42,84 @@ const AddBlog = () => {
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [author, setAuthor] = useState("");
   const slug = useMemo(() => makeSlug(title), [title]);
 
-  useEffect(() => {
-    // Prefill category suggestions if needed in future
-  }, []);
-
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!title || !excerpt || !content) return;
-    const readTime = estimateReadTime(content);
-    const post: UserBlogPost = {
-      id: `${Date.now()}`,
-      title,
-      slug: slug || `${Date.now()}`,
-      excerpt,
-      date,
-      readTime,
-      category: category || "General",
-      content,
-      approved: false,
-    };
 
-    const existingRaw = localStorage.getItem(STORAGE_KEY);
-    const existing: UserBlogPost[] = existingRaw ? JSON.parse(existingRaw) : [];
+    try {
+      const res = await fetch('/api/blogs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          excerpt,
+          content,
+          author: author || 'Guest Author',
+          featuredImage: '',
+          category: category || 'General',
+          tags: [],
+          status: 'pending',
+          metaTitle: title,
+          metaDescription: excerpt,
+        })
+      })
 
-    // Avoid slug duplicates
-    const filtered = existing.filter((p) => p.slug !== post.slug);
-    const next = [post, ...filtered];
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      if (res.ok) {
+        alert('✅ Blog submitted successfully! Your article is pending admin approval and will be visible on the blog once approved.');
+        navigate('/blog');
+        return;
+      }
 
-    navigate(`/blog/${post.slug}`);
+      // Fallback to localStorage (dev only)
+      const readTime = estimateReadTime(content);
+      const post: UserBlogPost = {
+        id: `${Date.now()}`,
+        title,
+        slug: slug || `${Date.now()}`,
+        excerpt,
+        date,
+        readTime,
+        category: category || 'General',
+        content,
+        approved: false,
+      };
+      const existingRaw = localStorage.getItem(STORAGE_KEY);
+      const existing: UserBlogPost[] = existingRaw ? JSON.parse(existingRaw) : [];
+      const filtered = existing.filter((p) => p.slug !== post.slug);
+      const next = [post, ...filtered];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      
+      alert('✅ Blog submitted successfully! Your article is pending admin approval and will be visible on the blog once approved.');
+      navigate('/blog');
+    } catch {
+      // Fallback to localStorage on error
+      const readTime = estimateReadTime(content);
+      const post: UserBlogPost = {
+        id: `${Date.now()}`,
+        title,
+        slug: slug || `${Date.now()}`,
+        excerpt,
+        date,
+        readTime,
+        category: category || 'General',
+        content,
+        approved: false,
+      };
+      const existingRaw = localStorage.getItem(STORAGE_KEY);
+      const existing: UserBlogPost[] = existingRaw ? JSON.parse(existingRaw) : [];
+      const filtered = existing.filter((p) => p.slug !== post.slug);
+      const next = [post, ...filtered];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      
+      alert('✅ Blog submitted successfully! Your article is pending admin approval and will be visible on the blog once approved.');
+      navigate('/blog');
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
-
       <section className="pt-24 pb-12">
         <div className="container max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
@@ -115,6 +158,12 @@ const AddBlog = () => {
                     <Calendar className="w-4 h-4" /> Date
                   </label>
                   <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                    <Type className="w-4 h-4" /> Author Name
+                  </label>
+                  <Input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Your name (optional)" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2 flex items-center gap-2">

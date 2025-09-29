@@ -102,7 +102,7 @@ const CustomPosterAdminContent = () => {
     setItems(next)
     saveCustomPosterPositions(next)
     setForm(defaultForm)
-    setMessage({type: 'success', text: 'Position added! It will appear in the Custom Poster game.'})
+    setMessage({type: 'success', text: '✅ Position added successfully! It will appear in the 7-day Custom Poster journey game.'})
 
     // Auto-dismiss success message
     setTimeout(() => setMessage(null), 5000)

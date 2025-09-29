@@ -6,108 +6,18 @@ import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
 import { getCategoryImage } from "@/utils/imageManager"
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "Top 10 Tips for Trying New Love Positions",
-    excerpt: "Discover expert advice on how to make trying new intimate positions a fun and comfortable experience for both you and your partner.",
-    date: "2025-03-07",
-    readTime: "8 min read",
-    category: "Tips & Advice",
-    slug: "top-10-tips-new-love-positions"
-  },
-  {
-    id: 2,
-    title: "How to Use a Random Position Generator for Romantic Dates",
-    excerpt: "Spice up your date nights with our random position generator! Learn how to incorporate it for a memorable and exciting experience.",
-    date: "2025-03-07",
-    readTime: "8 min read",
-    category: "Date Ideas",
-    slug: "random-position-generator-dates"
-  },
-  {
-    id: 3,
-    title: "30 Romantic Date Night Ideas for Couples to Reignite the Spark",
-    excerpt: "Discover creative and intimate date night ideas that go beyond the typical dinner and movie. Perfect for couples looking to add excitement to their relationship.",
-    date: "2024-03-20",
-    readTime: "8 min read",
-    category: "Romance",
-    slug: "30-romantic-date-night-ideas"
-  },
-  {
-    id: 4,
-    title: "The Science of Physical Touch: Why Intimacy Matters in Relationships",
-    excerpt: "Explore the psychological and physiological benefits of physical intimacy and learn how to build deeper connections through touch.",
-    date: "2024-03-19",
-    readTime: "8 min read",
-    category: "Science",
-    slug: "science-physical-touch-intimacy"
-  },
-  {
-    id: 5,
-    title: "7 Communication Secrets Happy Couples Use Every Day",
-    excerpt: "Discover the key communication strategies that happy couples use to maintain a strong and loving relationship.",
-    date: "2024-03-18",
-    readTime: "8 min read",
-    category: "Communication",
-    slug: "communication-secrets-happy-couples"
-  },
-  {
-    id: 6,
-    title: "Rekindling Passion: Expert Tips for Long-Term Relationships",
-    excerpt: "Discover proven strategies to maintain and reignite passion in long-term relationships, backed by relationship experts and scientific research.",
-    date: "2024-03-16",
-    readTime: "8 min read",
-    category: "Long-term Love",
-    slug: "rekindling-passion-long-term"
-  },
-  {
-    id: 7,
-    title: "The Art of Sensual Massage: A Comprehensive Guide to Intimate Touch",
-    excerpt: "Learn the techniques and benefits of sensual massage to enhance intimacy and connection in your relationship.",
-    date: "2024-03-15",
-    readTime: "8 min read",
-    category: "Intimacy",
-    slug: "art-sensual-massage-guide"
-  },
-  {
-    id: 8,
-    title: "Healing Relationship Trauma: A Path to Healthy Love",
-    excerpt: "Expert guidance on overcoming past relationship trauma and building healthy, fulfilling relationships.",
-    date: "2024-03-14",
-    readTime: "8 min read",
-    category: "Healing",
-    slug: "healing-relationship-trauma"
-  },
-  {
-    id: 9,
-    title: "Mindful Lovemaking: Deepening Intimate Connections",
-    excerpt: "Explore the practice of mindful intimacy and its transformative effects on physical and emotional connections.",
-    date: "2024-03-13",
-    readTime: "8 min read",
-    category: "Mindfulness",
-    slug: "mindful-lovemaking-connections"
-  },
-  {
-    id: 10,
-    title: "Building Trust and Boundaries in Modern Relationships",
-    excerpt: "Learn how to establish healthy boundaries while building deep trust in your relationship.",
-    date: "2024-03-12",
-    readTime: "8 min read",
-    category: "Trust",
-    slug: "building-trust-boundaries"
-  }
-]
+// Removed static demo posts; now loading from API
 
 const categories = ["All", "General", "Tips & Advice", "Romance", "Communication", "Intimacy", "Science", "Long-term Love"]
 
-const STORAGE_KEY = "userBlogs"
+// No local storage merge; show only published/approved posts from API
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [userPosts, setUserPosts] = useState<Array<any>>([])
   const [visibleCount, setVisibleCount] = useState(6)
+  const [posts, setPosts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   const getCoverFor = useMemo(() => {
     return (category?: string) => {
@@ -127,12 +37,23 @@ const Blog = () => {
   }, [])
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      setUserPosts(raw ? JSON.parse(raw) : [])
-    } catch {
-      setUserPosts([])
-    }
+    // Load published blogs from API
+    (async () => {
+      try {
+        setLoading(true)
+        const res = await fetch('/api/blogs?status=published')
+        if (res.ok) {
+          const data = await res.json()
+          setPosts(data)
+        } else {
+          setPosts([])
+        }
+      } catch {
+        setPosts([])
+      } finally {
+        setLoading(false)
+      }
+    })()
     // Enhanced SEO for Blog page
     const title = 'Love & Intimacy Blog | Expert Relationship Advice'
     const desc = 'Expert insights on love, relationships, and intimacy. Tips, science, and romance guides from relationship experts and couples therapists.'
@@ -232,18 +153,15 @@ const Blog = () => {
     script.textContent = JSON.stringify(structuredData)
   }, [])
 
-  const approvedUserPosts = userPosts.filter((p: any) => p.approved)
-  const pendingCount = userPosts.filter((p: any) => !p.approved).length
-  const allPosts = [...approvedUserPosts.map((p) => ({
-    id: `user-${p.id}`,
-    title: p.title,
-    excerpt: p.excerpt,
-    date: p.date,
-    readTime: p.readTime,
-    category: p.category || "General",
-    slug: p.slug,
-    isUser: true,
-  })), ...blogPosts]
+  const allPosts = posts.map((b: any) => ({
+    id: b.id,
+    title: b.title,
+    excerpt: b.excerpt,
+    date: b.publishedAt || b.createdAt,
+    readTime: `${b.readTime || 5} min read`,
+    category: b.category || "General",
+    slug: b.slug,
+  }))
 
   const filteredPosts = allPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

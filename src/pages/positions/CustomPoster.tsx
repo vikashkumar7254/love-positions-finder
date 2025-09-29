@@ -347,8 +347,16 @@ const CustomPoster = () => {
                                 <div className="absolute top-1 right-1">
                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                 </div>
-                                <div className="flex-1 flex items-center justify-center">
-                                  <ImageIcon className="w-8 h-8 text-white/60" />
+                                <div className="flex-1 flex items-center justify-center overflow-hidden rounded">
+                                  {slot.position.image ? (
+                                    <img 
+                                      src={slot.position.image} 
+                                      alt={slot.position.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  ) : (
+                                    <ImageIcon className="w-8 h-8 text-white/60" />
+                                  )}
                                 </div>
                                 <div className="text-center">
                                   <div className="text-xs font-semibold text-white break-words">

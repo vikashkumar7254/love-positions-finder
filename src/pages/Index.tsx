@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Grid3X3, Heart, Star, Sparkles, Dice6, Gamepad2, Quote, Compass, Gift, Lock, Flame, Wand2, FlaskConical, Music2, Moon, Wind, Wine, PartyPopper, Palette } from "lucide-react"
+import { Grid3X3, Heart, Star, Sparkles, Dice6, Gamepad2, Quote, Compass, Gift, Lock, Flame, Wand2, FlaskConical, Music2, Moon, Wind, Wine, PartyPopper, Palette, Shuffle } from "lucide-react"
 import PositionSelector from "@/components/PositionSelector"
 import ScratchCards from "@/components/ScratchCards"
 import RomanticIdeas from "@/components/RomanticIdeas"
@@ -166,23 +166,23 @@ const Index = () => {
       <section className="px-6 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {/* 1. Scratch Random Position */}
-            <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
+            {/* 1. Random Positions */}
+            <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-purple-500/30 bg-gradient-to-b from-purple-500/25 to-purple-500/10 border border-purple-500/20">
               <CardContent className="p-6">
-                <Link to="/games/scratch-position" className="block group">
+                <Link to="/games/random-position" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Gamepad2 className="w-6 h-6 text-romantic" />
+                    <div className="w-12 h-12 rounded-full bg-purple-500/25 group-hover:bg-purple-500/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                      <Shuffle className="w-6 h-6 text-purple-400" />
                     </div>
-                    <div className="font-semibold text-base md:text-lg text-foreground">Scratch Random Position</div>
+                    <div className="font-semibold text-base md:text-lg text-foreground">Random Positions</div>
                   </div>
-                  <p className="text-sm text-foreground/80 mb-4">Get a random intimate position to try right now.</p>
+                  <p className="text-sm text-foreground/80 mb-4">Get instant random position suggestions with a single click.</p>
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex gap-2">
-                      <span className="px-2 py-0.5 rounded bg-romantic/20 text-romantic">Popular</span>
-                      <span className="px-2 py-0.5 rounded bg-passionate/20 text-passionate">Fun</span>
+                      <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">Instant</span>
+                      <span className="px-2 py-0.5 rounded bg-pink-500/20 text-pink-400">Random</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform">Explore →</span>
+                    <span className="text-purple-400 group-hover:translate-x-0.5 transition-transform">Generate →</span>
                   </div>
                 </Link>
               </CardContent>
@@ -297,8 +297,29 @@ const Index = () => {
                 </Link>
               </CardContent>
             </Card>
+            {/* 7. Scratch Random Position */}
+             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
+              <CardContent className="p-6">
+                <Link to="/games/scratch-position" className="block group">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                      <Gamepad2 className="w-6 h-6 text-romantic" />
+                    </div>
+                    <div className="font-semibold text-base md:text-lg text-foreground">Scratch Position</div>
+                  </div>
+                  <p className="text-sm text-foreground/80 mb-4">Get a random intimate position to try right now.</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex gap-2">
+                      <span className="px-2 py-0.5 rounded bg-romantic/20 text-romantic">Popular</span>
+                      <span className="px-2 py-0.5 rounded bg-passionate/20 text-passionate">Fun</span>
+                    </div>
+                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform">Explore →</span>
+                  </div>
+                </Link>
+              </CardContent>
+            </Card>
 
-            {/* 7. Dice to Spice Game */}
+            {/* 8. Dice to Spice Game */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
               <CardContent className="p-6">
                 <Link to="/games/dice-to-spice" className="block group">
@@ -318,28 +339,6 @@ const Index = () => {
                       <span className="px-2 py-0.5 rounded bg-warm/20 text-warm">Two Dice</span>
                     </div>
                     <span className="text-romantic group-hover:translate-x-0.5 transition-transform">Play →</span>
-                  </div>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* 8. Choose Your Journey */}
-            <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
-                <Link to="/journey-planner" className="block group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Compass className="w-6 h-6 text-romantic" />
-                    </div>
-                    <div className="font-semibold text-base md:text-lg text-foreground">Choose Your Journey</div>
-                  </div>
-                  <p className="text-sm text-foreground/80 mb-4">Build a personalized sequence based on your mood.</p>
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex gap-2">
-                      <span className="px-2 py-0.5 rounded bg-romantic/20 text-romantic">Planner</span>
-                      <span className="px-2 py-0.5 rounded bg-sensual/20 text-sensual">Guided</span>
-                    </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform">Start →</span>
                   </div>
                 </Link>
               </CardContent>

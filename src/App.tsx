@@ -21,6 +21,7 @@ import SeductiveConversation from "./pages/games/SeductiveConversation";
 import PleasureMap from "./pages/games/PleasureMap";
 // Removed duplicates: ForeplayDice, MassageJourney, DesireExplorer
 import ScratchPosition from "./pages/games/ScratchPosition";
+import RandomPosition from "./pages/games/RandomPosition";
 import SpinForDesire from "./pages/games/SpinForDesire";
 import LongDistance from "./pages/games/LongDistance";
 import LoveQuiz from "./pages/games/LoveQuiz";
@@ -33,21 +34,15 @@ import Positions from "./pages/Positions";
 import MostPopular from "./pages/positions/MostPopular";
 import CustomPoster from "./pages/positions/CustomPoster";
 // Removed: RandomGenerator
-
 // Other Pages
 import JourneyPlanner from "./pages/JourneyPlanner";
 import LoveLanguageExplorer from "./pages/LoveLanguageExplorer";
 import RomanticGuides from "./pages/RomanticGuides";
 import AddBlog from "./pages/AddBlog";
-import AddPosition from "./pages/admin/AddPosition";
-import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
-import BlogAdmin from "./pages/admin/BlogAdmin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import SpinForDesireAdmin from "./pages/admin/SpinForDesireAdmin";
-import RomanticGuidesAdmin from "./pages/admin/RomanticGuidesAdmin";
-import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
-import JourneyImagesAdmin from "./pages/admin/JourneyImagesAdmin";
-import ImageManagementAdmin from "./pages/admin/ImageManagementAdmin";
+import AdminLogin from "./pages/admin/AdminLogin";
+import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
+import BlogsAdmin from "./pages/admin/BlogsAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
@@ -88,6 +83,7 @@ const App = () => {
               <Route path="/games/pleasure-map" element={<PleasureMap />} />
               {/** Removed duplicates: Foreplay Dice, Massage Journey, Desire Explorer **/}
               <Route path="/games/scratch-position" element={<ScratchPosition />} />
+              <Route path="/games/random-position" element={<RandomPosition />} />
               <Route path="/games/spin-for-desire" element={<SpinForDesire />} />
               <Route path="/games/long-distance" element={<LongDistance />} />
               <Route path="/games/love-quiz" element={<LoveQuiz />} />
@@ -99,20 +95,18 @@ const App = () => {
               <Route path="/positions" element={<Positions />} />
               <Route path="/positions/most-popular" element={<MostPopular />} />
               <Route path="/positions/all" element={<Navigate to="/games/scratch-position?start=1#start" replace />} />
-              <Route path="/positions/custom-poster" element={<CustomPoster />} />
               {/** Removed Random Generator route **/}
               
               {/* Blog Routes */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/blog/new" element={<AddBlog />} />
-              <Route path="/admin/positions/new" element={<AddPosition />} />
-              <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
-              <Route path="/admin/spin-for-desire" element={<SpinForDesireAdmin />} />
-              <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
-              <Route path="/admin/journey-images" element={<JourneyImagesAdmin />} />
-              <Route path="/admin/images" element={<ImageManagementAdmin />} />
+              
+              {/* Admin Routes */}
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/blogs" element={<BlogsAdmin />} />
+              <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
               
               {/* Other Routes */}
               <Route path="/journey-planner" element={<JourneyPlanner />} />

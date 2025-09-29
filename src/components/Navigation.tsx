@@ -8,6 +8,7 @@ const Navigation = () => {
   const { isAuthenticated } = useAdminAuth()
   const isActive = (path: string) => location.pathname === path
   const isGamesActive = location.pathname.startsWith('/games')
+  const isBlogActive = location.pathname.startsWith('/blog')
   const isAdminActive = location.pathname.startsWith('/admin')
 
   return (
@@ -33,8 +34,8 @@ const Navigation = () => {
               </Button>
             </Link>
             <Link to="/blog">
-              <Button variant={isActive('/blog') ? 'romantic' : 'outline'} size="sm" className="rounded-full px-3 py-1 flex items-center gap-2">
-                <BookOpen className="w-4 h-4" /> Blogs
+              <Button variant={isBlogActive ? 'romantic' : 'outline'} size="sm" className="rounded-full px-3 py-1 flex items-center gap-2">
+                <BookOpen className="w-4 h-4" /> Blog
               </Button>
             </Link>
             {isAuthenticated && (

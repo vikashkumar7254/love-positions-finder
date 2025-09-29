@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Gamepad2, Heart, Dice1, Dice6, MessageCircle, Clock, Users, Sparkles, Mic, Map, Palette } from "lucide-react"
+import { Gamepad2, Heart, Dice1, Dice6, MessageCircle, Clock, Users, Sparkles, Mic, Map, Palette, Shuffle } from "lucide-react"
 import { games } from "@/data/games"
 
 const AllGames = () => {
@@ -40,6 +40,11 @@ const AllGames = () => {
       route: '/games/scratch-position',
       featured: true,
       description: 'Discover hidden intimate positions by scratching the cards. Each reveal brings new excitement and possibilities for your intimate moments.'
+    },
+    'random-position': {
+      route: '/games/random-position',
+      featured: true,
+      description: 'Get instant random position suggestions with a single click. Perfect for spontaneous intimate moments and discovering new favorites.'
     },
     'spin-for-desire': {
       route: '/games/spin-for-desire',
@@ -340,6 +345,44 @@ const AllGames = () => {
                   </Link>
                 </CardContent>
               </Card>
+              
+              <Card variant="elegant" className="bg-gradient-to-br from-purple-500/15 to-background/40 border border-purple-500/25 hover-romantic h-full">
+                <CardHeader className="text-center">
+                  <div className="flex justify-center mb-3">
+                    <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center">
+                      <Shuffle className="w-8 h-8 text-purple-300" />
+                    </div>
+                  </div>
+                  <CardTitle className="text-xl text-purple-300">Random Position</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <p className="text-muted-foreground text-sm">
+                    Get instant random position suggestions with a single click. Perfect for spontaneous intimate moments and discovering new favorites.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center justify-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      <span>Instant</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1">
+                      <Users className="w-3 h-3" />
+                      <span>2 players</span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="px-2 py-1 bg-purple-500/10 text-purple-300 rounded text-xs">instant</span>
+                    <span className="px-2 py-1 bg-pink-500/10 text-pink-300 rounded text-xs">Random</span>
+                  </div>
+                  <div className="mt-auto" />
+                  <Link to="/games/random-position">
+                    <Button variant="romantic" className="w-full mt-3">
+                      <Shuffle className="w-4 h-4" />
+                      Generate Random
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+              
               <Card variant="elegant" className="bg-gradient-to-br from-sensual/15 to-background/40 border border-sensual/25 hover-romantic h-full">
                 <CardHeader className="text-center">
                   <div className="flex justify-center mb-3">

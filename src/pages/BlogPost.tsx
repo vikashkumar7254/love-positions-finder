@@ -1,73 +1,43 @@
+import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Calendar, Clock, Heart, ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/enhanced-button"
 import { Card, CardContent } from "@/components/ui/card"
 import { getCategoryImage } from "@/utils/imageManager"
 
-const blogContent = {
-  "top-10-tips-new-love-positions": {
-    title: "Top 10 Tips for Trying New Love Positions",
-    date: "2025-03-07",
-    readTime: "8 min read",
-    category: "Tips & Advice",
-    content: `
-      <p class="text-lg mb-6">Exploring new intimate positions with your partner can be an exciting way to deepen your connection and add variety to your relationship. Here are expert tips to make the experience comfortable and enjoyable for both of you.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">1. Communication is Key</h2>
-      <p class="mb-6">Before trying anything new, have an open conversation with your partner about your desires, boundaries, and comfort levels. This creates a safe space for exploration.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">2. Start Slow and Simple</h2>
-      <p class="mb-6">Begin with positions that are variations of what you already know and love. Small changes can make a big difference in sensation and intimacy.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">3. Focus on Comfort</h2>
-      <p class="mb-6">Ensure both partners are physically comfortable. Use pillows for support and don't hesitate to adjust positions as needed.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">4. Create the Right Atmosphere</h2>
-      <p class="mb-6">Set the mood with dim lighting, soft music, and perhaps some scented candles. The environment plays a crucial role in intimacy.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">5. Practice Patience</h2>
-      <p class="mb-6">Not every position will work perfectly the first time. Be patient with yourselves and each other as you learn what feels good.</p>
-    `
-  },
-  "random-position-generator-dates": {
-    title: "How to Use a Random Position Generator for Romantic Dates",
-    date: "2025-03-07",
-    readTime: "8 min read",
-    category: "Date Ideas",
-    content: `
-      <p class="text-lg mb-6">Adding spontaneity to your romantic life can reignite passion and create memorable experiences. Here's how to incorporate a random position generator into your date nights.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">Setting the Scene</h2>
-      <p class="mb-6">Create anticipation by planning a special evening. Start with a romantic dinner, share your favorite wine, and build intimacy through conversation and connection.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">Making it Playful</h2>
-      <p class="mb-6">Turn the generator into a fun game. Take turns generating positions and discussing what excites you about each one. Remember, you're always free to modify or skip any suggestion.</p>
-      
-      <h2 class="text-2xl font-bold mb-4 text-romantic">Building Trust and Excitement</h2>
-      <p class="mb-6">Use this as an opportunity to deepen trust and explore fantasies together. The randomness removes pressure and can lead to delightful surprises.</p>
-    `
-  }
-
-}
-const STORAGE_KEY = "userBlogs"
-
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>()
-  // Try static first
-  const staticPost = slug ? blogContent[slug as keyof typeof blogContent] : null
-  // Try user-created (approved only)
-  let userPost: any = null
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    const arr = raw ? JSON.parse(raw) : []
-    userPost = slug ? arr.find((p: any) => p.slug === slug && p.approved) : null
-  } catch {
-    userPost = null
-  }
+  const [selected, setSelected] = useState<any | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const selected: any = staticPost || userPost
+  useEffect(() => {
+    (async () => {
+      if (!slug) return
+      try {
+        setLoading(true)
+        const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`)
+        if (res.ok) {
+          const data = await res.json()
+          setSelected({
+            title: data.title,
+            date: data.publishedAt || data.createdAt,
+            readTime: `${data.readTime || 5} min read`,
+            category: data.category || 'General',
+            content: data.content,
+            excerpt: data.excerpt,
+          })
+        } else {
+          setSelected(null)
+        }
+      } catch {
+        setSelected(null)
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [slug])
 
-  if (!selected) {
+  if (!loading && !selected) {
     // Not found SEO
     if (typeof document !== 'undefined') {
       document.title = 'Article Not Found | Love & Intimacy Blog'
@@ -93,7 +63,7 @@ const BlogPost = () => {
   }
 
   // Enhanced SEO for existing blog post
-  const seoTitle = `${selected.title} | Love & Intimacy Blog`
+  const seoTitle = selected ? `${selected.title} | Love & Intimacy Blog` : 'Article | Love & Intimacy Blog'
   const seoDesc = (selected.excerpt || selected.content || '').toString().slice(0, 160)
   const url = `${window.location.origin}/blog/${slug}`
   const image = (() => {
@@ -288,26 +258,25 @@ const BlogPost = () => {
               </Button>
             </div>
           </header>
-
           {/* Article Content */}
           <Card className="border-0 bg-gradient-card">
             <CardContent className="p-8">
-              <div className="prose prose-lg max-w-none">
-                {staticPost ? (
-                  <div dangerouslySetInnerHTML={{ __html: staticPost.content }} />
-                ) : (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: `<p>${(selected.content || "")
-                        .replace(/&/g, "&amp;")
-                        .replace(/</g, "&lt;")
-                        .replace(/>/g, "&gt;")
-                        .replace(/\n\n+/g, "</p><p>")
-                        .replace(/\n/g, "<br/>")}</p>`,
-                    }}
-                  />
-                )}
-              </div>
+              {loading ? (
+                <p className="text-muted-foreground">Loading...</p>
+              ) : selected ? (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: `<p>${(selected.content || "")
+                      .replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/\n\n+/g, "</p><p>")
+                      .replace(/\n/g, "<br/>")}</p>`,
+                  }}
+                />
+              ) : (
+                <p className="text-muted-foreground">Article not found</p>
+              )}
             </CardContent>
           </Card>
 
