@@ -137,7 +137,7 @@ const BlogsAdminContent = () => {
         resetForm()
       }
     } catch (error) {
-      console.log('API connection failed, using local storage fallback:', error)
+      // API connection failed - using local storage fallback
       // Fallback for dev mode when API connection fails
       alert(`✅ Blog ${editingBlog ? 'updated' : 'created'} successfully! (Saved locally for development)`)
       setShowEditor(false)
