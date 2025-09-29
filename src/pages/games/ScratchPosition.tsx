@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react"
+import { getPositions as apiGetPositions } from "@/lib/positionsApi"
 import { useLocation } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
@@ -22,36 +23,81 @@ const ScratchPosition = () => {
   const [started, setStarted] = useState(false)
   const gridRef = useRef<HTMLDivElement | null>(null)
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([])
+  const isDev = (import.meta as any)?.env?.DEV || (import.meta as any)?.env?.VITE_SHOW_DEBUG === 'true'
+
+  // Update visible count when cards change
+  useEffect(() => {
+    if (cards.length > 0 && cards.length < visibleCount) {
+      setVisibleCount(cards.length)
+    } else if (cards.length >= 4) {
+      setVisibleCount(4) // Reset to 4 if we have enough positions
+    }
+  }, [cards.length, visibleCount])
+
+  // Helper to apply positions to UI and re-init canvases
+  const applyPositions = (positions: ScratchCard[]) => {
+    setCards(positions)
+    canvasRefs.current = canvasRefs.current.slice(0, positions.length)
+    setTimeout(() => {
+      canvasRefs.current.forEach((canvas, index) => {
+        if (canvas) initializeScratchCanvas(canvas, index)
+      })
+    }, 100)
+  }
+
+  // Handle visible count changes - reinitialize canvases for newly visible cards
+  useEffect(() => {
+    if (cards.length > 0 && visibleCount > 0) {
+      console.log('🎨 Reinitializing canvases for visible count:', visibleCount)
+
+      // Initialize canvases for newly visible cards
+      const startIndex = Math.max(0, visibleCount - 4) // Previous count
+      const endIndex = Math.min(visibleCount, cards.length)
+
+      console.log('🎨 Initializing canvases from', startIndex, 'to', endIndex)
+
+      setTimeout(() => {
+        for (let i = startIndex; i < endIndex; i++) {
+          const canvas = canvasRefs.current[i]
+          if (canvas) {
+            console.log('🎨 Initializing canvas', i)
+            initializeScratchCanvas(canvas, i)
+          } else {
+            console.log('❌ Canvas not found at index', i)
+          }
+        }
+      }, 100)
+    }
+  }, [visibleCount, cards.length])
 
   // Load positions from unified admin system
   const loadPositions = (): ScratchCard[] => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const parsed = JSON.parse(raw) as { id: string; title: string; image: string; isDefault?: boolean }[]
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          console.log('Loaded positions from localStorage:', parsed.length)
-          return parsed.map(item => ({ ...item, revealed: false }))
-        }
+
+      // Comprehensive empty state detection
+      const isEmpty = !raw ||
+                      raw.trim() === '' ||
+                      raw === 'null' ||
+                      raw === 'undefined' ||
+                      raw === '[]' ||
+                      (raw.trim().startsWith('[') && raw.trim().endsWith(']') && raw.trim().length <= 2)
+
+      if (isEmpty) {
+        return []
       }
 
-      // Fallback to hardcoded defaults if no data in localStorage
-      console.log('No positions in localStorage, using fallback defaults')
-      const fallbackPositions = [
-        { id: 'enhanced_missionary', title: 'Enhanced Missionary', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'intimate_spooning', title: 'Intimate Spooning', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'empowered_cowgirl', title: 'Empowered Cowgirl', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'passionate_doggy', title: 'Passionate Doggy', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'tantric_lotus', title: 'Tantric Lotus', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'standing_passion', title: 'Standing Passion', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'reverse_cowgirl', title: 'Reverse Cowgirl', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'side_saddle', title: 'Side Saddle', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'butterfly_position', title: 'Butterfly Position', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'bridge_position', title: 'Bridge Position', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'scissors_position', title: 'Scissors Position', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
-        { id: 'pretzel_position', title: 'Pretzel Position', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true }
-      ]
-      return fallbackPositions.map(item => ({ ...item, revealed: false }))
+      try {
+        const parsed = JSON.parse(raw)
+
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map(item => ({ ...item, revealed: false }))
+        } else {
+          return []
+        }
+      } catch (parseError) {
+        return []
+      }
     } catch (error) {
       console.error('Error loading positions:', error)
       return []
@@ -60,11 +106,12 @@ const ScratchPosition = () => {
 
   const refreshCards = () => {
     const positions = loadPositions()
-    console.log('Refresh - positions found:', positions.length)
     setCards(positions)
+
+    // Resize canvas refs array to match total positions
     canvasRefs.current = canvasRefs.current.slice(0, positions.length)
 
-    // Reinitialize canvases
+    // Reinitialize canvases for all positions
     setTimeout(() => {
       canvasRefs.current.forEach((canvas, index) => {
         if (canvas) {
@@ -75,51 +122,137 @@ const ScratchPosition = () => {
   }
 
   useEffect(() => {
-    // Load positions from admin system
-    const positions = loadPositions()
-    console.log('Initial load - positions found:', positions.length)
-    setCards(positions)
-
-    // Initialize canvas scratch effects
-    canvasRefs.current = canvasRefs.current.slice(0, positions.length)
-
-    // Initialize canvases after a short delay to ensure DOM is ready
-    setTimeout(() => {
-      canvasRefs.current.forEach((canvas, index) => {
-        if (canvas) {
-          initializeScratchCanvas(canvas, index)
-        }
-      })
-    }, 100)
+    // Initial load from API
+    const load = async () => {
+      try {
+        const positions = await apiGetPositions()
+        console.log('🌐 Game: Initial API load - positions:', positions.length)
+        applyPositions(positions.map(p => ({...p, revealed: false})))
+      } catch (e) {
+        console.error('Initial API load failed:', e)
+        // Fallback to localStorage (same-origin dev only)
+        const fallback = loadPositions()
+        applyPositions(fallback)
+      }
+    }
+    load()
   }, [])
 
-  // Add localStorage change listener to refresh when admin updates positions
+  // Production-level sync: on events refresh from API
   useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        // Refresh cards when positions are updated
-        const positions = loadPositions()
-        setCards(positions)
-        canvasRefs.current = canvasRefs.current.slice(0, positions.length)
+    let lastSyncVersion = ''
+    let lastUpdateTime = 0
+
+    const refreshFromApi = async (source = 'unknown') => {
+      try {
+        const positions = await apiGetPositions()
+        console.log(`🔄 Game: Refreshing from ${source}:`, positions.length)
+        applyPositions(positions.map(p => ({...p, revealed: false})))
+      } catch (e) {
+        console.error('API refresh failed:', e)
       }
     }
 
-    // Listen for storage events (works across tabs)
-    window.addEventListener('storage', handleStorageChange)
-
-    // Also listen for focus events to refresh when user returns to tab
-    const handleFocus = () => {
-      const positions = loadPositions()
-      setCards(positions)
-      canvasRefs.current = canvasRefs.current.slice(0, positions.length)
+    // Method 1: Storage events (cross-tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY && e.storageArea === localStorage) {
+        console.log('📡 Game: Storage event from another tab')
+        refreshFromApi('storage-event')
+      }
     }
 
+    // Method 2: Custom events (same-tab)
+    const handleCustomUpdate = (e: CustomEvent) => {
+      console.log('📡 Game: Custom event from admin panel')
+      refreshFromApi('custom-event')
+    }
+
+    // Method 3: BroadcastChannel API (modern cross-tab)
+    let broadcastChannel: BroadcastChannel | null = null
+    if (typeof BroadcastChannel !== 'undefined') {
+      broadcastChannel = new BroadcastChannel('scratch-positions-sync')
+      broadcastChannel.onmessage = (event) => {
+        console.log('📡 Game: BroadcastChannel message received')
+        refreshFromApi('broadcast-channel')
+      }
+    }
+
+    // Method 4: Focus events
+    const handleFocus = () => {
+      console.log('👁️ Game: Tab focused - checking for updates')
+      refreshFromApi('focus-event')
+    }
+
+    // Method 5: Advanced polling with version checking
+    const pollInterval = setInterval(async () => {
+      try {
+        // Simple API poll every 1s
+        await refreshFromApi('api-polling')
+      } catch (error) {
+        console.error('Polling error:', error)
+      }
+    }, 1000)
+
+    // Listen for all sync events
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('scratchPositionsUpdated', handleCustomUpdate as EventListener)
     window.addEventListener('focus', handleFocus)
 
     return () => {
       window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('scratchPositionsUpdated', handleCustomUpdate as EventListener)
       window.removeEventListener('focus', handleFocus)
+      clearInterval(pollInterval)
+      if (broadcastChannel) {
+        broadcastChannel.close()
+      }
     }
+  }, [])
+
+  // Enhanced polling mechanism with aggressive cross-tab sync
+  useEffect(() => {
+    let lastKnownData = localStorage.getItem(STORAGE_KEY)
+    let pollCount = 0
+
+    const pollInterval = setInterval(() => {
+      pollCount++
+      const currentData = localStorage.getItem(STORAGE_KEY)
+      
+      // Log every 10th poll for debugging
+      if (pollCount % 10 === 0) {
+        console.log('🔄 POLLING CHECK:', pollCount, 'Current data length:', currentData?.length || 0)
+      }
+
+      // Check for any changes in raw data
+      if (currentData !== lastKnownData) {
+        console.log('🚨 POLLING: DETECTED CHANGE!')
+        console.log('📊 Old data:', lastKnownData?.substring(0, 50) + '...')
+        console.log('📊 New data:', currentData?.substring(0, 50) + '...')
+
+        lastKnownData = currentData
+        
+        const positions = loadPositions()
+        console.log('📊 Parsed positions:', positions.length)
+        
+        setCards(positions)
+
+        if (positions.length > 0) {
+          canvasRefs.current = canvasRefs.current.slice(0, positions.length)
+
+          setTimeout(() => {
+            canvasRefs.current.forEach((canvas, index) => {
+              if (canvas) {
+                initializeScratchCanvas(canvas, index)
+              }
+            })
+          }, 100)
+        }
+
+        console.log('✅ POLLING: GAME UPDATED WITH', positions.length, 'POSITIONS')
+      }
+    }, 200) // More aggressive polling - every 200ms
+
+    return () => clearInterval(pollInterval)
   }, [])
 
   // Smoothly scroll to the grid when starting
@@ -257,35 +390,8 @@ const ScratchPosition = () => {
               <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
                 Scratch Positions
               </h1>
-              <Button
-                onClick={() => {
-                  // Force initialize with defaults
-                  const fallbackPositions = [
-                    { id: 'enhanced_missionary', title: 'Enhanced Missionary', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'intimate_spooning', title: 'Intimate Spooning', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'empowered_cowgirl', title: 'Empowered Cowgirl', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'passionate_doggy', title: 'Passionate Doggy', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'tantric_lotus', title: 'Tantric Lotus', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'standing_passion', title: 'Standing Passion', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'reverse_cowgirl', title: 'Reverse Cowgirl', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'side_saddle', title: 'Side Saddle', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'butterfly_position', title: 'Butterfly Position', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'bridge_position', title: 'Bridge Position', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'scissors_position', title: 'Scissors Position', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
-                    { id: 'pretzel_position', title: 'Pretzel Position', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true }
-                  ]
-                  localStorage.setItem(STORAGE_KEY, JSON.stringify(fallbackPositions))
-                  refreshCards()
-                  console.log('Force initialized with', fallbackPositions.length, 'positions')
-                }}
-                variant="outline"
-                size="sm"
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                title="Initialize with default positions"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
             </div>
+
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Unlock your intimate adventure. Scratch to reveal romantic positions and discover new ways to connect.
             </p>
@@ -339,7 +445,26 @@ const ScratchPosition = () => {
             <>
               {/* Scratch Cards Grid (2 per row) */}
               <div ref={gridRef} className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 place-items-center`}>
-                {cards.slice(0, visibleCount).map((card, index) => (
+                {cards.length === 0 ? (
+                  <div className="col-span-full text-center py-16">
+                    <div className="text-6xl mb-4">📭</div>
+                    <h3 className="text-2xl font-bold text-white mb-2">No Positions Available</h3>
+                    <p className="text-white/70 mb-2">New positions will appear here soon.</p>
+                    <p className="text-white/50 text-sm">Please check back later.</p>
+                    {isDev && (
+                      <div className="mt-6">
+                        <Button
+                          onClick={() => window.open('/admin/scratch-positions', '_blank')}
+                          variant="outline"
+                          className="px-8 py-3"
+                        >
+                          Open Admin (Dev)
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  cards.slice(0, visibleCount).map((card, index) => (
                   <div key={card.id} className="relative w-full max-w-[340px]">
                     <Card variant="elegant" className="bg-gradient-to-br from-black/60 to-black/80 border-pink-500/30 shadow-2xl rounded-2xl backdrop-blur-sm overflow-hidden">
                       {/* Scratch Canvas Overlay */}
@@ -411,7 +536,8 @@ const ScratchPosition = () => {
                       </div>
                     </Card>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
 
               {/* Showing count */}
@@ -427,7 +553,17 @@ const ScratchPosition = () => {
               {visibleCount < cards.length && (
                 <div className="text-center mt-8">
                   <button
-                    onClick={() => setVisibleCount(c => Math.min(c + 4, cards.length))}
+                    onClick={() => {
+                      console.log('🔍 Show More clicked!')
+                      console.log('📊 Current visibleCount:', visibleCount)
+                      console.log('📊 Total cards:', cards.length)
+                      console.log('📊 Remaining:', cards.length - visibleCount)
+
+                      const newCount = Math.min(visibleCount + 4, cards.length)
+                      console.log('📊 New visibleCount will be:', newCount)
+
+                      setVisibleCount(newCount)
+                    }}
                     className="px-10 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold text-lg rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25"
                   >
                     <div className="flex items-center gap-3 justify-center">
@@ -435,6 +571,38 @@ const ScratchPosition = () => {
                       <span>Show More Positions ({Math.max(cards.length - visibleCount, 0)} more)</span>
                     </div>
                   </button>
+                </div>
+              )}
+
+              {/* Show message when all positions are visible */}
+              {visibleCount >= cards.length && cards.length > 0 && (
+                <div className="text-center mt-8">
+                  <div className="text-white/60 text-sm">
+                    All {cards.length} positions are now visible
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Refresh Button (Dev only) */}
+              {isDev && (
+                <div className="text-center mt-8">
+                  <Button
+                    onClick={() => {
+                      console.log('🔄 Quick refresh clicked')
+                      const positions = loadPositions()
+                      console.log('🔄 Found positions:', positions.length)
+                      setCards(positions)
+                      
+                      // Force re-render
+                      setTimeout(() => {
+                        window.location.reload()
+                      }, 100)
+                    }}
+                    variant="outline"
+                    className="px-6 py-3 bg-purple-500/20 border-purple-500/30 text-white hover:bg-purple-500/30"
+                  >
+                    🔄 Refresh from Admin
+                  </Button>
                 </div>
               )}
             </>
@@ -464,6 +632,81 @@ const ScratchPosition = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Debug Section (Dev only) */}
+          {isDev && (
+            <Card variant="elegant" className="bg-red-900/20 border-red-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
+              <CardContent className="p-6">
+                <div className="text-center space-y-4">
+                  <h3 className="text-white font-bold">🐛 Debug Tools</h3>
+                  <div className="flex gap-4 justify-center flex-wrap">
+                    <Button
+                      onClick={() => {
+                        // Check all possible storage keys
+                        const keys = Object.keys(localStorage)
+                        console.log('🔍 DEBUG: All localStorage keys:', keys)
+                        
+                        const rawData = localStorage.getItem(STORAGE_KEY)
+                        console.log('🔍 DEBUG: Raw localStorage data:', rawData)
+                        console.log('🔍 DEBUG: Storage key used:', STORAGE_KEY)
+                        
+                        // Try to find any scratch-related data
+                        const scratchKeys = keys.filter(key => key.includes('scratch'))
+                        console.log('🔍 DEBUG: Scratch-related keys:', scratchKeys)
+                        
+                        scratchKeys.forEach(key => {
+                          console.log(`🔍 DEBUG: ${key}:`, localStorage.getItem(key))
+                        })
+                        
+                        alert(`Storage Key: ${STORAGE_KEY}\nData: ${rawData}\nAll Keys: ${keys.length}\nScratch Keys: ${scratchKeys.join(', ')}`)
+                      }}
+                      variant="outline"
+                      className="px-4 py-2 bg-red-500/20 border-red-500/30 text-white hover:bg-red-500/30"
+                    >
+                      🔍 Check Storage
+                    </Button>
+                    
+                    <Button
+                      onClick={() => {
+                        // Clear all related storage
+                        localStorage.removeItem(STORAGE_KEY)
+                        localStorage.removeItem('scratch_admin_initialized')
+                        
+                        // Force clear any cached data
+                        localStorage.clear()
+                        
+                        // Reset state
+                        setCards([])
+                        
+                        // Force page reload to ensure clean state
+                        window.location.reload()
+                      }}
+                      variant="outline"
+                      className="px-4 py-2 bg-red-600/20 border-red-600/30 text-white hover:bg-red-600/30"
+                    >
+                      🗑️ Force Clear & Reload
+                    </Button>
+                    
+                    <Button
+                      onClick={() => {
+                        console.log('🔄 Force refresh triggered')
+                        const positions = loadPositions()
+                        console.log('🔄 Loaded positions:', positions)
+                        setCards(positions)
+                      }}
+                      variant="outline"
+                      className="px-4 py-2 bg-blue-500/20 border-blue-500/30 text-white hover:bg-blue-500/30"
+                    >
+                      🔄 Force Refresh
+                    </Button>
+                  </div>
+                  <div className="text-xs text-white/60">
+                    Current State: {cards.length} positions | Storage Key: {STORAGE_KEY}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </main>
     </div>
@@ -471,3 +714,4 @@ const ScratchPosition = () => {
 }
 
 export default ScratchPosition
+

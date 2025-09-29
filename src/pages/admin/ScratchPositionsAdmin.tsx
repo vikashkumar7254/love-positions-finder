@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react"
+import { getPositions as apiGetPositions, savePositions as apiSavePositions } from "@/lib/positionsApi"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
-import { Trash2, Plus, Image as ImageIcon, Type, Edit3, RefreshCw, Eye, Search, Filter } from "lucide-react"
+import { Trash2, Plus, Image as ImageIcon, Type, Edit3, RefreshCw, Eye, Search, Filter, RotateCcw } from "lucide-react"
 import Navigation from "@/components/Navigation"
 import { AdminProtectedRoute } from "@/components/AdminAuth"
 
@@ -25,21 +26,7 @@ const ScratchPositionsAdminContent = () => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
 
-  // Default positions that will be loaded initially
-  const defaultPositions: PositionItem[] = [
-    { id: 'enhanced_missionary', title: 'Enhanced Missionary', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'intimate_spooning', title: 'Intimate Spooning', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'empowered_cowgirl', title: 'Empowered Cowgirl', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'passionate_doggy', title: 'Passionate Doggy', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'tantric_lotus', title: 'Tantric Lotus', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'standing_passion', title: 'Standing Passion', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'reverse_cowgirl', title: 'Reverse Cowgirl', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'side_saddle', title: 'Side Saddle', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'butterfly_position', title: 'Butterfly Position', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'bridge_position', title: 'Bridge Position', image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'scissors_position', title: 'Scissors Position', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&crop=center', isDefault: true },
-    { id: 'pretzel_position', title: 'Pretzel Position', image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=300&fit=crop&crop=center', isDefault: true }
-  ]
+  // No default positions - admin will add manually
 
   const categories = [
     { id: "all", label: "All Categories" },
@@ -48,80 +35,88 @@ const ScratchPositionsAdminContent = () => {
   ]
 
   useEffect(() => {
-    // Initialize with default positions if no data exists
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      let storedItems: PositionItem[] = []
-
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        storedItems = Array.isArray(parsed) ? parsed : []
+    // Initial fetch from API
+    const init = async () => {
+      try {
+        const storedItems = await apiGetPositions()
+        console.log('📂 Admin: Loading positions from API:', storedItems.length)
+        console.log('📝 Position titles:', storedItems.map(p => p.title))
+        setItems(storedItems)
+      } catch (error) {
+        console.error('Error loading items from API:', error)
+        setItems([])
       }
-
-      // If no data or empty, initialize with defaults
-      if (storedItems.length === 0) {
-        console.log('Admin: Initializing with default positions...')
-        setItems(defaultPositions)
-        saveItems(defaultPositions)
-        console.log('Admin: Saved', defaultPositions.length, 'default positions to localStorage')
-      } else {
-        console.log('Admin: Found', storedItems.length, 'existing positions')
-        // Merge defaults with stored items, keeping stored versions if they exist
-        const mergedItems = defaultPositions.map(defaultItem => {
-          const storedItem = storedItems.find(item => item.id === defaultItem.id)
-          return storedItem || defaultItem
-        })
-
-        // Add any custom items that aren't in defaults
-        const customItems = storedItems.filter(item => !defaultPositions.some(def => def.id === item.id))
-        const allItems = [...mergedItems, ...customItems]
-
-        console.log('Admin: Merged to', allItems.length, 'total positions')
-        setItems(allItems)
-        saveItems(allItems) // Save back to ensure defaults are persisted
-      }
-    } catch (error) {
-      console.error('Error loading items:', error)
-      setItems(defaultPositions)
-      saveItems(defaultPositions)
+      document.title = "Scratch Positions Admin | ScratchSexPositions"
     }
-    document.title = "Scratch Positions Admin | ScratchSexPositions"
+    init()
   }, [])
 
-  const loadItems = () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      let storedItems: PositionItem[] = []
-
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        storedItems = Array.isArray(parsed) ? parsed : []
+  const cleanDuplicates = (items: PositionItem[]): PositionItem[] => {
+    const seen = new Set<string>()
+    return items.filter(item => {
+      if (seen.has(item.id)) {
+        console.log('🧹 Admin: Removing duplicate position:', item.id)
+        return false
       }
+      seen.add(item.id)
+      return true
+    })
+  }
 
-      // Merge defaults with stored items, keeping stored versions if they exist
-      const mergedItems = defaultPositions.map(defaultItem => {
-        const storedItem = storedItems.find(item => item.id === defaultItem.id)
-        return storedItem || defaultItem
-      })
-
-      // Add any custom items that aren't in defaults
-      const customItems = storedItems.filter(item => !defaultPositions.some(def => def.id === item.id))
-      const allItems = [...mergedItems, ...customItems]
-
-      setItems(allItems)
-      saveItems(allItems) // Save back to ensure defaults are persisted
+  const loadItems = async () => {
+    try {
+      const storedItems = await apiGetPositions()
+      const cleanedItems = cleanDuplicates(storedItems)
+      if (cleanedItems.length !== storedItems.length) {
+        console.log('🧹 Admin: Found and removed', storedItems.length - cleanedItems.length, 'duplicate positions')
+        await apiSavePositions(cleanedItems)
+      }
+      console.log('📂 Admin: Loading positions from API:', cleanedItems.length)
+      setItems(cleanedItems)
     } catch (error) {
-      console.error('Error loading items:', error)
-      setItems(defaultPositions)
+      console.error('Error loading items from API:', error)
+      setItems([])
     }
   }
 
-  const saveItems = (itemsToSave: PositionItem[]) => {
+  const saveItems = async (itemsToSave: PositionItem[]) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(itemsToSave))
+      console.log('💾 Admin: Saving', itemsToSave.length, 'positions to API')
+      console.log('📝 Titles:', itemsToSave.map(p => p.title))
+
+      // Persist to API
+      const ok = await apiSavePositions(itemsToSave)
+      if (!ok) {
+        console.error('❌ Error saving via API')
+        setMessage({ type: 'error', text: 'Failed to save positions to server.' })
+        setTimeout(() => setMessage(null), 3000)
+        return
+      }
+
+      // Update UI state
       setItems(itemsToSave)
+
+      // Notify clients (same-tab + cross-tab)
+      const dataWithTimestamp = {
+        positions: itemsToSave,
+        timestamp: Date.now(),
+        version: Math.random().toString(36).slice(2)
+      }
+
+      // Custom event
+      window.dispatchEvent(new CustomEvent('scratchPositionsUpdated', { detail: dataWithTimestamp }))
+
+      // BroadcastChannel
+      if (typeof BroadcastChannel !== 'undefined') {
+        const channel = new BroadcastChannel('scratch-positions-sync')
+        channel.postMessage(dataWithTimestamp)
+        channel.close()
+      }
+
+      console.log('📡 Admin: Triggered sync events after API save')
+      console.log('✅ Admin: Saved to API successfully')
     } catch (error) {
-      console.error('Error saving items:', error)
+      console.error('❌ Error saving items:', error)
     }
   }
 
@@ -156,13 +151,22 @@ const ScratchPositionsAdminContent = () => {
     const newItem: PositionItem = { id, title: t, image: img, isDefault: false }
 
     if (editingId) {
-      // Update existing
+      // Update existing - replace the item with matching ID
       const updated = items.map(item => item.id === editingId ? newItem : item)
+      console.log('✏️ Admin: Updating position', id)
       saveItems(updated)
       setMessage({type: 'success', text: 'Position updated successfully!'})
     } else {
-      // Add new
+      // Add new - check if ID already exists to prevent duplicates
+      const existingItem = items.find(item => item.id === id)
+      if (existingItem) {
+        setMessage({type: 'error', text: 'A position with this title already exists. Please choose a different title.'})
+        setTimeout(() => setMessage(null), 3000)
+        return
+      }
+
       const updated = [...items, newItem]
+      console.log('➕ Admin: Adding new position', id)
       saveItems(updated)
       setMessage({type: 'success', text: 'Position added successfully!'})
     }
@@ -183,7 +187,28 @@ const ScratchPositionsAdminContent = () => {
 
   const removeItem = (id: string) => {
     const next = items.filter(i => i.id !== id)
+    console.log('🗑️ Admin: Removing position', id, '- remaining:', next.length)
+
+    // Use the enhanced saveItems function for consistent sync
     saveItems(next)
+
+    setMessage({
+      type: 'success',
+      text: `Position removed! ${next.length} positions remaining.`
+    })
+    setTimeout(() => setMessage(null), 3000)
+  }
+
+  // Reset to defaults function removed - no default positions
+
+  const permanentReset = () => {
+    if (confirm('⚠️ PERMANENT RESET: This will clear all positions on server and start fresh. This action cannot be undone. Proceed?')) {
+      console.log('🔥 Admin: PERMANENT RESET - clearing all data via API')
+      setItems([])
+      saveItems([])
+      setMessage({type: 'success', text: 'System permanently reset on server! Starting with empty state.'})
+      setTimeout(() => setMessage(null), 5000)
+    }
   }
 
   const testImage = (imageUrl: string) => {
@@ -227,7 +252,7 @@ const ScratchPositionsAdminContent = () => {
               Comprehensive Scratch Positions Admin
             </h1>
             <p className="text-muted-foreground mt-2">
-              Manage all scratch positions - defaults and custom. Changes reflect immediately in the game.
+              Add and manage scratch positions manually. Complete admin control with real-time game updates.
             </p>
           </div>
 
@@ -359,10 +384,33 @@ const ScratchPositionsAdminContent = () => {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>All Positions ({filteredItems.length})</span>
-                <Button variant="outline" size="sm" onClick={loadItems}>
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Refresh
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={loadItems}>
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Refresh
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={() => {
+                    if (confirm('Clear ALL positions on server? This will remove everything and the game will show empty state.')) {
+                      console.log('🗑️ Admin: Clearing all positions via API')
+                      saveItems([])
+                      setMessage({type: 'success', text: 'All positions cleared from server!'})
+                      setTimeout(() => setMessage(null), 3000)
+                    }
+                  }}>
+                    🗑️ Clear All
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={permanentReset} className="bg-red-600 hover:bg-red-700">
+                    🔥 Permanent Reset
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={() => {
+                    if (confirm('🚨 FORCE CLEAR: This will clear ALL localStorage data and reload the page. This will completely reset everything. Are you sure?')) {
+                      localStorage.clear()
+                      window.location.reload()
+                    }
+                  }} className="bg-red-800 hover:bg-red-900">
+                    💥 Force Clear All
+                  </Button>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -426,12 +474,14 @@ const ScratchPositionsAdminContent = () => {
               <div className="text-sm">
                 <p className="font-semibold text-blue-800 mb-2">📋 Management Guide:</p>
                 <ul className="text-blue-700 space-y-1 text-xs">
-                  <li>• <strong>Default Positions:</strong> Original 12 positions - can be edited but not deleted</li>
-                  <li>• <strong>Custom Positions:</strong> Your added positions - can be edited or deleted</li>
+                  <li>• <strong>Manual Management:</strong> Add all positions manually - no default positions provided</li>
+                  <li>• <strong>Permanent Deletion:</strong> Deleted positions are permanently removed and won't restore</li>
+                  <li>• <strong>Clear All:</strong> Remove all positions from localStorage completely</li>
+                  <li>• <strong>Permanent Reset:</strong> Complete system reset - clears everything and starts fresh</li>
                   <li>• <strong>Real-time Updates:</strong> Changes appear instantly in Scratch Positions game</li>
-                  <li>• <strong>Image Management:</strong> All images can be updated with new URLs</li>
+                  <li>• <strong>Image Management:</strong> All images must be added with valid URLs</li>
                   <li>• <strong>Search & Filter:</strong> Find positions quickly by title or category</li>
-                  <li>• <strong>Export Ready:</strong> All positions saved to localStorage for backup</li>
+                  <li>• <strong>Complete Control:</strong> Admin has full control over all positions</li>
                 </ul>
               </div>
             </CardContent>

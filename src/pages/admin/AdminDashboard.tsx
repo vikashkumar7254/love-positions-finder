@@ -34,13 +34,13 @@ const AdminDashboardContent = () => {
     // Load stats from localStorage
     try {
       const blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
-      const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_custom') || '[]')
+      const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
       
       setStats({
         totalBlogs: blogs.length,
         pendingBlogs: blogs.filter((b: any) => !b.approved).length,
         totalPositions: 190, // Static + custom positions
-        totalScratchCards: scratchCards.length,
+        totalScratchCards: scratchCards.length, // All positions (defaults + custom)
         totalUsers: 1250 // Mock data
       })
     } catch {

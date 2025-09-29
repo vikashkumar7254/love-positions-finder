@@ -90,28 +90,31 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
     // Check if user is already authenticated
     const session = localStorage.getItem(SESSION_KEY)
     const token = localStorage.getItem(CSRF_KEY)
-    
+
     if (session && token) {
       try {
         const sessionData = JSON.parse(session)
         const now = Date.now()
-        
+
         // Check if session is still valid (24 hours)
         if (sessionData.timestamp && (now - sessionData.timestamp) < 24 * 60 * 60 * 1000) {
           setIsAuthenticated(true)
           setCsrfToken(token)
+          console.log('Admin session restored')
         } else {
           // Session expired
           localStorage.removeItem(SESSION_KEY)
           localStorage.removeItem(CSRF_KEY)
+          console.log('Admin session expired')
         }
-      } catch {
+      } catch (error) {
         // Invalid session data
         localStorage.removeItem(SESSION_KEY)
         localStorage.removeItem(CSRF_KEY)
+        console.log('Invalid admin session data')
       }
     }
-    
+
     // Generate new CSRF token if not authenticated
     if (!token) {
       const newToken = generateCSRFToken()
