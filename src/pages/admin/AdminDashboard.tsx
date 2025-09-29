@@ -16,7 +16,8 @@ import {
   Eye,
   Plus,
   Edit3,
-  BarChart3
+  BarChart3,
+  Gift
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
@@ -235,20 +236,21 @@ const AdminDashboardContent = () => {
                     </Link>
                   </div>
                 )}
-                <div className="flex items-center justify-between p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-                  <div className="flex items-center gap-3">
-                    <Heart className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">Position database updated</span>
+                <Link to="/admin/scratch-positions" className="block p-4 bg-gradient-to-r from-pink-500/10 to-purple-500/10 hover:from-pink-500/20 hover:to-purple-500/20 rounded-xl border border-pink-500/20 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg flex items-center justify-center">
+                      <Gift className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Scratch Positions</h3>
+                      <p className="text-sm text-muted-foreground">Manage all scratch cards</p>
+                    </div>
                   </div>
-                  <span className="text-xs text-muted-foreground">2 hours ago</span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                  <div className="flex items-center gap-3">
-                    <Gamepad2 className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm">Scratch cards game accessed 45 times today</span>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Edit defaults & add custom</span>
+                    <span className="px-2 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs">Unified</span>
                   </div>
-                  <span className="text-xs text-muted-foreground">1 hour ago</span>
-                </div>
+                </Link>
               </div>
             </CardContent>
           </Card>

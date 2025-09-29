@@ -3,13 +3,15 @@ import { useLocation } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Eye, Gift, RefreshCw } from "lucide-react"
-import { scratchPositions } from "@/data/scratchPositions"
 
-interface ScratchCard {
+const STORAGE_KEY = 'scratch_positions_all'
+
+type ScratchCard = {
   id: string
   title: string
   image: string
   revealed: boolean
+  isDefault?: boolean
 }
 
 const ScratchPosition = () => {
@@ -21,25 +23,27 @@ const ScratchPosition = () => {
   const gridRef = useRef<HTMLDivElement | null>(null)
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([])
 
-  // Build cards from data file for easy future additions
-  const positionCards: ScratchCard[] = scratchPositions.map(p => ({ ...p, revealed: false }))
-
-  // Load admin-added custom items from localStorage
-  const loadCustom = (): ScratchCard[] => {
+  // Load positions from unified admin system
+  const loadPositions = (): ScratchCard[] => {
     try {
-      const raw = localStorage.getItem('scratch_positions_custom')
-      const arr = raw ? JSON.parse(raw) as { id: string; title: string; image: string }[] : []
-      if (!Array.isArray(arr)) return []
-      return arr.map(it => ({ ...it, revealed: false }))
+      const raw = localStorage.getItem(STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as { id: string; title: string; image: string; isDefault?: boolean }[]
+        if (Array.isArray(parsed)) {
+          return parsed.map(item => ({ ...item, revealed: false }))
+        }
+      }
+      // Fallback to empty array if no data
+      return []
     } catch {
       return []
     }
   }
 
   const refreshCards = () => {
-    const merged = [...positionCards, ...loadCustom()]
-    setCards(merged.map(c => ({ ...c, revealed: false })))
-    canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+    const positions = loadPositions()
+    setCards(positions)
+    canvasRefs.current = canvasRefs.current.slice(0, positions.length)
 
     // Reinitialize canvases
     setTimeout(() => {
@@ -52,11 +56,12 @@ const ScratchPosition = () => {
   }
 
   useEffect(() => {
-    // Always start fresh on load and merge defaults with admin custom
-    const merged = [...positionCards, ...loadCustom()]
-    setCards(merged.map(c => ({ ...c, revealed: false })))
+    // Load positions from admin system
+    const positions = loadPositions()
+    setCards(positions)
+
     // Initialize canvas scratch effects
-    canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+    canvasRefs.current = canvasRefs.current.slice(0, positions.length)
 
     // Initialize canvases after a short delay to ensure DOM is ready
     setTimeout(() => {
@@ -68,14 +73,14 @@ const ScratchPosition = () => {
     }, 100)
   }, [])
 
-  // Add localStorage change listener to refresh when admin adds new items
+  // Add localStorage change listener to refresh when admin updates positions
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'scratch_positions_custom' && e.newValue) {
-        // Refresh cards when custom positions are updated
-        const merged = [...positionCards, ...loadCustom()]
-        setCards(merged.map(c => ({ ...c, revealed: false })))
-        canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+      if (e.key === STORAGE_KEY && e.newValue) {
+        // Refresh cards when positions are updated
+        const positions = loadPositions()
+        setCards(positions)
+        canvasRefs.current = canvasRefs.current.slice(0, positions.length)
       }
     }
 
@@ -84,9 +89,9 @@ const ScratchPosition = () => {
 
     // Also listen for focus events to refresh when user returns to tab
     const handleFocus = () => {
-      const merged = [...positionCards, ...loadCustom()]
-      setCards(merged.map(c => ({ ...c, revealed: false })))
-      canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+      const positions = loadPositions()
+      setCards(positions)
+      canvasRefs.current = canvasRefs.current.slice(0, positions.length)
     }
 
     window.addEventListener('focus', handleFocus)
@@ -95,7 +100,7 @@ const ScratchPosition = () => {
       window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener('focus', handleFocus)
     }
-  }, [positionCards])
+  }, [])
 
   // Smoothly scroll to the grid when starting
   useEffect(() => {
