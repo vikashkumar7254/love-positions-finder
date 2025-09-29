@@ -1,3 +1,4 @@
+// Blog API with Redis support and local fallback
 import { NextApiRequest, NextApiResponse } from 'next'
 import { Redis } from '@upstash/redis'
 
