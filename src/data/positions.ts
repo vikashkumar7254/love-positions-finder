@@ -11,6 +11,7 @@ const basePositions: Position[] = [
     difficulty: 'beginner',
     category: 'Intimate Connection',
     tags: ['gentle', 'emotional', 'eye-contact'],
+    imageUrl: '/placeholder.svg', // Placeholder image
     instructions: [
       'Face each other lying on your sides',
       'Maintain gentle eye contact',
@@ -65,6 +66,7 @@ const basePositions: Position[] = [
     difficulty: 'beginner',
     category: 'Intimate Connection',
     tags: ['soft', 'loving', 'conversation', 'gentle'],
+    imageUrl: '/placeholder.svg', // Placeholder image
     instructions: [
       'Lie on your sides facing each other',
       'Intertwine your legs gently',
@@ -91,6 +93,7 @@ const basePositions: Position[] = [
     difficulty: 'intermediate',
     category: 'Romantic Dance',
     tags: ['elegant', 'slow', 'dancing', 'graceful'],
+    imageUrl: '/placeholder.svg', // Placeholder image
     instructions: [
       'Start in a standing embrace',
       'Move slowly together',
@@ -145,6 +148,7 @@ const basePositions: Position[] = [
     difficulty: 'intermediate',
     category: 'Intense Passion',
     tags: ['intense', 'passionate', 'fire'],
+    imageUrl: '/placeholder.svg', // Placeholder image
     instructions: [
       'Start with deep kissing',
       'Build intensity gradually',
@@ -199,6 +203,7 @@ const basePositions: Position[] = [
     difficulty: 'advanced',
     category: 'New Experiences',
     tags: ['adventurous', 'exploration', 'creative'],
+    imageUrl: '/placeholder.svg', // Placeholder image
     instructions: [
       'Communicate boundaries clearly',
       'Take turns leading',
