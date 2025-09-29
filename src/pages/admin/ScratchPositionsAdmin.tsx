@@ -19,6 +19,7 @@ const ScratchPositionsAdminContent = () => {
   const [title, setTitle] = useState("")
   const [image, setImage] = useState("")
   const [items, setItems] = useState<CustomItem[]>([])
+  const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
 
   const defaultsCount = useMemo(()=> scratchPositions.length, [])
 
@@ -43,12 +44,44 @@ const ScratchPositionsAdminContent = () => {
   const addItem = () => {
     const t = title.trim()
     const img = image.trim()
-    if (!t || !img) return
+
+    // Validation
+    if (!t) {
+      setMessage({type: 'error', text: 'Please enter a title'})
+      setTimeout(() => setMessage(null), 3000)
+      return
+    }
+    if (!img) {
+      setMessage({type: 'error', text: 'Please enter an image URL'})
+      setTimeout(() => setMessage(null), 3000)
+      return
+    }
+
+    // Check if URL is valid
+    try {
+      new URL(img)
+    } catch {
+      setMessage({type: 'error', text: 'Please enter a valid image URL (must start with http:// or https://)'})
+      setTimeout(() => setMessage(null), 3000)
+      return
+    }
+
     const id = toSlug(t) || `item-${Date.now()}`
     const next = [...items, { id, title: t, image: img }]
-    saveItems(next)
-    setTitle("")
-    setImage("")
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      setItems(next)
+      setTitle("")
+      setImage("")
+      setMessage({type: 'success', text: 'Position added successfully! Refresh the scratch page to see it.'})
+
+      // Auto-dismiss success message
+      setTimeout(() => setMessage(null), 5000)
+    } catch (error) {
+      setMessage({type: 'error', text: 'Failed to save. Please try again.'})
+      setTimeout(() => setMessage(null), 3000)
+    }
   }
 
   const removeItem = (id: string) => {
@@ -66,6 +99,17 @@ const ScratchPositionsAdminContent = () => {
             <p className="text-muted-foreground mt-2">Add position name and image URL. These will appear in Scratch Positions along with defaults.</p>
           </div>
 
+          {/* Message Display */}
+          {message && (
+            <div className={`p-4 rounded-lg border ${
+              message.type === 'success'
+                ? 'bg-green-50 border-green-200 text-green-800'
+                : 'bg-red-50 border-red-200 text-red-800'
+            }`}>
+              <p className="text-sm">{message.text}</p>
+            </div>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle>Add New Position</CardTitle>
@@ -74,11 +118,13 @@ const ScratchPositionsAdminContent = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium flex items-center gap-2 mb-1"><Type className="w-4 h-4"/> Title</label>
-                  <Input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Romantic Lift" />
+                  <Input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Romantic Lift, Passionate Embrace" />
+                  <p className="text-xs text-muted-foreground mt-1">Give your position a descriptive name</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium flex items-center gap-2 mb-1"><ImageIcon className="w-4 h-4"/> Image URL</label>
-                  <Input value={image} onChange={e=>setImage(e.target.value)} placeholder="https://... or /assets/..." />
+                  <Input value={image} onChange={e=>setImage(e.target.value)} placeholder="https://example.com/image.jpg" />
+                  <p className="text-xs text-muted-foreground mt-1">Must start with http:// or https://</p>
                 </div>
               </div>
               <Button onClick={addItem} variant="romantic" className="flex items-center gap-2"><Plus className="w-4 h-4"/> Add</Button>

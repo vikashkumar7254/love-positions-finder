@@ -1,15 +1,45 @@
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Badge } from "@/components/ui/badge"
 import { Heart, ArrowLeft, Clock, Star, BookOpen, ChevronRight, CheckCircle, Users, Lightbulb } from "lucide-react"
 import Navigation from "@/components/Navigation"
-import { romanticGuides, guideCategories, getGuidesByCategory, getFeaturedGuides, getGuideById, type RomanticGuideCategory, type RomanticGuide } from "@/data/romanticGuides"
+import { romanticGuides, guideCategories, getGuidesByCategory, type RomanticGuideCategory, type RomanticGuide } from "@/data/romanticGuides"
 
 const RomanticGuides = () => {
   const [selectedCategory, setSelectedCategory] = useState<RomanticGuideCategory | null>(null)
   const [selectedGuide, setSelectedGuide] = useState<RomanticGuide | null>(null)
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [allGuides, setAllGuides] = useState<RomanticGuide[]>(romanticGuides)
+
+  // Load custom guides from localStorage and merge with defaults
+  const loadCustomGuides = (): RomanticGuide[] => {
+    try {
+      const raw = localStorage.getItem('romantic_guides_custom')
+      const arr = raw ? JSON.parse(raw) as RomanticGuide[] : []
+      return Array.isArray(arr) ? arr : []
+    } catch {
+      return []
+    }
+  }
+
+  useEffect(() => {
+    const merged = [...romanticGuides, ...loadCustomGuides()]
+    setAllGuides(merged)
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === 'romantic_guides_custom') {
+        setAllGuides([...romanticGuides, ...loadCustomGuides()])
+      }
+    }
+    const onFocus = () => setAllGuides([...romanticGuides, ...loadCustomGuides()])
+    window.addEventListener('storage', onStorage)
+    window.addEventListener('focus', onFocus)
+    return () => {
+      window.removeEventListener('storage', onStorage)
+      window.removeEventListener('focus', onFocus)
+    }
+  }, [])
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -185,7 +215,10 @@ const RomanticGuides = () => {
   // Category View
   if (selectedCategory) {
     const categoryData = guideCategories[selectedCategory]
-    const categoryGuides = getGuidesByCategory(selectedCategory)
+    const categoryGuides = useMemo(
+      () => allGuides.filter(g => g.category === selectedCategory),
+      [allGuides, selectedCategory]
+    )
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
@@ -279,7 +312,7 @@ const RomanticGuides = () => {
   }
 
   // Main Overview
-  const featuredGuides = getFeaturedGuides()
+  const featuredGuides = useMemo(() => allGuides.filter(g => g.featured), [allGuides])
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
@@ -363,7 +396,7 @@ const RomanticGuides = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Object.entries(guideCategories).map(([categoryKey, categoryData]) => {
-                const categoryGuides = getGuidesByCategory(categoryKey as RomanticGuideCategory)
+                const categoryGuides = allGuides.filter(g => g.category === (categoryKey as RomanticGuideCategory))
                 
                 return (
                   <Card 
@@ -415,7 +448,7 @@ const RomanticGuides = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-romantic mb-2" data-testid="text-total-guides">
-                  {romanticGuides.length}
+                  {allGuides.length}
                 </div>
                 <div className="text-sm text-muted-foreground">Total Guides</div>
               </div>
@@ -436,7 +469,7 @@ const RomanticGuides = () => {
               
               <div className="text-center">
                 <div className="text-3xl font-bold text-warm mb-2">
-                  {romanticGuides.reduce((acc, guide) => acc + guide.sections.length, 0)}
+                  {allGuides.reduce((acc, guide) => acc + guide.sections.length, 0)}
                 </div>
                 <div className="text-sm text-muted-foreground">Total Sections</div>
               </div>

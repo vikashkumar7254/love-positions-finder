@@ -31,7 +31,6 @@ import DiceToSpice from "./pages/games/DiceToSpice";
 // Positions Pages
 import Positions from "./pages/Positions";
 import MostPopular from "./pages/positions/MostPopular";
-import AllPositions from "./pages/positions/AllPositions";
 import CustomPoster from "./pages/positions/CustomPoster";
 // Removed: RandomGenerator
 
@@ -44,6 +43,11 @@ import AddPosition from "./pages/admin/AddPosition";
 import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
 import BlogAdmin from "./pages/admin/BlogAdmin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import SpinForDesireAdmin from "./pages/admin/SpinForDesireAdmin";
+import RomanticGuidesAdmin from "./pages/admin/RomanticGuidesAdmin";
+import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
 
 const queryClient = new QueryClient();
@@ -102,14 +106,16 @@ const App = () => {
               <Route path="/blog/new" element={<AddBlog />} />
               <Route path="/admin/positions/new" element={<AddPosition />} />
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
-              <Route path="/admin/blogs" element={<BlogAdmin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/spin-for-desire" element={<SpinForDesireAdmin />} />
+              <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
               
               {/* Other Routes */}
               <Route path="/journey-planner" element={<JourneyPlanner />} />
               <Route path="/scratch-cards" element={<Navigate to="/games/scratch-position?start=1#start" replace />} />
               <Route path="/love-languages" element={<LoveLanguageExplorer />} />
               <Route path="/romantic-guides" element={<RomanticGuides />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
               
               {/* 404 Route */}
               <Route path="*" element={<NotFound />} />

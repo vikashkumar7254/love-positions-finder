@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { useLocation } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Eye, Gift } from "lucide-react"
+import { Eye, Gift, RefreshCw } from "lucide-react"
 import { scratchPositions } from "@/data/scratchPositions"
 
 interface ScratchCard {
@@ -36,13 +36,28 @@ const ScratchPosition = () => {
     }
   }
 
+  const refreshCards = () => {
+    const merged = [...positionCards, ...loadCustom()]
+    setCards(merged.map(c => ({ ...c, revealed: false })))
+    canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+
+    // Reinitialize canvases
+    setTimeout(() => {
+      canvasRefs.current.forEach((canvas, index) => {
+        if (canvas) {
+          initializeScratchCanvas(canvas, index)
+        }
+      })
+    }, 100)
+  }
+
   useEffect(() => {
     // Always start fresh on load and merge defaults with admin custom
     const merged = [...positionCards, ...loadCustom()]
     setCards(merged.map(c => ({ ...c, revealed: false })))
     // Initialize canvas scratch effects
     canvasRefs.current = canvasRefs.current.slice(0, merged.length)
-    
+
     // Initialize canvases after a short delay to ensure DOM is ready
     setTimeout(() => {
       canvasRefs.current.forEach((canvas, index) => {
@@ -52,6 +67,35 @@ const ScratchPosition = () => {
       })
     }, 100)
   }, [])
+
+  // Add localStorage change listener to refresh when admin adds new items
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'scratch_positions_custom' && e.newValue) {
+        // Refresh cards when custom positions are updated
+        const merged = [...positionCards, ...loadCustom()]
+        setCards(merged.map(c => ({ ...c, revealed: false })))
+        canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+      }
+    }
+
+    // Listen for storage events (works across tabs)
+    window.addEventListener('storage', handleStorageChange)
+
+    // Also listen for focus events to refresh when user returns to tab
+    const handleFocus = () => {
+      const merged = [...positionCards, ...loadCustom()]
+      setCards(merged.map(c => ({ ...c, revealed: false })))
+      canvasRefs.current = canvasRefs.current.slice(0, merged.length)
+    }
+
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [positionCards])
 
   // Smoothly scroll to the grid when starting
   useEffect(() => {
@@ -115,24 +159,37 @@ const ScratchPosition = () => {
     
     ctx.font = '14px Arial'
     ctx.fillStyle = '#6b7280'
-    ctx.fillText('Mouse over to scratch', canvas.width / 2, canvas.height / 2 + 35)
+    ctx.fillText('Use mouse or finger to scratch', canvas.width / 2, canvas.height / 2 + 35)
   }
 
-  const handleScratch = (e: React.MouseEvent<HTMLCanvasElement>, index: number) => {
+  const handleScratch = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>, index: number) => {
     const canvas = canvasRefs.current[index]
     if (!canvas) return
 
     const rect = canvas.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    let x: number, y: number
+
+    if ('touches' in e) {
+      // Touch event
+      const touch = e.touches[0] || e.changedTouches[0]
+      x = touch.clientX - rect.left
+      y = touch.clientY - rect.top
+    } else {
+      // Mouse event
+      x = e.clientX - rect.left
+      y = e.clientY - rect.top
+    }
+
     const ctx = canvas.getContext('2d')
-    
+
     if (!ctx) return
 
     // Create scratch effect
     ctx.globalCompositeOperation = 'destination-out'
     ctx.beginPath()
-    ctx.arc(x, y, 20, 0, 2 * Math.PI)
+    // Make scratch radius larger for touch events (mobile)
+    const scratchRadius = 'touches' in e ? 25 : 20
+    ctx.arc(x, y, scratchRadius, 0, 2 * Math.PI)
     ctx.fill()
 
     // Check if enough area is scratched
@@ -148,10 +205,10 @@ const ScratchPosition = () => {
 
     if (scratchPercentage > 30) {
       // Reveal the card
-      setCards(prev => prev.map((card, i) => 
+      setCards(prev => prev.map((card, i) =>
         i === index ? { ...card, revealed: true } : card
       ))
-      
+
       // Hide canvas with animation
       canvas.style.opacity = '0'
       setTimeout(() => {
@@ -175,9 +232,21 @@ const ScratchPosition = () => {
               <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
                 Scratch Positions
               </h1>
+              <Button
+                onClick={refreshCards}
+                variant="outline"
+                size="sm"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                title="Refresh to load new custom positions"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
             </div>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Unlock your intimate adventure. Scratch to reveal romantic positions and discover new ways to connect.
+            </p>
+            <p className="text-sm text-white/60 mt-2">
+              💡 Added new positions in admin? Click refresh to load them!
             </p>
           </div>
 
@@ -203,7 +272,8 @@ const ScratchPosition = () => {
                       <span className="text-white font-bold">2</span>
                     </div>
                     <h3 className="text-white font-bold mb-2">Scratch to Reveal</h3>
-                    <p className="text-white/70 text-sm">Use your mouse to scratch and unlock details</p>
+                    <p className="text-white/70 text-sm">Use your mouse or finger to scratch and unlock details</p>
+                    <p className="text-white/50 text-xs mt-1">💡 Mobile: Use your finger to scratch the silver area</p>
                   </div>
                   <div className="text-center p-4 bg-white/5 rounded-xl">
                     <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center mb-3">
@@ -247,13 +317,27 @@ const ScratchPosition = () => {
                           onMouseMove={(e) => isScratching && handleScratch(e, index)}
                           onMouseLeave={() => setIsScratching(false)}
                           onClick={(e) => handleScratch(e, index)}
-                          style={{ 
-                            width: '100%', 
+                          onTouchStart={(e) => {
+                            e.preventDefault()
+                            setIsScratching(true)
+                            handleScratch(e, index)
+                          }}
+                          onTouchMove={(e) => {
+                            e.preventDefault()
+                            if (isScratching) handleScratch(e, index)
+                          }}
+                          onTouchEnd={(e) => {
+                            e.preventDefault()
+                            setIsScratching(false)
+                          }}
+                          style={{
+                            width: '100%',
                             height: '100%',
                             transition: 'opacity 0.3s ease',
                             position: 'absolute',
                             top: 0,
-                            left: 0
+                            left: 0,
+                            touchAction: 'none'
                           }}
                         />
                       )}

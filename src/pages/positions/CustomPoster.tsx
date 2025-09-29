@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Heart, Download, Plus, X, Star, Shuffle, Save, Share2, Grid, List, Palette, Image as ImageIcon, Calendar, Clock, Lock, CheckCircle } from "lucide-react"
+import { Heart, Download, Plus, X, Star, Shuffle, Save, Share2, Grid, List, Palette, Image as ImageIcon, Calendar, Clock, Lock, CheckCircle, RefreshCw } from "lucide-react"
+import { posterPositions, getAllPosterPositions } from "@/data/posterPositions"
 
 interface Position {
   id: string
   name: string
   category: string
   difficulty: 'beginner' | 'intermediate' | 'advanced'
-  image?: string
-  description?: string
+  image: string
+  description: string
 }
 
 interface PosterSlot {
@@ -40,36 +41,65 @@ const CustomPoster = () => {
       lastRevealDate: ''
     }
   })
-  
+
   const [posterSlots, setPosterSlots] = useState<PosterSlot[]>(() => {
     const saved = localStorage.getItem('intimateJourneySlots')
     if (saved) {
       return JSON.parse(saved)
     }
-    return Array.from({ length: 7 }, (_, i) => ({ 
-      id: `slot-${i}`, 
+    return Array.from({ length: 7 }, (_, i) => ({
+      id: `slot-${i}`,
       day: i + 1,
       isRevealed: false
     }))
   })
-  
+
   const [posterTitle, setPosterTitle] = useState("Intimate Journey")
   const [posterSubtitle, setPosterSubtitle] = useState("Your 7-day journey of intimate discoveries")
   const [selectedTheme, setSelectedTheme] = useState<'purple' | 'pink' | 'red' | 'blue'>('purple')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [allPositions, setAllPositions] = useState<Position[]>([])
   const posterRef = useRef<HTMLDivElement>(null)
 
-  // Sample positions data
-  const availablePositions: Position[] = [
-    { id: '1', name: 'Cradle', category: 'Intimate', difficulty: 'beginner', description: 'A gentle, face-to-face position perfect for emotional connection' },
-    { id: '2', name: 'Missionary', category: 'Classic', difficulty: 'beginner', description: 'The most traditional and intimate position' },
-    { id: '3', name: 'Spooning', category: 'Gentle', difficulty: 'beginner', description: 'Side-by-side position perfect for slow, tender moments' },
-    { id: '4', name: 'Cowgirl', category: 'Adventurous', difficulty: 'intermediate', description: 'Partner on top for control and deeper connection' },
-    { id: '5', name: 'Lotus', category: 'Intimate', difficulty: 'intermediate', description: 'Sitting face-to-face for maximum intimacy' },
-    { id: '6', name: 'Bridge', category: 'Adventurous', difficulty: 'advanced', description: 'An athletic position for the more experienced' },
-    { id: '7', name: 'Butterfly', category: 'Romantic', difficulty: 'intermediate', description: 'Edge-of-bed position with great eye contact' },
-    { id: '8', name: 'Pretzel', category: 'Playful', difficulty: 'advanced', description: 'A twisted position for adventurous couples' },
-  ]
+  // Load positions from data file and localStorage
+  useEffect(() => {
+    const positions = getAllPosterPositions()
+    setAllPositions(positions)
+  }, [])
+
+  // Listen for localStorage changes
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'poster_positions_custom') {
+        const positions = getAllPosterPositions()
+        setAllPositions(positions)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('focus', () => {
+      const positions = getAllPosterPositions()
+      setAllPositions(positions)
+    })
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [])
+
+  // Save to localStorage whenever state changes
+  useEffect(() => {
+    localStorage.setItem('intimateJourneyProgress', JSON.stringify(journeyProgress))
+  }, [journeyProgress])
+
+  useEffect(() => {
+    localStorage.setItem('intimateJourneySlots', JSON.stringify(posterSlots))
+  }, [posterSlots])
+
+  const refreshPositions = () => {
+    const positions = getAllPosterPositions()
+    setAllPositions(positions)
+  }
 
   // Save to localStorage whenever state changes
   useEffect(() => {
@@ -99,7 +129,7 @@ const CustomPoster = () => {
 
     const today = new Date().toISOString().split('T')[0]
     const currentDay = journeyProgress.currentDay
-    const randomPosition = availablePositions[Math.floor(Math.random() * availablePositions.length)]
+    const randomPosition = allPositions[Math.floor(Math.random() * allPositions.length)]
 
     // Update the slot for current day
     setPosterSlots(prev => prev.map(slot => 

@@ -38,8 +38,8 @@ const Footer = () => {
       title: "Support",
       links: [
         { label: "Contact Us", href: "/contact" },
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Service", href: "/terms" },
+        { label: "Privacy Policy", href: "/privacy-policy" },
+        { label: "Terms of Service", href: "/terms-of-service" },
         { label: "FAQ", href: "/faq" }
       ]
     }
@@ -150,12 +150,12 @@ const Footer = () => {
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs text-slate-400">
-              <Link to="/privacy" className="hover:text-romantic transition-colors hover:underline">
-                Privacy
+              <Link to="/privacy-policy" className="hover:text-romantic transition-colors hover:underline">
+                Privacy Policy
               </Link>
               <span className="text-slate-600">•</span>
-              <Link to="/terms" className="hover:text-romantic transition-colors hover:underline">
-                Terms
+              <Link to="/terms-of-service" className="hover:text-romantic transition-colors hover:underline">
+                Terms of Service
               </Link>
               <span className="text-slate-600">•</span>
               <Link to="/contact" className="hover:text-romantic transition-colors hover:underline">

@@ -1,7 +1,8 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { RotateCcw, Play, Heart, Star, Sparkles, Zap, Gift, Crown } from "lucide-react"
+import { RotateCcw, Play, Heart, Star, Sparkles, Zap, Gift, Crown, RefreshCw } from "lucide-react"
+import { desireItems } from "@/data/desireItems"
 
 interface DesireItem {
   id: string
@@ -17,77 +18,57 @@ const SpinForDesire = () => {
   const [selectedItem, setSelectedItem] = useState<DesireItem | null>(null)
   const [rotation, setRotation] = useState(0)
   const [showImagePopup, setShowImagePopup] = useState(false)
+  const [allItems, setAllItems] = useState<DesireItem[]>([])
   const wheelRef = useRef<HTMLDivElement>(null)
 
-  const desireItems: DesireItem[] = [
-    {
-      id: 'romantic_dinner',
-      title: 'Romantic Candlelight Dinner',
-      description: 'Set up a beautiful candlelit dinner with soft music and intimate conversation',
-      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop&crop=center',
-      category: 'romantic',
-      color: '#ff6b9d'
-    },
-    {
-      id: 'sensual_massage',
-      title: 'Sensual Massage Session',
-      description: 'Give each other relaxing massages with aromatic oils and gentle touches',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
-      category: 'sensual',
-      color: '#c44569'
-    },
-    {
-      id: 'passionate_dance',
-      title: 'Passionate Dance Together',
-      description: 'Dance slowly to romantic music, feeling each other\'s rhythm and heartbeat',
-      image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop&crop=center',
-      category: 'passionate',
-      color: '#f8b500'
-    },
-    {
-      id: 'playful_games',
-      title: 'Playful Intimate Games',
-      description: 'Engage in fun, flirty games that bring you closer together',
-      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop&crop=center',
-      category: 'playful',
-      color: '#6c5ce7'
-    },
-    {
-      id: 'bubble_bath',
-      title: 'Luxurious Bubble Bath',
-      description: 'Share a warm, relaxing bubble bath with candles and champagne',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&crop=center',
-      category: 'romantic',
-      color: '#00b894'
-    },
-    {
-      id: 'stargazing',
-      title: 'Romantic Stargazing',
-      description: 'Lie under the stars together, sharing dreams and intimate whispers',
-      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop&crop=center',
-      category: 'romantic',
-      color: '#0984e3'
-    },
-    {
-      id: 'wine_tasting',
-      title: 'Wine & Chocolate Tasting',
-      description: 'Indulge in fine wines and chocolates while feeding each other',
-      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop&crop=center',
-      category: 'sensual',
-      color: '#e17055'
-    },
-    {
-      id: 'surprise_picnic',
-      title: 'Surprise Indoor Picnic',
-      description: 'Create a romantic picnic setup in your living room with soft blankets',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
-      category: 'playful',
-      color: '#fd79a8'
+  // Load custom items from localStorage
+  const loadCustomItems = (): DesireItem[] => {
+    try {
+      const raw = localStorage.getItem('spin_for_desire_custom')
+      const arr = raw ? JSON.parse(raw) as DesireItem[] : []
+      return Array.isArray(arr) ? arr : []
+    } catch {
+      return []
     }
-  ]
+  }
+
+  // Load all items (defaults + custom)
+  useEffect(() => {
+    const customItems = loadCustomItems()
+    const merged = [...desireItems, ...customItems]
+    setAllItems(merged)
+  }, [])
+
+  // Listen for localStorage changes
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'spin_for_desire_custom') {
+        const customItems = loadCustomItems()
+        const merged = [...desireItems, ...customItems]
+        setAllItems(merged)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('focus', () => {
+      const customItems = loadCustomItems()
+      const merged = [...desireItems, ...customItems]
+      setAllItems(merged)
+    })
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [])
+
+  const refreshItems = () => {
+    const customItems = loadCustomItems()
+    const merged = [...desireItems, ...customItems]
+    setAllItems(merged)
+  }
 
   const spinWheel = () => {
-    if (isSpinning) return
+    if (isSpinning || allItems.length === 0) return
 
     setIsSpinning(true)
     setSelectedItem(null)
@@ -95,16 +76,16 @@ const SpinForDesire = () => {
     // Calculate random rotation (multiple full rotations + random position)
     const randomRotation = 1440 + Math.random() * 1440 // 4-8 full rotations
     const finalRotation = rotation + randomRotation
-    
+
     setRotation(finalRotation)
 
     // Calculate which item was selected
     const normalizedRotation = finalRotation % 360
-    const itemAngle = 360 / desireItems.length
-    const selectedIndex = Math.floor((360 - normalizedRotation + itemAngle / 2) / itemAngle) % desireItems.length
-    
+    const itemAngle = 360 / allItems.length
+    const selectedIndex = Math.floor((360 - normalizedRotation + itemAngle / 2) / itemAngle) % allItems.length
+
     setTimeout(() => {
-      setSelectedItem(desireItems[selectedIndex])
+      setSelectedItem(allItems[selectedIndex])
       setIsSpinning(false)
     }, 3000) // 3 second spin duration
   }
@@ -136,9 +117,21 @@ const SpinForDesire = () => {
               <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
                 Spin for Desire
               </h1>
+              <Button
+                onClick={refreshItems}
+                variant="outline"
+                size="sm"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                title="Refresh to load new custom items"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
             </div>
             <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
               Spin the wheel of passion and discover your next romantic adventure. Let fate decide your intimate moment!
+            </p>
+            <p className="text-sm text-white/60 mt-2">
+              💡 Added new items in admin? Click refresh to load them!
             </p>
           </div>
 
@@ -161,9 +154,9 @@ const SpinForDesire = () => {
                     transition: isSpinning ? 'transform 3s cubic-bezier(0.23, 1, 0.32, 1)' : 'none'
                   }}
                 >
-                  {desireItems.map((item, index) => {
-                    const angle = (360 / desireItems.length) * index
-                    const nextAngle = (360 / desireItems.length) * (index + 1)
+                  {allItems.map((item, index) => {
+                    const angle = (360 / allItems.length) * index
+                    const nextAngle = (360 / allItems.length) * (index + 1)
                     
                     return (
                       <div
@@ -313,14 +306,14 @@ const SpinForDesire = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {desireItems.map((item) => {
+                {allItems.map((item) => {
                   const IconComponent = getCategoryIcon(item.category)
                   return (
-                    <div 
-                      key={item.id} 
+                    <div
+                      key={item.id}
                       className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                        selectedItem?.id === item.id 
-                          ? 'border-yellow-400 bg-yellow-400/10 scale-105' 
+                        selectedItem?.id === item.id
+                          ? 'border-yellow-400 bg-yellow-400/10 scale-105'
                           : 'border-white/10 bg-white/5 hover:border-white/20'
                       }`}
                     >
