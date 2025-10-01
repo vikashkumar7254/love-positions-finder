@@ -166,20 +166,27 @@ const Blog = () => {
     script.textContent = JSON.stringify(structuredData)
   }, [])
 
-  const allPosts = posts.map((b: any) => ({
-    id: b.id,
-    title: b.title,
-    excerpt: b.excerpt,
-    date: b.publishedAt || b.createdAt,
-    readTime: `${b.readTime || 5} min read`,
-    category: b.category || "General",
-    slug: b.slug,
-  }))
+  const allPosts = posts
+    .filter((b: any) => b && b.id && b.title) // Filter out invalid posts
+    .map((b: any) => ({
+      id: b.id,
+      title: b.title,
+      excerpt: b.excerpt || 'No description available',
+      date: b.publishedAt || b.createdAt || new Date().toISOString(),
+      readTime: `${b.readTime || 5} min read`,
+      category: b.category || "General",
+      slug: b.slug || '',
+    }))
 
   const filteredPosts = allPosts.filter(post => {
+    // Add null safety checks
+    if (!post || !post.title || !post.excerpt) {
+      return false
+    }
+    
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "All" || post.category === selectedCategory
+    const matchesCategory = selectedCategory === "All" || (post.category && post.category === selectedCategory)
     return matchesSearch && matchesCategory
   })
 
@@ -272,15 +279,26 @@ const Blog = () => {
       <section className="py-12">
         <div className="container max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.slice(0, visibleCount).map((post) => {
-              // Add null checks for post data
-              if (!post || !post.slug) {
-                console.warn('⚠️ Skipping post with missing data:', post)
+            {filteredPosts.slice(0, visibleCount).map((post, index) => {
+              try {
+              // Add comprehensive null checks for post data
+              if (!post || !post.id || !post.title) {
+                console.warn('⚠️ Skipping post with missing essential data:', post)
+                return null
+              }
+              
+              // Generate slug if missing
+              const postSlug = post.slug && post.slug.trim() !== '' 
+                ? post.slug 
+                : post.title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
+              
+              if (!postSlug) {
+                console.warn('⚠️ Skipping post with invalid slug:', post)
                 return null
               }
               
               return (
-              <Link key={post.id} to={`/blog/${post.slug}`} className="block group">
+              <Link key={post.id} to={`/blog/${postSlug}`} className="block group">
                 <Card className="hover-romantic border-0 bg-gradient-card h-full overflow-hidden">
                   {/* Cover Image */}
                   <div className="relative">
@@ -320,6 +338,10 @@ const Blog = () => {
                 </Card>
               </Link>
               )
+              } catch (error) {
+                console.error(`❌ Error rendering blog post ${index}:`, error, post)
+                return null
+              }
             })}
           </div>
 
