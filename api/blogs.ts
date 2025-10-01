@@ -81,7 +81,8 @@ function generateSlug(title: string): string {
 function calculateReadTime(content: string): number {
   const wordsPerMinute = 200
   const wordCount = content.split(/\s+/).length
-  return Math.ceil(wordCount / wordsPerMinute)
+  const time = Math.ceil(wordCount / wordsPerMinute)
+  return Math.max(1, time) // Ensure minimum 1 minute
 }
 
 // Calculate SEO score based on various factors
@@ -110,7 +111,7 @@ function calculateSEOScore(blog: Partial<BlogPost>): number {
   if (blog.content && blog.content.length >= 7500) score += 20
   else if (blog.content && blog.content.length >= 3000) score += 10
   
-  return Math.min(score, 100)
+  return Math.min(Math.max(0, score), 100) // Ensure score is between 0-100
 }
 
 export default async function handler(req: any, res: any) {
@@ -269,7 +270,6 @@ export default async function handler(req: any, res: any) {
         featured: cleanBlogData.featured || false,
         seoScore: 0
       }
-      
       // Calculate SEO score
       newBlog.seoScore = calculateSEOScore(newBlog)
       console.log('📊 SEO score calculated:', newBlog.seoScore)
@@ -277,11 +277,21 @@ export default async function handler(req: any, res: any) {
       // Ensure all numeric values are properly handled
       const blogForRedis = {
         ...newBlog,
-        seoScore: Number(newBlog.seoScore || 0),
-        readTime: Number(newBlog.readTime || 0),
-        views: Number(newBlog.views || 0),
-        likes: Number(newBlog.likes || 0)
+        seoScore: Math.max(0, Math.min(100, Number(newBlog.seoScore || 0))),
+        readTime: Math.max(1, Number(newBlog.readTime || 1)),
+        views: Math.max(0, Number(newBlog.views || 0)),
+        likes: Math.max(0, Number(newBlog.likes || 0)),
+        publishedAt: newBlog.publishedAt || null
       }
+      
+      console.log('📊 Final blog data for Redis:', blogForRedis)
+      console.log('📊 Data types check:', {
+        seoScore: typeof blogForRedis.seoScore,
+        readTime: typeof blogForRedis.readTime,
+        views: typeof blogForRedis.views,
+        likes: typeof blogForRedis.likes,
+        publishedAt: typeof blogForRedis.publishedAt
+      })
       
       await redis.hset(BLOG_KEY, { [id]: JSON.stringify(blogForRedis) })
       console.log('✅ Blog saved to database')
@@ -352,14 +362,16 @@ export default async function handler(req: any, res: any) {
       
       // Update reading time if content changed
       if (updateData.content) {
+        // @ts-expect-error: readTime is not in updateData type but will be merged into blogData
         updateData.readTime = calculateReadTime(updateData.content)
       }
-      
+
       // Update published date if status changed to published
       if (updateData.status === 'published' && blogData.status !== 'published') {
+        // @ts-expect-error: publishedAt may not be in updateData type but is valid for blog object
         updateData.publishedAt = new Date().toISOString()
       }
-      
+
       const updatedBlog = {
         ...blogData,
         ...updateData,
@@ -372,11 +384,14 @@ export default async function handler(req: any, res: any) {
       // Ensure all numeric values are properly handled
       const blogForRedis = {
         ...updatedBlog,
-        seoScore: Number(updatedBlog.seoScore || 0),
-        readTime: Number(updatedBlog.readTime || 0),
-        views: Number(updatedBlog.views || 0),
-        likes: Number(updatedBlog.likes || 0)
+        seoScore: Math.max(0, Math.min(100, Number(updatedBlog.seoScore || 0))),
+        readTime: Math.max(1, Number(updatedBlog.readTime || 1)),
+        views: Math.max(0, Number(updatedBlog.views || 0)),
+        likes: Math.max(0, Number(updatedBlog.likes || 0)),
+        publishedAt: updatedBlog.publishedAt || null
       }
+      
+      console.log('📊 Final updated blog data for Redis:', blogForRedis)
       
       await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(blogForRedis) })
       
