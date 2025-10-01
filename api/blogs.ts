@@ -274,7 +274,16 @@ export default async function handler(req: any, res: any) {
       newBlog.seoScore = calculateSEOScore(newBlog)
       console.log('📊 SEO score calculated:', newBlog.seoScore)
       
-      await redis.hset(BLOG_KEY, { [id]: JSON.stringify(newBlog) })
+      // Ensure all numeric values are properly handled
+      const blogForRedis = {
+        ...newBlog,
+        seoScore: Number(newBlog.seoScore || 0),
+        readTime: Number(newBlog.readTime || 0),
+        views: Number(newBlog.views || 0),
+        likes: Number(newBlog.likes || 0)
+      }
+      
+      await redis.hset(BLOG_KEY, { [id]: JSON.stringify(blogForRedis) })
       console.log('✅ Blog saved to database')
       
       return res.status(201).json(newBlog)
@@ -360,7 +369,16 @@ export default async function handler(req: any, res: any) {
       // Recalculate SEO score
       updatedBlog.seoScore = calculateSEOScore(updatedBlog)
       
-      await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(updatedBlog) })
+      // Ensure all numeric values are properly handled
+      const blogForRedis = {
+        ...updatedBlog,
+        seoScore: Number(updatedBlog.seoScore || 0),
+        readTime: Number(updatedBlog.readTime || 0),
+        views: Number(updatedBlog.views || 0),
+        likes: Number(updatedBlog.likes || 0)
+      }
+      
+      await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(blogForRedis) })
       
       return res.status(200).json(updatedBlog)
     }
