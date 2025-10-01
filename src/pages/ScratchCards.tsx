@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react"
+import { Helmet } from "react-helmet-async"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { ArrowLeft, RefreshCw, Star, Clock, Sparkles, Gift, Eye } from "lucide-react"
@@ -20,10 +21,35 @@ const ScratchCards = () => {
   const [scratchedCount, setScratchedCount] = useState(0)
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([])
   const [isDrawing, setIsDrawing] = useState<boolean[]>([false, false, false, false, false, false])
+  const STORAGE_KEY = 'scratchCardsStateV1'
 
-  // Initialize cards
+  function saveState(nextCards: ScratchCard[], nextScratchedCount: number) {
+    try {
+      const payload = {
+        cards: nextCards,
+        scratchedCount: nextScratchedCount,
+        savedAt: Date.now(),
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+    } catch {}
+  }
+
+  // Initialize cards (restore from localStorage if available)
   useEffect(() => {
     if (!isInitialized) {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY)
+        if (raw) {
+          const parsed = JSON.parse(raw) as { cards: ScratchCard[]; scratchedCount: number }
+          if (Array.isArray(parsed?.cards)) {
+            setCards(parsed.cards)
+            setScratchedCount(typeof parsed.scratchedCount === 'number' ? parsed.scratchedCount : 0)
+            setIsInitialized(true)
+            return
+          }
+        }
+      } catch {}
+
       const randomPositions = getRandomPositions(6)
       const initialCards: ScratchCard[] = Array.from({ length: 6 }, (_, index) => ({
         id: index,
@@ -32,6 +58,8 @@ const ScratchCards = () => {
         scratchProgress: 0
       }))
       setCards(initialCards)
+      setScratchedCount(0)
+      saveState(initialCards, 0)
       setIsInitialized(true)
     }
   }, [isInitialized])
@@ -100,70 +128,39 @@ const ScratchCards = () => {
     const scratchPercent = (transparent / (canvas.width * canvas.height)) * 100
     
     // Update card scratch progress
-    setCards(prev => prev.map((card, i) => 
-      i === index ? { ...card, scratchProgress: scratchPercent } : card
-    ))
+    setCards(prev => {
+      const next = prev.map((card, i) => i === index ? { ...card, scratchProgress: scratchPercent } : card)
+      saveState(next, scratchedCount)
+      return next
+    })
 
     // Mark as scratched if enough is revealed
     if (scratchPercent > 30 && !cards[index].isScratched) {
-      setCards(prev => prev.map((card, i) => 
-        i === index ? { ...card, isScratched: true } : card
-      ))
+      setCards(prev => {
+        const next = prev.map((card, i) => i === index ? { ...card, isScratched: true } : card)
+        const nextCount = scratchedCount + 1
+        saveState(next, nextCount)
+        return next
+      })
       setScratchedCount(prev => prev + 1)
     }
   }
 
-  const handleMouseDown = (index: number) => {
-    setIsDrawing(prev => prev.map((drawing, i) => i === index ? true : drawing))
-  }
-
-  const handleMouseUp = (index: number) => {
-    setIsDrawing(prev => prev.map((drawing, i) => i === index ? false : drawing))
-  }
-
-  const handleMouseMove = (index: number, event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (isDrawing[index]) {
-      handleScratch(index, event.clientX, event.clientY)
-    }
-  }
-
-  const handleTouchStart = (index: number, event: React.TouchEvent<HTMLCanvasElement>) => {
-    event.preventDefault()
-    setIsDrawing(prev => prev.map((drawing, i) => i === index ? true : drawing))
-    if (event.touches.length > 0) {
-      const touch = event.touches[0]
-      handleScratch(index, touch.clientX, touch.clientY)
-    }
-  }
-
-  const handleTouchMove = (index: number, event: React.TouchEvent<HTMLCanvasElement>) => {
-    event.preventDefault()
-    if (isDrawing[index] && event.touches.length > 0) {
-      const touch = event.touches[0]
-      handleScratch(index, touch.clientX, touch.clientY)
-    }
-  }
-
-  const handleTouchEnd = (index: number, event: React.TouchEvent<HTMLCanvasElement>) => {
-    event.preventDefault()
-    setIsDrawing(prev => prev.map((drawing, i) => i === index ? false : drawing))
-  }
-
   const handlePointerDown = (index: number, event: React.PointerEvent<HTMLCanvasElement>) => {
-    event.preventDefault()
+    // Only block scroll while actually scratching
     setIsDrawing(prev => prev.map((drawing, i) => i === index ? true : drawing))
     handleScratch(index, event.clientX, event.clientY)
   }
 
   const handlePointerMove = (index: number, event: React.PointerEvent<HTMLCanvasElement>) => {
-    event.preventDefault()
     if (isDrawing[index]) {
+      // While drawing, we prevent default to avoid page scroll
+      event.preventDefault()
       handleScratch(index, event.clientX, event.clientY)
     }
   }
 
   const handlePointerUp = (index: number, event: React.PointerEvent<HTMLCanvasElement>) => {
-    event.preventDefault()
     setIsDrawing(prev => prev.map((drawing, i) => i === index ? false : drawing))
   }
 
@@ -177,6 +174,7 @@ const ScratchCards = () => {
     }))
     setCards(newCards)
     setScratchedCount(0)
+    saveState(newCards, 0)
     
     // Reset canvas surfaces
     setTimeout(() => {
@@ -229,6 +227,25 @@ const ScratchCards = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
+      <Helmet>
+        <title>Scratch Cards | Reveal 6 Surprise Positions</title>
+        <meta name="description" content="Scratch to reveal 6 surprise intimate positions with instructions and tips. Mobile-friendly canvas with progress tracking." />
+        <link rel="canonical" href={`${window.location.origin}/games/scratch-position`} />
+        <meta property="og:title" content="Scratch Cards | Reveal 6 Surprise Positions" />
+        <meta property="og:description" content="Scratch to reveal 6 surprise intimate positions with instructions and tips." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${window.location.origin}/games/scratch-position`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Game',
+          name: 'Scratch Position Cards',
+          description: 'Scratch to reveal surprise intimate positions.',
+          url: `${window.location.origin}/games/scratch-position`,
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Web'
+        })}</script>
+      </Helmet>
       <Navigation />
       
       <main className="pt-20 pb-12">
@@ -320,18 +337,8 @@ const ScratchCards = () => {
                       className={`absolute inset-0 w-full h-full cursor-crosshair transition-opacity ${
                         card.isScratched ? 'opacity-0' : 'opacity-100'
                       }`}
-                      style={{ touchAction: 'none' }}
-                      // Mouse Events
-                      onMouseDown={() => handleMouseDown(index)}
-                      onMouseUp={() => handleMouseUp(index)}
-                      onMouseMove={(e) => handleMouseMove(index, e)}
-                      onMouseLeave={() => handleMouseUp(index)}
-                      // Touch Events
-                      onTouchStart={(e) => handleTouchStart(index, e)}
-                      onTouchMove={(e) => handleTouchMove(index, e)}
-                      onTouchEnd={(e) => handleTouchEnd(index, e)}
-                      onTouchCancel={(e) => handleTouchEnd(index, e)}
-                      // Pointer Events (modern unified approach)
+                      style={{ touchAction: card.isScratched ? 'auto' : 'pan-y', pointerEvents: card.isScratched ? 'none' : 'auto' }}
+                      // Pointer Events only (unified)
                       onPointerDown={(e) => handlePointerDown(index, e)}
                       onPointerMove={(e) => handlePointerMove(index, e)}
                       onPointerUp={(e) => handlePointerUp(index, e)}

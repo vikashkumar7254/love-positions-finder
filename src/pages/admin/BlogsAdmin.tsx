@@ -129,20 +129,15 @@ const BlogsAdminContent = () => {
         resetForm()
         alert(`✅ Blog ${editingBlog ? 'updated' : 'created'} successfully!`)
       } else {
-        console.log('API not available, using local storage fallback')
-        // Fallback for dev mode when API is not available
-        alert(`✅ Blog ${editingBlog ? 'updated' : 'created'} successfully! (Saved locally for development)`)
-        setShowEditor(false)
-        setEditingBlog(null)
-        resetForm()
+        let errorMsg = 'Failed to save blog.'
+        try {
+          const err = await response.json()
+          if (err?.error) errorMsg = err.error
+        } catch {}
+        alert(`❌ ${errorMsg} (status ${response.status})`)
       }
     } catch (error) {
-      // API connection failed - using local storage fallback
-      // Fallback for dev mode when API connection fails
-      alert(`✅ Blog ${editingBlog ? 'updated' : 'created'} successfully! (Saved locally for development)`)
-      setShowEditor(false)
-      setEditingBlog(null)
-      resetForm()
+      alert('❌ Network or server error while saving blog. Please try again.')
     }
   }
 
@@ -153,9 +148,16 @@ const BlogsAdminContent = () => {
       const response = await fetch(`/api/blogs?id=${id}`, { method: 'DELETE' })
       if (response.ok) {
         await fetchBlogs()
+      } else {
+        let errorMsg = 'Failed to delete blog.'
+        try {
+          const err = await response.json()
+          if (err?.error) errorMsg = err.error
+        } catch {}
+        alert(`❌ ${errorMsg} (status ${response.status})`)
       }
     } catch (error) {
-      console.error('Error deleting blog:', error)
+      alert('❌ Network or server error while deleting blog.')
     }
   }
 
@@ -175,22 +177,15 @@ const BlogsAdminContent = () => {
         }
         alert(statusMessages[status])
       } else {
-        // Fallback for dev mode
-        const statusMessages = {
-          'published': '✅ Blog approved and published successfully! (Local dev mode)',
-          'draft': '✅ Blog moved to draft successfully! (Local dev mode)',
-          'pending': '✅ Blog marked as pending review! (Local dev mode)'
-        }
-        alert(statusMessages[status])
+        let errorMsg = 'Failed to update blog status.'
+        try {
+          const err = await response.json()
+          if (err?.error) errorMsg = err.error
+        } catch {}
+        alert(`❌ ${errorMsg} (status ${response.status})`)
       }
     } catch (error) {
-      console.log('API connection failed for status update, using local fallback:', error)
-      const statusMessages = {
-        'published': '✅ Blog approved and published successfully! (Local dev mode)',
-        'draft': '✅ Blog moved to draft successfully! (Local dev mode)',
-        'pending': '✅ Blog marked as pending review! (Local dev mode)'
-      }
-      alert(statusMessages[status])
+      alert('❌ Network or server error while updating status. Please try again.')
     }
   }
 

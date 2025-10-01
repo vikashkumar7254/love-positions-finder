@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import { Redis } from '@upstash/redis'
 
 // Support local dev without Upstash: fall back to in-memory storage
@@ -114,7 +113,15 @@ function calculateSEOScore(blog: Partial<BlogPost>): number {
   return Math.min(score, 100)
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: any, res: any) {
+  // CORS headers for Vercel serverless
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end()
+  }
   try {
     if (req.method === 'GET') {
       const { id, slug, status, category, featured } = req.query

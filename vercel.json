@@ -4,5 +4,9 @@
       "source": "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)",
       "destination": "/index.html"
     }
+  ],
+  "redirects": [
+    { "source": "http://scratchsexpositions.com/(.*)", "destination": "https://scratchsexpositions.com/$1", "permanent": true },
+    { "source": "https://www.scratchsexpositions.com/(.*)", "destination": "https://scratchsexpositions.com/$1", "permanent": true }
   ]
 }

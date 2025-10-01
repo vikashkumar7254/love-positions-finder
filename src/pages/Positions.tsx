@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanc
 import { Button } from "@/components/ui/enhanced-button"
 import { Sparkles, Star, Grid3X3, Shuffle, ArrowRight, Heart, TrendingUp } from "lucide-react"
 import { positions, getPopularPositions, getFeaturedPositions } from "@/data/positions"
+import { Helmet } from "react-helmet-async"
 
 const Positions = () => {
   const popularPositions = getPopularPositions().slice(0, 3)
@@ -17,6 +18,16 @@ const Positions = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
+      <Helmet>
+        <title>Positions Collection | 500+ Romantic & Passionate Styles</title>
+        <meta name="description" content="Browse 500+ intimate positions across romantic, passionate, adventurous, and mixed styles. Filters, featured, and most popular." />
+        <link rel="canonical" href={`${window.location.origin}/positions`} />
+        <meta property="og:title" content="Positions Collection | 500+ Romantic & Passionate Styles" />
+        <meta property="og:description" content="Browse featured and popular intimate positions. Discover your next favorite." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${window.location.origin}/positions`} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-20 px-6 text-center">

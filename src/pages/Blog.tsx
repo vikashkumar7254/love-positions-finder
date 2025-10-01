@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
+import { Helmet } from "react-helmet-async"
 import { Link } from "react-router-dom"
 import { Calendar, Clock, Heart, Search } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -176,6 +177,22 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Love & Intimacy Blog | Expert Relationship Advice</title>
+        <meta name="description" content="Expert insights on love, relationships, and intimacy. Tips, science, and romance guides from experts." />
+        <link rel="canonical" href={`${window.location.origin}/blog`} />
+        <meta property="og:title" content="Love & Intimacy Blog | Expert Relationship Advice" />
+        <meta property="og:description" content="Expert insights on love, relationships, and intimacy." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${window.location.origin}/blog`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Blog',
+          name: 'Love & Intimacy Blog',
+          url: `${window.location.origin}/blog`
+        })}</script>
+      </Helmet>
       
       {/* Header */}
       <section className="pt-24 pb-12 bg-gradient-romantic text-white">

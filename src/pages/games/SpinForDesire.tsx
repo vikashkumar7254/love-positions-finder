@@ -3,15 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanc
 import { Button } from "@/components/ui/enhanced-button"
 import { RotateCcw, Play, Heart, Star, Sparkles, Zap, Gift, Crown, RefreshCw } from "lucide-react"
 import { desireItems } from "@/data/desireItems"
+import { getSpinDesires, type SpinDesireItem } from "@/lib/spinDesiresApi"
 import { getCategoryImage } from "@/utils/imageManager"
 import LazyImage from "@/components/LazyImage"
+import { Helmet } from "react-helmet-async"
 
 interface DesireItem {
   id: string
   title: string
   description: string
   image: string
-  category: 'romantic' | 'passionate' | 'playful' | 'sensual'
+  category: 'romantic' | 'passionate' | 'playful' | 'sensual' | 'luxurious'
   color: string
 }
 
@@ -23,45 +25,45 @@ const SpinForDesire = () => {
   const [allItems, setAllItems] = useState<DesireItem[]>([])
   const wheelRef = useRef<HTMLDivElement>(null)
 
-  // Load custom items from localStorage
-  const loadCustomItems = (): DesireItem[] => {
-    try {
-      const raw = localStorage.getItem('spin_for_desire_custom')
-      const arr = raw ? JSON.parse(raw) as DesireItem[] : []
-      return Array.isArray(arr) ? arr : []
-    } catch {
-      return []
+  const categoryColor = (category: DesireItem["category"]): string => {
+    switch (category) {
+      case 'romantic': return '#ff6b9d'
+      case 'passionate': return '#f8b500'
+      case 'playful': return '#6c5ce7'
+      case 'sensual': return '#c44569'
+      case 'luxurious': return '#f59e0b'
+      default: return '#6c5ce7'
     }
   }
 
-  // Load all items (defaults + custom)
+  // Load items: prefer server (admin-managed), fallback to defaults
   useEffect(() => {
-    const customItems = loadCustomItems()
-    const merged = [...desireItems, ...customItems]
-    setAllItems(merged)
-  }, [])
-
-  // Listen for localStorage changes
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'spin_for_desire_custom') {
-        const customItems = loadCustomItems()
-        const merged = [...desireItems, ...customItems]
-        setAllItems(merged)
+    let mounted = true
+    ;(async () => {
+      try {
+        const apiItems = await getSpinDesires()
+        if (mounted && Array.isArray(apiItems) && apiItems.length > 0) {
+          const mapped: DesireItem[] = apiItems.map((it: SpinDesireItem) => ({
+            id: it.id,
+            title: it.title,
+            description: it.description || '',
+            image: it.image,
+            category: (it.category as DesireItem["category"]) || 'romantic',
+            color: categoryColor((it.category as DesireItem["category"]) || 'romantic'),
+          }))
+          setAllItems(mapped)
+          return
+        }
+      } catch {}
+      if (mounted) {
+        // Fallback: local defaults
+        setAllItems(desireItems)
       }
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    window.addEventListener('focus', () => {
-      const customItems = loadCustomItems()
-      const merged = [...desireItems, ...customItems]
-      setAllItems(merged)
-    })
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
-    }
+    })()
+    return () => { mounted = false }
   }, [])
+
+  // If needed, future: subscribe to server updates (skipped for now)
 
   const refreshItems = () => {
     const customItems = loadCustomItems()
@@ -104,12 +106,33 @@ const SpinForDesire = () => {
       case 'passionate': return Zap
       case 'playful': return Star
       case 'sensual': return Crown
+      case 'luxurious': return Gift
       default: return Sparkles
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
+      <Helmet>
+        <title>Spin for Desire | Romantic Wheel Game</title>
+        <meta name="description" content="Spin the romantic wheel and discover your next intimate adventure. Admin-curated images and items for a premium experience." />
+        <link rel="canonical" href={`${window.location.origin}/games/spin-for-desire`} />
+        <meta property="og:title" content="Spin for Desire | Romantic Wheel Game" />
+        <meta property="og:description" content="Spin the romantic wheel and discover your next intimate adventure." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={`${window.location.origin}/games/spin-for-desire`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'Spin for Desire',
+          applicationCategory: 'GameApplication',
+          operatingSystem: 'Web',
+          url: `${window.location.origin}/games/spin-for-desire`,
+          description: 'Spin the wheel and discover curated romantic ideas.',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+        })}</script>
+      </Helmet>
       <main className="pt-24 pb-16">
         <div className="max-w-6xl mx-auto px-6 space-y-8">
           {/* Header */}
