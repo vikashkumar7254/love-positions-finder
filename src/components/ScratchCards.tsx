@@ -255,7 +255,8 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
       } catch {}
       return next
     })
-    // Do not auto-close; let user view the revealed content and close manually
+    // Keep modal open for user to see revealed content
+    // User can close manually by clicking X button
   }
 
   // Keep localStorage in sync if items change but preserve existing reveals

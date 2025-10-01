@@ -84,22 +84,15 @@ const ScratchPosition = () => {
   // Handle visible count changes - reinitialize canvases for newly visible cards
   useEffect(() => {
     if (cards.length > 0 && visibleCount > 0) {
-      console.log('🎨 Reinitializing canvases for visible count:', visibleCount)
-
       // Initialize canvases for newly visible cards
       const startIndex = Math.max(0, visibleCount - 4) // Previous count
       const endIndex = Math.min(visibleCount, cards.length)
-
-      console.log('🎨 Initializing canvases from', startIndex, 'to', endIndex)
 
       setTimeout(() => {
         for (let i = startIndex; i < endIndex; i++) {
           const canvas = canvasRefs.current[i]
           if (canvas) {
-            console.log('🎨 Initializing canvas', i)
             initializeScratchCanvas(canvas, i)
-          } else {
-            console.log('❌ Canvas not found at index', i)
           }
         }
       }, 100)
@@ -162,10 +155,8 @@ const ScratchPosition = () => {
     const load = async () => {
       try {
         const positions = await apiGetPositions()
-        console.log('🌐 Game: Initial API load - positions:', positions.length)
         applyPositions(positions.map(p => ({...p, revealed: false})))
       } catch (e) {
-        console.error('Initial API load failed:', e)
         // Fallback to localStorage (same-origin dev only)
         const fallback = loadPositions()
         applyPositions(fallback)
@@ -182,24 +173,21 @@ const ScratchPosition = () => {
     const refreshFromApi = async (source = 'unknown') => {
       try {
         const positions = await apiGetPositions()
-        console.log(`🔄 Game: Refreshing from ${source}:`, positions.length)
         applyPositions(positions.map(p => ({...p, revealed: false})))
       } catch (e) {
-        console.error('API refresh failed:', e)
+        // API refresh failed, continue with existing data
       }
     }
 
     // Method 1: Storage events (cross-tab)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.storageArea === localStorage) {
-        console.log('📡 Game: Storage event from another tab')
         refreshFromApi('storage-event')
       }
     }
 
     // Method 2: Custom events (same-tab)
     const handleCustomUpdate = (e: CustomEvent) => {
-      console.log('📡 Game: Custom event from admin panel')
       refreshFromApi('custom-event')
     }
 
@@ -208,14 +196,12 @@ const ScratchPosition = () => {
     if (typeof BroadcastChannel !== 'undefined') {
       broadcastChannel = new BroadcastChannel('scratch-positions-sync')
       broadcastChannel.onmessage = (event) => {
-        console.log('📡 Game: BroadcastChannel message received')
         refreshFromApi('broadcast-channel')
       }
     }
 
     // Method 4: Focus events
     const handleFocus = () => {
-      console.log('👁️ Game: Tab focused - checking for updates')
       refreshFromApi('focus-event')
     }
 
@@ -254,22 +240,11 @@ const ScratchPosition = () => {
       pollCount++
       const currentData = localStorage.getItem(STORAGE_KEY)
       
-      // Log every 10th poll for debugging
-      if (pollCount % 10 === 0) {
-        console.log('🔄 POLLING CHECK:', pollCount, 'Current data length:', currentData?.length || 0)
-      }
-
       // Check for any changes in raw data
       if (currentData !== lastKnownData) {
-        console.log('🚨 POLLING: DETECTED CHANGE!')
-        console.log('📊 Old data:', lastKnownData?.substring(0, 50) + '...')
-        console.log('📊 New data:', currentData?.substring(0, 50) + '...')
-
         lastKnownData = currentData
         
         const positions = loadPositions()
-        console.log('📊 Parsed positions:', positions.length)
-        
         setCards(positions)
 
         if (positions.length > 0) {
@@ -283,8 +258,6 @@ const ScratchPosition = () => {
             })
           }, 100)
         }
-
-        console.log('✅ POLLING: GAME UPDATED WITH', positions.length, 'POSITIONS')
       }
     }, 2000)
 
@@ -414,11 +387,13 @@ const ScratchPosition = () => {
         }
       } catch {}
 
-      // Hide canvas with animation
-      canvas.style.opacity = '0'
+      // Hide canvas with animation but keep it visible for a moment
       setTimeout(() => {
-        canvas.style.display = 'none'
-      }, 300)
+        canvas.style.opacity = '0'
+        setTimeout(() => {
+          canvas.style.display = 'none'
+        }, 500)
+      }, 1000)
     }
   }
 
@@ -567,15 +542,18 @@ const ScratchPosition = () => {
                           <img 
                             src={card.image} 
                             alt={card.title}
-                            className="w-full h-full object-cover"
+                            className={`w-full h-full object-cover transition-all duration-500 ${
+                              card.revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                            }`}
                             onError={(e) => {
                               e.currentTarget.src = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center'
                             }}
-                            
                           />
                         </div>
                         {/* Title overlay at bottom */}
-                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-1.5">
+                        <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-1.5 transition-all duration-500 ${
+                          card.revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                        }`}>
                           <div className="text-white font-semibold text-sm drop-shadow-sm">
                             {card.title}
                           </div>
@@ -601,14 +579,7 @@ const ScratchPosition = () => {
                 <div className="text-center mt-8">
                   <button
                     onClick={() => {
-                      console.log('🔍 Show More clicked!')
-                      console.log('📊 Current visibleCount:', visibleCount)
-                      console.log('📊 Total cards:', cards.length)
-                      console.log('📊 Remaining:', cards.length - visibleCount)
-
                       const newCount = Math.min(visibleCount + 4, cards.length)
-                      console.log('📊 New visibleCount will be:', newCount)
-
                       setVisibleCount(newCount)
                     }}
                     className="px-10 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-bold text-lg rounded-xl hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-purple-500/25"
@@ -633,18 +604,16 @@ const ScratchPosition = () => {
               {/* Quick Refresh Button (Dev only) */}
               {isDev && (
                 <div className="text-center mt-8">
-                  <Button
-                    onClick={() => {
-                      console.log('🔄 Quick refresh clicked')
-                      const positions = loadPositions()
-                      console.log('🔄 Found positions:', positions.length)
-                      setCards(positions)
-                      
-                      // Force re-render
-                      setTimeout(() => {
-                        window.location.reload()
-                      }, 100)
-                    }}
+                    <Button
+                      onClick={() => {
+                        const positions = loadPositions()
+                        setCards(positions)
+                        
+                        // Force re-render
+                        setTimeout(() => {
+                          window.location.reload()
+                        }, 100)
+                      }}
                     variant="outline"
                     className="px-6 py-3 bg-purple-500/20 border-purple-500/30 text-white hover:bg-purple-500/30"
                   >
@@ -691,19 +660,8 @@ const ScratchPosition = () => {
                       onClick={() => {
                         // Check all possible storage keys
                         const keys = Object.keys(localStorage)
-                        console.log('🔍 DEBUG: All localStorage keys:', keys)
-                        
                         const rawData = localStorage.getItem(STORAGE_KEY)
-                        console.log('🔍 DEBUG: Raw localStorage data:', rawData)
-                        console.log('🔍 DEBUG: Storage key used:', STORAGE_KEY)
-                        
-                        // Try to find any scratch-related data
                         const scratchKeys = keys.filter(key => key.includes('scratch'))
-                        console.log('🔍 DEBUG: Scratch-related keys:', scratchKeys)
-                        
-                        scratchKeys.forEach(key => {
-                          console.log(`🔍 DEBUG: ${key}:`, localStorage.getItem(key))
-                        })
                         
                         alert(`Storage Key: ${STORAGE_KEY}\nData: ${rawData}\nAll Keys: ${keys.length}\nScratch Keys: ${scratchKeys.join(', ')}`)
                       }}
@@ -736,9 +694,7 @@ const ScratchPosition = () => {
                     
                     <Button
                       onClick={() => {
-                        console.log('🔄 Force refresh triggered')
                         const positions = loadPositions()
-                        console.log('🔄 Loaded positions:', positions)
                         setCards(positions)
                       }}
                       variant="outline"

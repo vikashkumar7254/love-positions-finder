@@ -110,7 +110,7 @@ const SEOManagement = () => {
         setConfig(JSON.parse(saved))
       }
     } catch (error) {
-      console.error('Error loading SEO config:', error)
+      // Error loading SEO config, use defaults
     }
   }
 
@@ -128,7 +128,7 @@ const SEOManagement = () => {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
-      console.error('Error saving SEO config:', error)
+      // Error saving SEO config
     } finally {
       setLoading(false)
     }
@@ -136,25 +136,13 @@ const SEOManagement = () => {
 
   const updateIndexHtml = () => {
     // This would typically be done server-side or via build process
-    // For now, we'll just log the changes needed
-    console.log('Index.html updates needed:', {
-      title: config.siteTitle,
-      description: config.siteDescription,
-      keywords: config.siteKeywords,
-      ogTitle: config.pages.home.ogTitle,
-      ogDescription: config.pages.home.ogDescription,
-      ogImage: config.siteImage,
-      twitterHandle: config.twitterHandle,
-      googleAnalyticsId: config.googleAnalyticsId,
-      googleSiteVerification: config.googleSiteVerification
-    })
+    // For now, we'll just track the changes needed
+    // Future: Update index.html with new meta tags
   }
 
   const updateSitemapApi = () => {
     // Update the sitemap API with new site URL
-    console.log('Sitemap API updates needed:', {
-      siteUrl: config.siteUrl
-    })
+    // Future: Update sitemap generation with new URL
   }
 
   const testSEO = (page: string) => {

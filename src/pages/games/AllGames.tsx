@@ -5,53 +5,6 @@ import { Gamepad2, Heart, Dice1, Dice6, MessageCircle, Clock, Users, Sparkles, M
 import { games } from "@/data/games"
 
 const AllGames = () => {
-  const gameDetails = {
-    'passion-dice': {
-      route: '/games/passion-dice',
-      featured: true,
-      description: 'Roll the dice for random intimate actions and discover new ways to pleasure each other'
-    },
-    'erotic-massage': {
-      route: '/games/erotic-massage',
-      featured: true,
-      description: 'Master the art of sensual touch. Learn tantalizing techniques to find secret pleasure spots and build waves of sensation that will drive your partner wild.'
-    },
-    'fantasy-roleplay': {
-      route: '/games/fantasy-roleplay',
-      featured: true,
-      description: 'Live out your wildest fantasies! From seductive strangers to forbidden encounters, discover scenarios that will unleash your passionate alter egos.'
-    },
-    'seductive-conversation': {
-      route: '/games/seductive-conversation',
-      featured: true,
-      description: 'Ignite desire through words. These provocative questions explore your deepest fantasies, boundaries, and desires while building intense anticipation.'
-    },
-    'pleasure-map': {
-      route: '/games/pleasure-map',
-      featured: true,
-      description: 'Embark on a journey of sensual discovery. Map out every sensitive spot and learn expert techniques to create waves of intense pleasure.'
-    },
-    'desire-explorer': {
-      route: '/games/desire-explorer',
-      featured: true,
-      description: 'Uncover shared fantasies and discover new realms of pleasure together. Match your desires and unlock exciting new ways to play.'
-    },
-    'scratch-position': {
-      route: '/games/scratch-position',
-      featured: true,
-      description: 'Discover hidden intimate positions by scratching the cards. Each reveal brings new excitement and possibilities for your intimate moments.'
-    },
-    'random-position': {
-      route: '/games/random-position',
-      featured: true,
-      description: 'Get instant random position suggestions with a single click. Perfect for spontaneous intimate moments and discovering new favorites.'
-    },
-    'spin-for-desire': {
-      route: '/games/spin-for-desire',
-      featured: true,
-      description: 'Spin the wheel of passion and discover your next romantic adventure. Let fate decide your intimate moment!'
-    }
-  }
 
 
   return (
