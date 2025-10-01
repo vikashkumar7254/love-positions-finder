@@ -577,11 +577,14 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: 'Method not allowed' })
   } catch (error) {
     console.error('Blog API error:', error)
-    console.error('Error details:', error.message)
-    console.error('Stack trace:', error.stack)
+    console.error('Error details:', error instanceof Error ? error.message : String(error))
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace')
+    
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    
     return res.status(500).json({ 
       error: 'Internal server error',
-      details: error.message,
+      details: errorMessage,
       timestamp: new Date().toISOString()
     })
   }

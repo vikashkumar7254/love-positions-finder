@@ -93,6 +93,8 @@ const BlogsAdminContent = () => {
       if (response.ok) {
         const data = await response.json()
         console.log('📊 Blogs data:', data)
+        console.log('📊 Data type:', typeof data, 'Is array:', Array.isArray(data))
+        console.log('📊 First blog:', data[0])
         setBlogs(data)
       } else {
         console.error('❌ Failed to fetch blogs:', response.status)
@@ -260,12 +262,24 @@ const BlogsAdminContent = () => {
   }
 
   const filteredBlogs = blogs.filter(blog => {
+    console.log('🔍 Filtering blog:', { 
+      title: blog.title, 
+      status: blog.status, 
+      category: blog.category,
+      searchTerm,
+      statusFilter,
+      categoryFilter
+    })
+    
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          blog.content.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || blog.status === statusFilter
     const matchesCategory = categoryFilter === 'all' || blog.category === categoryFilter
     
-    return matchesSearch && matchesStatus && matchesCategory
+    const result = matchesSearch && matchesStatus && matchesCategory
+    console.log('🔍 Filter result:', { matchesSearch, matchesStatus, matchesCategory, result })
+    
+    return result
   })
 
   const getStatusColor = (status: string) => {
