@@ -17,6 +17,15 @@ const Index = () => {
 
     document.title = title
 
+    // Google site verification
+    let googleVerification = document.querySelector('meta[name="google-site-verification"]') as HTMLMetaElement | null
+    if (!googleVerification) {
+      googleVerification = document.createElement('meta')
+      googleVerification.name = 'google-site-verification'
+      document.head.appendChild(googleVerification)
+    }
+    googleVerification.content = 'UbHLGFZRitXzyw7wZ0OpUI1Aveb7wpsfy9rqxS1cTRM'
+
     // Basic meta tags
     let meta = document.querySelector('meta[name="description"]') as HTMLMetaElement | null
     if (!meta) {
