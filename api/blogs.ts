@@ -190,20 +190,40 @@ export default async function handler(req: any, res: any) {
     
     if (req.method === 'POST') {
       console.log('📝 Creating new blog post...')
+      console.log('📊 Raw request body:', req.body)
+      
       const blogData = req.body as Partial<BlogPost>
       
-      console.log('📊 Blog data received:', blogData)
+      // Clean the data to ensure all fields are JSON serializable
+      const cleanBlogData = {
+        title: String(blogData.title || ''),
+        content: String(blogData.content || ''),
+        author: String(blogData.author || ''),
+        excerpt: String(blogData.excerpt || ''),
+        slug: String(blogData.slug || ''),
+        authorImage: String(blogData.authorImage || ''),
+        featuredImage: String(blogData.featuredImage || ''),
+        category: String(blogData.category || ''),
+        tags: Array.isArray(blogData.tags) ? blogData.tags.map(String) : [],
+        status: String(blogData.status || 'draft'),
+        metaTitle: String(blogData.metaTitle || ''),
+        metaDescription: String(blogData.metaDescription || ''),
+        metaKeywords: String(blogData.metaKeywords || ''),
+        featured: Boolean(blogData.featured)
+      }
+      
+      console.log('📊 Cleaned blog data:', cleanBlogData)
       
       // Validate required fields
-      if (!blogData.title || !blogData.content || !blogData.author) {
-        console.error('❌ Missing required fields:', { title: !!blogData.title, content: !!blogData.content, author: !!blogData.author })
+      if (!cleanBlogData.title || !cleanBlogData.content || !cleanBlogData.author) {
+        console.error('❌ Missing required fields:', { title: !!cleanBlogData.title, content: !!cleanBlogData.content, author: !!cleanBlogData.author })
         return res.status(400).json({ error: 'Title, content, and author are required' })
       }
       
       // Generate ID and slug
       const counter = await redis.incr(BLOG_COUNTER_KEY)
       const id = `blog_${counter}`
-      const slug = blogData.slug || generateSlug(blogData.title)
+      const slug = cleanBlogData.slug || generateSlug(cleanBlogData.title)
       
       // Check if slug already exists
       const allBlogs = await redis.hgetall(BLOG_KEY)
@@ -217,30 +237,30 @@ export default async function handler(req: any, res: any) {
       }
       
       const now = new Date().toISOString()
-      const readTime = calculateReadTime(blogData.content)
+      const readTime = calculateReadTime(cleanBlogData.content)
       
       const newBlog: BlogPost = {
         id,
-        title: blogData.title,
+        title: cleanBlogData.title,
         slug,
-        excerpt: blogData.excerpt || blogData.content.substring(0, 200) + '...',
-        content: blogData.content,
-        author: blogData.author,
-        authorImage: blogData.authorImage,
-        featuredImage: blogData.featuredImage || 'https://images.unsplash.com/photo-1516575080133-8f97cda8c7b8?w=800&h=400&fit=crop',
-        category: blogData.category || 'Relationships',
-        tags: blogData.tags || [],
-        status: blogData.status || 'draft',
-        metaTitle: blogData.metaTitle || blogData.title,
-        metaDescription: blogData.metaDescription || blogData.excerpt || blogData.content.substring(0, 160),
-        metaKeywords: blogData.metaKeywords,
+        excerpt: cleanBlogData.excerpt || cleanBlogData.content.substring(0, 200) + '...',
+        content: cleanBlogData.content,
+        author: cleanBlogData.author,
+        authorImage: cleanBlogData.authorImage,
+        featuredImage: cleanBlogData.featuredImage || 'https://images.unsplash.com/photo-1516575080133-8f97cda8c7b8?w=800&h=400&fit=crop',
+        category: cleanBlogData.category || 'Relationships',
+        tags: cleanBlogData.tags || [],
+        status: cleanBlogData.status as 'draft' | 'published' | 'pending',
+        metaTitle: cleanBlogData.metaTitle || cleanBlogData.title,
+        metaDescription: cleanBlogData.metaDescription || cleanBlogData.excerpt || cleanBlogData.content.substring(0, 160),
+        metaKeywords: cleanBlogData.metaKeywords,
         readTime,
         views: 0,
         likes: 0,
         createdAt: now,
         updatedAt: now,
-        publishedAt: blogData.status === 'published' ? now : undefined,
-        featured: blogData.featured || false,
+        publishedAt: cleanBlogData.status === 'published' ? now : undefined,
+        featured: cleanBlogData.featured || false,
         seoScore: 0
       }
       
