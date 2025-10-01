@@ -140,8 +140,22 @@ export default async function handler(req: any, res: any) {
           return res.status(404).json({ error: 'Blog not found' })
         }
         
+        // Parse blog data safely
+        let blogData
+        if (typeof blog === 'string') {
+          try {
+            blogData = JSON.parse(blog)
+          } catch (error) {
+            console.error('❌ Failed to parse blog string:', error)
+            return res.status(500).json({ error: 'Failed to parse blog data' })
+          }
+        } else if (typeof blog === 'object' && blog !== null) {
+          blogData = blog
+        } else {
+          return res.status(500).json({ error: 'Invalid blog data format' })
+        }
+        
         // Increment view count
-        const blogData = JSON.parse(blog as string)
         blogData.views = (blogData.views || 0) + 1
         await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(blogData) })
         
@@ -152,7 +166,19 @@ export default async function handler(req: any, res: any) {
         // Get single blog by slug
         const allBlogs = await redis.hgetall(BLOG_KEY)
         const blog = Object.values(allBlogs || {}).find((blogStr: any) => {
-          const blogData = JSON.parse(blogStr)
+          let blogData
+          if (typeof blogStr === 'string') {
+            try {
+              blogData = JSON.parse(blogStr)
+            } catch (error) {
+              console.error('❌ Failed to parse blog string:', error)
+              return false
+            }
+          } else if (typeof blogStr === 'object' && blogStr !== null) {
+            blogData = blogStr
+          } else {
+            return false
+          }
           return blogData.slug === slug
         })
         
@@ -160,7 +186,18 @@ export default async function handler(req: any, res: any) {
           return res.status(404).json({ error: 'Blog not found' })
         }
         
-        const blogData = JSON.parse(blog as string)
+        let blogData
+        if (typeof blog === 'string') {
+          try {
+            blogData = JSON.parse(blog)
+          } catch (error) {
+            console.error('❌ Failed to parse blog string:', error)
+            return res.status(500).json({ error: 'Failed to parse blog data' })
+          }
+        } else {
+          blogData = blog
+        }
+        
         // Increment view count
         blogData.views = (blogData.views || 0) + 1
         await redis.hset(BLOG_KEY, { [blogData.id]: JSON.stringify(blogData) })
@@ -170,7 +207,23 @@ export default async function handler(req: any, res: any) {
       
       // Get all blogs with filters
       const allBlogs = await redis.hgetall(BLOG_KEY)
-      let blogs: BlogPost[] = Object.values(allBlogs || {}).map((blogStr: any) => JSON.parse(blogStr))
+      let blogs: BlogPost[] = Object.values(allBlogs || {}).map((blogStr: any) => {
+        // Handle both string and object data from Redis
+        if (typeof blogStr === 'string') {
+          try {
+            return JSON.parse(blogStr)
+          } catch (error) {
+            console.error('❌ Failed to parse blog string:', error)
+            return null
+          }
+        } else if (typeof blogStr === 'object' && blogStr !== null) {
+          // Already an object, return as is
+          return blogStr
+        } else {
+          console.error('❌ Invalid blog data type:', typeof blogStr)
+          return null
+        }
+      }).filter(Boolean) // Remove null values
       
       // Apply filters
       if (status) {
