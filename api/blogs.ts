@@ -189,10 +189,14 @@ export default async function handler(req: any, res: any) {
     }
     
     if (req.method === 'POST') {
+      console.log('📝 Creating new blog post...')
       const blogData = req.body as Partial<BlogPost>
+      
+      console.log('📊 Blog data received:', blogData)
       
       // Validate required fields
       if (!blogData.title || !blogData.content || !blogData.author) {
+        console.error('❌ Missing required fields:', { title: !!blogData.title, content: !!blogData.content, author: !!blogData.author })
         return res.status(400).json({ error: 'Title, content, and author are required' })
       }
       
@@ -242,8 +246,10 @@ export default async function handler(req: any, res: any) {
       
       // Calculate SEO score
       newBlog.seoScore = calculateSEOScore(newBlog)
+      console.log('📊 SEO score calculated:', newBlog.seoScore)
       
       await redis.hset(BLOG_KEY, { [id]: JSON.stringify(newBlog) })
+      console.log('✅ Blog saved to database')
       
       return res.status(201).json(newBlog)
     }
@@ -325,6 +331,12 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: 'Method not allowed' })
   } catch (error) {
     console.error('Blog API error:', error)
-    return res.status(500).json({ error: 'Internal server error' })
+    console.error('Error details:', error.message)
+    console.error('Stack trace:', error.stack)
+    return res.status(500).json({ 
+      error: 'Internal server error',
+      details: error.message,
+      timestamp: new Date().toISOString()
+    })
   }
 }

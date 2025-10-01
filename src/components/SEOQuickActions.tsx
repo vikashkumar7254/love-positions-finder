@@ -16,6 +16,10 @@ import { toast } from "@/hooks/use-toast"
 const SEOQuickActions = () => {
   const [isOpen, setIsOpen] = useState(false)
   
+  // Only show for admin users
+  const isAdmin = localStorage.getItem('admin_authenticated') === 'true'
+  if (!isAdmin) return null
+  
   // Check if SEO Quick Actions are enabled
   const isEnabled = localStorage.getItem('seo_config') ? 
     JSON.parse(localStorage.getItem('seo_config') || '{}').enableSEOQuickActions !== false : true
