@@ -33,6 +33,12 @@ const memory = {
     if (typeof globalThis.__BLOGS_COUNTER__ !== 'number') globalThis.__BLOGS_COUNTER__ = 0
     globalThis.__BLOGS_COUNTER__! += 1
     return globalThis.__BLOGS_COUNTER__!
+  },
+  async del(_key: string) {
+    if (_key === BLOG_COUNTER_KEY) {
+      globalThis.__BLOGS_COUNTER__ = 0
+    }
+    return 1
   }
 }
 
@@ -192,6 +198,7 @@ export default async function handler(req: any, res: any) {
     if (req.method === 'POST') {
       console.log('📝 Creating new blog post...')
       console.log('📊 Raw request body:', req.body)
+      console.log('🔧 Using Redis:', useRedis ? 'Yes' : 'No (memory fallback)')
       
       const blogData = req.body as Partial<BlogPost>
       
@@ -227,8 +234,16 @@ export default async function handler(req: any, res: any) {
         return res.status(400).json({ error: 'Title, content, and author are required' })
       }
       
-      // Generate ID and slug
-      const counter = await redis.incr(BLOG_COUNTER_KEY)
+      // Generate ID and slug - ensure counter is properly initialized
+      let counter: number
+      try {
+        counter = await redis.incr(BLOG_COUNTER_KEY)
+      } catch (error) {
+        // If incr fails, the key might contain non-integer data, so reset it
+        console.log('🔄 Resetting blog counter due to error:', error.message)
+        await redis.del(BLOG_COUNTER_KEY)
+        counter = await redis.incr(BLOG_COUNTER_KEY)
+      }
       const id = `blog_${counter}`
       const slug = cleanBlogData.slug || generateSlug(cleanBlogData.title)
       
