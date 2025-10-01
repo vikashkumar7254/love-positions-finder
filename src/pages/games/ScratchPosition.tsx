@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/enhanced-button"
 import { Eye, Gift, RefreshCw } from "lucide-react"
 
 const STORAGE_KEY = 'scratch_positions_all'
+const REVEALED_KEY = 'scratch_positions_revealed_v1'
+const VISIBLE_KEY = 'scratch_positions_visibleCount_v1'
+const DAY_MS = 24 * 60 * 60 * 1000
 
 type ScratchCard = {
   id: string
@@ -25,18 +28,51 @@ const ScratchPosition = () => {
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([])
   const isDev = (import.meta as any)?.env?.DEV || (import.meta as any)?.env?.VITE_SHOW_DEBUG === 'true'
 
-  // Update visible count when cards change
+  // Restore persisted visible count on mount
   useEffect(() => {
-    if (cards.length > 0 && cards.length < visibleCount) {
+    try {
+      const raw = localStorage.getItem(VISIBLE_KEY)
+      if (raw) {
+        const parsed = parseInt(raw, 10)
+        if (!Number.isNaN(parsed) && parsed > 0) {
+          setVisibleCount(parsed)
+        }
+      }
+    } catch {}
+  }, [])
+
+  // Clamp visible count if card list shrinks and persist changes
+  useEffect(() => {
+    if (cards.length > 0 && visibleCount > cards.length) {
       setVisibleCount(cards.length)
-    } else if (cards.length >= 4) {
-      setVisibleCount(4) // Reset to 4 if we have enough positions
     }
+    try {
+      localStorage.setItem(VISIBLE_KEY, String(visibleCount))
+    } catch {}
   }, [cards.length, visibleCount])
 
   // Helper to apply positions to UI and re-init canvases
   const applyPositions = (positions: ScratchCard[]) => {
-    setCards(positions)
+    // Merge with persisted revealed state (24h)
+    const now = Date.now()
+    let revealMap: Record<string, number> = {}
+    try {
+      const raw = localStorage.getItem(REVEALED_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, number>
+        if (parsed && typeof parsed === 'object') {
+          revealMap = parsed
+        }
+      }
+    } catch {}
+
+    const merged = positions.map(p => {
+      const ts = revealMap[p.id]
+      const withinDay = typeof ts === 'number' && (now - ts) < DAY_MS
+      return { ...p, revealed: withinDay || !!p.revealed }
+    })
+
+    setCards(merged)
     canvasRefs.current = canvasRefs.current.slice(0, positions.length)
     setTimeout(() => {
       canvasRefs.current.forEach((canvas, index) => {
@@ -191,7 +227,7 @@ const ScratchPosition = () => {
       } catch (error) {
         console.error('Polling error:', error)
       }
-    }, 1000)
+    }, 5000)
 
     // Listen for all sync events
     window.addEventListener('storage', handleStorageChange)
@@ -250,7 +286,7 @@ const ScratchPosition = () => {
 
         console.log('✅ POLLING: GAME UPDATED WITH', positions.length, 'POSITIONS')
       }
-    }, 200) // More aggressive polling - every 200ms
+    }, 2000)
 
     return () => clearInterval(pollInterval)
   }, [])
@@ -366,6 +402,17 @@ const ScratchPosition = () => {
       setCards(prev => prev.map((card, i) =>
         i === index ? { ...card, revealed: true } : card
       ))
+
+      // Persist reveal timestamp (24h)
+      try {
+        const raw = localStorage.getItem(REVEALED_KEY)
+        const map = raw ? (JSON.parse(raw) as Record<string, number>) : {}
+        const id = cards[index]?.id
+        if (id) {
+          map[id] = Date.now()
+          localStorage.setItem(REVEALED_KEY, JSON.stringify(map))
+        }
+      } catch {}
 
       // Hide canvas with animation
       canvas.style.opacity = '0'

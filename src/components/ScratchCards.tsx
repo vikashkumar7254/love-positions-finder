@@ -114,9 +114,7 @@ const ScratchCardModal = ({ item, onClose, onReveal }: ScratchCardModalProps) =>
       if (progress > 30 && !isScratched) {
         setIsScratched(true)
         onReveal(item.id)
-        setTimeout(() => {
-          onClose()
-        }, 500)
+        // Keep modal open after reveal; user can close manually
       }
     }
 
@@ -226,7 +224,18 @@ interface ScratchCardsProps {
 
 const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) => {
   const [expandedCard, setExpandedCard] = useState<string | number | null>(null)
+  const STORAGE_KEY = 'scratch_component_revealed_v1'
   const [revealed, setRevealed] = useState<Record<string | number, boolean>>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY)
+      if (raw) {
+        const parsed = JSON.parse(raw) as { map: Record<string, boolean>; savedAt: number }
+        // 24-hour expiry
+        if (parsed && typeof parsed.savedAt === 'number' && Date.now() - parsed.savedAt < 24 * 60 * 60 * 1000) {
+          return parsed.map as Record<string | number, boolean>
+        }
+      }
+    } catch {}
     const initial: Record<string | number, boolean> = {}
     items.forEach((it, i) => (initial[it.id] = !!it.revealed || i < 2))
     return initial
@@ -239,9 +248,22 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
   }
 
   const handleScratch = (id: string | number) => {
-    setRevealed(prev => ({ ...prev, [id]: true }))
-    setExpandedCard(null) // Close expanded view after revealing
+    setRevealed(prev => {
+      const next = { ...prev, [id]: true }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ map: next, savedAt: Date.now() }))
+      } catch {}
+      return next
+    })
+    // Do not auto-close; let user view the revealed content and close manually
   }
+
+  // Keep localStorage in sync if items change but preserve existing reveals
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ map: revealed, savedAt: Date.now() }))
+    } catch {}
+  }, [revealed])
 
   const anyMedia = useMemo(() => items.some(i => i.mediaUrl), [items])
 

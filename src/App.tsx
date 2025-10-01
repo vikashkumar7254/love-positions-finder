@@ -44,6 +44,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
+import SEOManagement from "./pages/admin/SEOManagement";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
@@ -111,6 +112,7 @@ const App = () => {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/blogs" element={<BlogsAdmin />} />
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
+              <Route path="/admin/seo" element={<SEOManagement />} />
               
               {/* Other Routes */}
               <Route path="/journey-planner" element={<JourneyPlanner />} />

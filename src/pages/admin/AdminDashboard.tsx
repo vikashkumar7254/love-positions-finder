@@ -19,7 +19,10 @@ import {
   BarChart3,
   Gift,
   Sparkles,
-  Tag
+  Tag,
+  Search,
+  FileText,
+  Globe
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
@@ -118,6 +121,18 @@ const AdminDashboardContent = () => {
       actions: [
         { label: "View Analytics", href: "#", icon: TrendingUp },
         { label: "User Reports", href: "#", icon: Users }
+      ]
+    },
+    {
+      title: "SEO Management",
+      description: "Manage meta tags, titles, descriptions, and SEO settings",
+      icon: Search,
+      color: "from-green-500 to-emerald-600",
+      stats: "SEO optimized",
+      actions: [
+        { label: "SEO Management", href: "/admin/seo", icon: Search },
+        { label: "Meta Tags Editor", href: "/admin/seo", icon: FileText },
+        { label: "Sitemap & Robots", href: "/admin/seo", icon: Globe }
       ]
     },
     {
