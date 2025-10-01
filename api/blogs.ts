@@ -13,13 +13,19 @@ declare global {
 
 const memory = {
   async hgetall(_key: string) {
-    return globalThis.__BLOGS_STORE__ || {}
+    const store = globalThis.__BLOGS_STORE__ || {}
+    console.log('🔍 Memory store data:', store)
+    return store
   },
   async hget(_key: string, field: string) {
-    return (globalThis.__BLOGS_STORE__ || {})[field]
+    const store = globalThis.__BLOGS_STORE__ || {}
+    const value = store[field]
+    console.log('🔍 Memory hget:', { field, value, type: typeof value })
+    return value
   },
   async hset(_key: string, data: Record<string, string>) {
     if (!globalThis.__BLOGS_STORE__) globalThis.__BLOGS_STORE__ = {}
+    console.log('🔍 Memory hset data:', data)
     Object.assign(globalThis.__BLOGS_STORE__, data)
     return 'OK'
   },
@@ -39,6 +45,12 @@ const memory = {
       globalThis.__BLOGS_COUNTER__ = 0
     }
     return 1
+  },
+  async get(_key: string) {
+    if (_key === BLOG_COUNTER_KEY) {
+      return globalThis.__BLOGS_COUNTER__ || 0
+    }
+    return null
   }
 }
 
@@ -131,7 +143,27 @@ export default async function handler(req: any, res: any) {
   }
   try {
     if (req.method === 'GET') {
-      const { id, slug, status, category, featured } = req.query
+      const { id, slug, status, category, featured, debug } = req.query
+      
+      // Debug endpoint to clear data
+      if (debug === 'clear') {
+        console.log('🧹 Clearing all blog data...')
+        await redis.del(BLOG_KEY)
+        await redis.del(BLOG_COUNTER_KEY)
+        return res.status(200).json({ message: 'Data cleared successfully' })
+      }
+      
+      // Debug endpoint to check data
+      if (debug === 'check') {
+        const allBlogs = await redis.hgetall(BLOG_KEY)
+        const counter = await redis.get(BLOG_COUNTER_KEY)
+        return res.status(200).json({ 
+          blogCount: Object.keys(allBlogs || {}).length,
+          counter: counter,
+          sampleData: Object.entries(allBlogs || {}).slice(0, 2),
+          usingRedis: useRedis
+        })
+      }
       
       if (id) {
         // Get single blog by ID
@@ -207,23 +239,34 @@ export default async function handler(req: any, res: any) {
       
       // Get all blogs with filters
       const allBlogs = await redis.hgetall(BLOG_KEY)
-      let blogs: BlogPost[] = Object.values(allBlogs || {}).map((blogStr: any) => {
+      console.log('🔍 Raw Redis data:', allBlogs)
+      console.log('🔍 Data types:', Object.entries(allBlogs || {}).map(([key, value]) => ({ key, type: typeof value, isString: typeof value === 'string' })))
+      
+      let blogs: BlogPost[] = Object.values(allBlogs || {}).map((blogStr: any, index: number) => {
+        console.log(`🔍 Processing blog ${index}:`, { type: typeof blogStr, isString: typeof blogStr === 'string', isObject: typeof blogStr === 'object' })
+        
         // Handle both string and object data from Redis
         if (typeof blogStr === 'string') {
           try {
-            return JSON.parse(blogStr)
+            const parsed = JSON.parse(blogStr)
+            console.log(`✅ Successfully parsed blog ${index}`)
+            return parsed
           } catch (error) {
-            console.error('❌ Failed to parse blog string:', error)
+            console.error(`❌ Failed to parse blog string ${index}:`, error)
+            console.error('❌ Raw string data:', blogStr)
             return null
           }
         } else if (typeof blogStr === 'object' && blogStr !== null) {
           // Already an object, return as is
+          console.log(`✅ Blog ${index} is already an object`)
           return blogStr
         } else {
-          console.error('❌ Invalid blog data type:', typeof blogStr)
+          console.error(`❌ Invalid blog data type ${index}:`, typeof blogStr)
           return null
         }
       }).filter(Boolean) // Remove null values
+      
+      console.log('🔍 Final processed blogs:', blogs.length)
       
       // Apply filters
       if (status) {
