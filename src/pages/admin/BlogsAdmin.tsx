@@ -86,13 +86,21 @@ const BlogsAdminContent = () => {
   const fetchBlogs = async () => {
     try {
       setLoading(true)
+      console.log('🔄 Fetching blogs...')
       const response = await fetch('/api/blogs')
+      console.log('📡 Response status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
+        console.log('📊 Blogs data:', data)
         setBlogs(data)
+      } else {
+        console.error('❌ Failed to fetch blogs:', response.status)
+        const errorText = await response.text()
+        console.error('❌ Error details:', errorText)
       }
     } catch (error) {
-      console.error('Error fetching blogs:', error)
+      console.error('❌ Error fetching blogs:', error)
     } finally {
       setLoading(false)
     }
@@ -163,12 +171,18 @@ const BlogsAdminContent = () => {
 
   const updateBlogStatus = async (id: string, status: 'draft' | 'pending' | 'published') => {
     try {
+      console.log(`🔄 Updating blog ${id} status to ${status}`)
       const response = await fetch(`/api/blogs?id=${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       })
+      
+      console.log('📡 Update response status:', response.status)
+      
       if (response.ok) {
+        const updatedBlog = await response.json()
+        console.log('✅ Blog updated:', updatedBlog)
         await fetchBlogs()
         const statusMessages = {
           'published': '✅ Blog approved and published successfully!',
@@ -182,9 +196,11 @@ const BlogsAdminContent = () => {
           const err = await response.json()
           if (err?.error) errorMsg = err.error
         } catch {}
+        console.error('❌ Update failed:', errorMsg)
         alert(`❌ ${errorMsg} (status ${response.status})`)
       }
     } catch (error) {
+      console.error('❌ Network error:', error)
       alert('❌ Network or server error while updating status. Please try again.')
     }
   }
