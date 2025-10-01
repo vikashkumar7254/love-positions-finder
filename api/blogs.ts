@@ -199,18 +199,18 @@ export default async function handler(req: any, res: any) {
       const cleanBlogData = {
         title: String(blogData.title || ''),
         content: String(blogData.content || ''),
-        author: String(blogData.author || ''),
+        author: String(blogData.author || 'Guest Author'),
         excerpt: String(blogData.excerpt || ''),
         slug: String(blogData.slug || ''),
         authorImage: String(blogData.authorImage || ''),
         featuredImage: String(blogData.featuredImage || ''),
-        category: String(blogData.category || ''),
+        category: String(blogData.category || 'General'),
         tags: Array.isArray(blogData.tags) ? blogData.tags.map(String) : [],
         status: String(blogData.status || 'draft'),
-        metaTitle: String(blogData.metaTitle || ''),
-        metaDescription: String(blogData.metaDescription || ''),
+        metaTitle: String(blogData.metaTitle || blogData.title || ''),
+        metaDescription: String(blogData.metaDescription || blogData.excerpt || ''),
         metaKeywords: String(blogData.metaKeywords || ''),
-        featured: Boolean(blogData.featured)
+        featured: Boolean(blogData.featured || false)
       }
       
       console.log('📊 Cleaned blog data:', cleanBlogData)

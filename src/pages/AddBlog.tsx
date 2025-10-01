@@ -53,16 +53,19 @@ const AddBlog = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title,
-          excerpt,
-          content,
-          author: author || 'Guest Author',
+          title: String(title || ''),
+          excerpt: String(excerpt || ''),
+          content: String(content || ''),
+          author: String(author || 'Guest Author'),
+          authorImage: '',
           featuredImage: '',
-          category: category || 'General',
+          category: String(category || 'General'),
           tags: [],
           status: 'pending',
-          metaTitle: title,
-          metaDescription: excerpt,
+          metaTitle: String(title || ''),
+          metaDescription: String(excerpt || ''),
+          metaKeywords: '',
+          featured: false
         })
       })
 
