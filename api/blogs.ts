@@ -274,14 +274,30 @@ export default async function handler(req: any, res: any) {
       newBlog.seoScore = calculateSEOScore(newBlog)
       console.log('📊 SEO score calculated:', newBlog.seoScore)
       
-      // Ensure all numeric values are properly handled
+      // Ensure all numeric values are properly handled as integers
       const blogForRedis = {
-        ...newBlog,
-        seoScore: Math.max(0, Math.min(100, Number(newBlog.seoScore || 0))),
-        readTime: Math.max(1, Number(newBlog.readTime || 1)),
-        views: Math.max(0, Number(newBlog.views || 0)),
-        likes: Math.max(0, Number(newBlog.likes || 0)),
-        publishedAt: newBlog.publishedAt || null
+        id: String(newBlog.id),
+        title: String(newBlog.title),
+        slug: String(newBlog.slug),
+        excerpt: String(newBlog.excerpt),
+        content: String(newBlog.content),
+        author: String(newBlog.author),
+        authorImage: String(newBlog.authorImage || ''),
+        featuredImage: String(newBlog.featuredImage),
+        category: String(newBlog.category),
+        tags: Array.isArray(newBlog.tags) ? newBlog.tags.map(String) : [],
+        status: String(newBlog.status),
+        metaTitle: String(newBlog.metaTitle || ''),
+        metaDescription: String(newBlog.metaDescription || ''),
+        metaKeywords: String(newBlog.metaKeywords || ''),
+        readTime: Math.max(1, Math.floor(Number(newBlog.readTime || 1))),
+        views: Math.max(0, Math.floor(Number(newBlog.views || 0))),
+        likes: Math.max(0, Math.floor(Number(newBlog.likes || 0))),
+        createdAt: String(newBlog.createdAt),
+        updatedAt: String(newBlog.updatedAt),
+        publishedAt: newBlog.publishedAt ? String(newBlog.publishedAt) : null,
+        seoScore: Math.max(0, Math.min(100, Math.floor(Number(newBlog.seoScore || 0)))),
+        featured: Boolean(newBlog.featured)
       }
       
       console.log('📊 Final blog data for Redis:', blogForRedis)
@@ -381,14 +397,30 @@ export default async function handler(req: any, res: any) {
       // Recalculate SEO score
       updatedBlog.seoScore = calculateSEOScore(updatedBlog)
       
-      // Ensure all numeric values are properly handled
+      // Ensure all numeric values are properly handled as integers
       const blogForRedis = {
-        ...updatedBlog,
-        seoScore: Math.max(0, Math.min(100, Number(updatedBlog.seoScore || 0))),
-        readTime: Math.max(1, Number(updatedBlog.readTime || 1)),
-        views: Math.max(0, Number(updatedBlog.views || 0)),
-        likes: Math.max(0, Number(updatedBlog.likes || 0)),
-        publishedAt: updatedBlog.publishedAt || null
+        id: String(updatedBlog.id),
+        title: String(updatedBlog.title),
+        slug: String(updatedBlog.slug),
+        excerpt: String(updatedBlog.excerpt),
+        content: String(updatedBlog.content),
+        author: String(updatedBlog.author),
+        authorImage: String(updatedBlog.authorImage || ''),
+        featuredImage: String(updatedBlog.featuredImage),
+        category: String(updatedBlog.category),
+        tags: Array.isArray(updatedBlog.tags) ? updatedBlog.tags.map(String) : [],
+        status: String(updatedBlog.status),
+        metaTitle: String(updatedBlog.metaTitle || ''),
+        metaDescription: String(updatedBlog.metaDescription || ''),
+        metaKeywords: String(updatedBlog.metaKeywords || ''),
+        readTime: Math.max(1, Math.floor(Number(updatedBlog.readTime || 1))),
+        views: Math.max(0, Math.floor(Number(updatedBlog.views || 0))),
+        likes: Math.max(0, Math.floor(Number(updatedBlog.likes || 0))),
+        createdAt: String(updatedBlog.createdAt),
+        updatedAt: String(updatedBlog.updatedAt),
+        publishedAt: updatedBlog.publishedAt ? String(updatedBlog.publishedAt) : null,
+        seoScore: Math.max(0, Math.min(100, Math.floor(Number(updatedBlog.seoScore || 0)))),
+        featured: Boolean(updatedBlog.featured)
       }
       
       console.log('📊 Final updated blog data for Redis:', blogForRedis)
