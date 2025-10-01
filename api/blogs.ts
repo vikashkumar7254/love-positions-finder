@@ -475,7 +475,20 @@ export default async function handler(req: any, res: any) {
         return res.status(404).json({ error: 'Blog not found' })
       }
       
-      const blogData = JSON.parse(existingBlog as string)
+      // Parse blog data safely
+      let blogData
+      if (typeof existingBlog === 'string') {
+        try {
+          blogData = JSON.parse(existingBlog)
+        } catch (error) {
+          console.error('❌ Failed to parse existing blog:', error)
+          return res.status(500).json({ error: 'Failed to parse existing blog data' })
+        }
+      } else if (typeof existingBlog === 'object' && existingBlog !== null) {
+        blogData = existingBlog
+      } else {
+        return res.status(500).json({ error: 'Invalid existing blog data format' })
+      }
       
       // Update slug if title changed
       if (updateData.title && updateData.title !== blogData.title) {
@@ -484,7 +497,19 @@ export default async function handler(req: any, res: any) {
         // Check if new slug already exists
         const allBlogs = await redis.hgetall(BLOG_KEY)
         const existingSlug = Object.values(allBlogs || {}).find((blogStr: any) => {
-          const blog = JSON.parse(blogStr)
+          let blog
+          if (typeof blogStr === 'string') {
+            try {
+              blog = JSON.parse(blogStr)
+            } catch (error) {
+              console.error('❌ Failed to parse blog for slug check:', error)
+              return false
+            }
+          } else if (typeof blogStr === 'object' && blogStr !== null) {
+            blog = blogStr
+          } else {
+            return false
+          }
           return blog.slug === newSlug && blog.id !== id
         })
         
