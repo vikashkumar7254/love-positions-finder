@@ -165,6 +165,41 @@ export default async function handler(req: any, res: any) {
         })
       }
       
+      // Debug endpoint to fix empty slugs
+      if (debug === 'fix-slugs') {
+        console.log('🔧 Fixing empty slugs...')
+        const allBlogs = await redis.hgetall(BLOG_KEY)
+        let fixedCount = 0
+        
+        for (const [key, blogStr] of Object.entries(allBlogs || {})) {
+          let blog
+          if (typeof blogStr === 'string') {
+            try {
+              blog = JSON.parse(blogStr)
+            } catch (error) {
+              continue
+            }
+          } else {
+            blog = blogStr
+          }
+          
+          if (!blog.slug || blog.slug.trim() === '') {
+            const newSlug = generateSlug(blog.title)
+            blog.slug = newSlug
+            blog.updatedAt = new Date().toISOString()
+            
+            await redis.hset(BLOG_KEY, { [key]: JSON.stringify(blog) })
+            fixedCount++
+            console.log(`✅ Fixed slug for ${key}: ${newSlug}`)
+          }
+        }
+        
+        return res.status(200).json({ 
+          message: `Fixed ${fixedCount} empty slugs`,
+          fixedCount
+        })
+      }
+      
       if (id) {
         // Get single blog by ID
         const blog = await redis.hget(BLOG_KEY, id as string)
@@ -341,7 +376,11 @@ export default async function handler(req: any, res: any) {
         counter = await redis.incr(BLOG_COUNTER_KEY)
       }
       const id = `blog_${counter}`
-      const slug = cleanBlogData.slug || generateSlug(cleanBlogData.title)
+      const slug = cleanBlogData.slug && cleanBlogData.slug.trim() !== '' 
+        ? cleanBlogData.slug 
+        : generateSlug(cleanBlogData.title)
+      
+      console.log('📊 Generated slug:', slug, 'from title:', cleanBlogData.title)
       
       // Check if slug already exists
       const allBlogs = await redis.hgetall(BLOG_KEY)

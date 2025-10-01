@@ -45,8 +45,20 @@ const Blog = () => {
         const res = await fetch('/api/blogs?status=published')
         if (res.ok) {
           const data = await res.json()
-          setPosts(data)
+          console.log('📊 Blog posts data:', data)
+          console.log('📊 First post:', data[0])
+          
+          // Transform data to match expected structure
+          const transformedData = data.map((post: any) => ({
+            ...post,
+            date: post.publishedAt || post.createdAt || new Date().toISOString(),
+            readTime: `${post.readTime || 5} min read`
+          }))
+          
+          console.log('📊 Transformed data:', transformedData)
+          setPosts(transformedData)
         } else {
+          console.error('❌ Failed to fetch blogs:', res.status)
           setPosts([])
         }
       } catch {
@@ -260,7 +272,14 @@ const Blog = () => {
       <section className="py-12">
         <div className="container max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.slice(0, visibleCount).map((post) => (
+            {filteredPosts.slice(0, visibleCount).map((post) => {
+              // Add null checks for post data
+              if (!post || !post.slug) {
+                console.warn('⚠️ Skipping post with missing data:', post)
+                return null
+              }
+              
+              return (
               <Link key={post.id} to={`/blog/${post.slug}`} className="block group">
                 <Card className="hover-romantic border-0 bg-gradient-card h-full overflow-hidden">
                   {/* Cover Image */}
@@ -300,7 +319,8 @@ const Blog = () => {
                   </CardContent>
                 </Card>
               </Link>
-            ))}
+              )
+            })}
           </div>
 
           {/* Show More */}

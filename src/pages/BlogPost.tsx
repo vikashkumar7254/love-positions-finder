@@ -16,9 +16,13 @@ const BlogPost = () => {
       if (!slug) return
       try {
         setLoading(true)
+        console.log('🔍 Fetching blog with slug:', slug)
         const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`)
+        console.log('📡 Blog fetch response status:', res.status)
+        
         if (res.ok) {
           const data = await res.json()
+          console.log('📊 Blog data received:', data)
           setSelected({
             title: data.title,
             date: data.publishedAt || data.createdAt,
@@ -28,9 +32,13 @@ const BlogPost = () => {
             excerpt: data.excerpt,
           })
         } else {
+          console.error('❌ Blog fetch failed:', res.status)
+          const errorText = await res.text()
+          console.error('❌ Error details:', errorText)
           setSelected(null)
         }
-      } catch {
+      } catch (error) {
+        console.error('❌ Blog fetch error:', error)
         setSelected(null)
       } finally {
         setLoading(false)
