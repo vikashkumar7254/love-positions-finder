@@ -443,7 +443,44 @@ export default async function handler(req: any, res: any) {
       await redis.hset(BLOG_KEY, { [id]: JSON.stringify(finalBlogData) })
       console.log('✅ Blog saved to database')
       
-      return res.status(201).json(newBlog)
+      // Create a clean response object to avoid JSON serialization issues
+      const responseBlog = {
+        id: String(newBlog.id),
+        title: String(newBlog.title),
+        slug: String(newBlog.slug),
+        excerpt: String(newBlog.excerpt),
+        content: String(newBlog.content),
+        author: String(newBlog.author),
+        authorImage: String(newBlog.authorImage || ''),
+        featuredImage: String(newBlog.featuredImage),
+        category: String(newBlog.category),
+        tags: Array.isArray(newBlog.tags) ? newBlog.tags.map(String) : [],
+        status: String(newBlog.status),
+        metaTitle: String(newBlog.metaTitle || ''),
+        metaDescription: String(newBlog.metaDescription || ''),
+        metaKeywords: String(newBlog.metaKeywords || ''),
+        readTime: Math.max(1, Math.floor(Number(newBlog.readTime || 1))),
+        views: Math.max(0, Math.floor(Number(newBlog.views || 0))),
+        likes: Math.max(0, Math.floor(Number(newBlog.likes || 0))),
+        createdAt: String(newBlog.createdAt),
+        updatedAt: String(newBlog.updatedAt),
+        publishedAt: newBlog.publishedAt ? String(newBlog.publishedAt) : null,
+        seoScore: Math.max(0, Math.min(100, Math.floor(Number(newBlog.seoScore || 0)))),
+        featured: Boolean(newBlog.featured)
+      }
+      
+      console.log('📊 Response blog data:', responseBlog)
+      
+      try {
+        return res.status(201).json(responseBlog)
+      } catch (jsonError) {
+        console.error('❌ JSON response error:', jsonError)
+        return res.status(201).json({
+          id: String(newBlog.id),
+          title: String(newBlog.title),
+          message: 'Blog created successfully'
+        })
+      }
     }
     
     if (req.method === 'PUT') {
