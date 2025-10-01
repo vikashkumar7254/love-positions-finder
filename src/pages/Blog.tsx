@@ -279,7 +279,17 @@ const Blog = () => {
       <section className="py-12">
         <div className="container max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.slice(0, visibleCount).map((post, index) => {
+            {(() => {
+              const postsToRender = filteredPosts.slice(0, visibleCount)
+              console.log('🔍 Rendering blogs:', {
+                totalFiltered: filteredPosts.length,
+                visibleCount: visibleCount,
+                postsToRender: postsToRender.length,
+                allPosts: filteredPosts.map(p => ({ id: p.id, title: p.title, slug: p.slug }))
+              })
+              return postsToRender
+            })().map((post, index) => {
+              console.log(`🎯 Rendering post ${index + 1}/${visibleCount}:`, post.title)
               try {
               // Add comprehensive null checks for post data
               if (!post || !post.id || !post.title) {
@@ -287,10 +297,24 @@ const Blog = () => {
                 return null
               }
               
-              // Generate slug if missing
+              // Generate slug if missing - improved for international text
               const postSlug = post.slug && post.slug.trim() !== '' 
                 ? post.slug 
-                : post.title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
+                : post.title
+                    .toLowerCase()
+                    .replace(/[^\w\s-]/g, '') // Remove special characters
+                    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+                    .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
+                    .substring(0, 50) // Limit length
+                    || `blog-${post.id}` // Fallback to blog-id if empty
+              
+              console.log(`🔍 Post ${index}:`, {
+                id: post.id,
+                title: post.title,
+                originalSlug: post.slug,
+                generatedSlug: postSlug,
+                hasValidSlug: !!postSlug
+              })
               
               if (!postSlug) {
                 console.warn('⚠️ Skipping post with invalid slug:', post)
