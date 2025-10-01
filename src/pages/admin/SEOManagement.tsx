@@ -30,6 +30,7 @@ interface SEOConfig {
   twitterHandle: string
   googleAnalyticsId: string
   googleSiteVerification: string
+  enableSEOQuickActions: boolean
   facebookAppId: string
   pages: {
     [key: string]: {
@@ -54,6 +55,7 @@ const SEOManagement = () => {
     twitterHandle: '@scratchsexpos',
     googleAnalyticsId: 'G-KYMBBSB4XS',
     googleSiteVerification: 'UbHLGFZRitXzyw7wZ0OpUI1Aveb7wpsfy9rqxS1cTRM',
+    enableSEOQuickActions: true,
     facebookAppId: '',
     pages: {
       home: {
@@ -469,6 +471,18 @@ const SEOManagement = () => {
                           placeholder="verification code"
                         />
                       </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          id="enableSEOQuickActions"
+                          checked={config.enableSEOQuickActions}
+                          onCheckedChange={(checked) => updateGlobalConfig('enableSEOQuickActions', checked)}
+                        />
+                        <Label htmlFor="enableSEOQuickActions">Enable SEO Quick Actions</Label>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Show floating SEO tools on all pages for easy access to sitemap, robots.txt, and Google Search Console
+                      </p>
                     </div>
                   </CardContent>
                 </Card>

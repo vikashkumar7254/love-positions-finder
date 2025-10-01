@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import AgeVerification from "@/components/AgeVerification";
+import SEOQuickActions from "@/components/SEOQuickActions";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -129,6 +130,7 @@ const App = () => {
             </BrowserRouter>
           </AdminAuthProvider>
         </TooltipProvider>
+        <SEOQuickActions />
       </QueryClientProvider>
     </HelmetProvider>
   );
