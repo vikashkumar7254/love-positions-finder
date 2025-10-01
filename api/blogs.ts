@@ -213,6 +213,12 @@ export default async function handler(req: any, res: any) {
       }
       
       console.log('📊 Cleaned blog data:', cleanBlogData)
+      console.log('📊 Data types:', {
+        title: typeof cleanBlogData.title,
+        content: typeof cleanBlogData.content,
+        tags: Array.isArray(cleanBlogData.tags),
+        featured: typeof cleanBlogData.featured
+      })
       
       // Validate required fields
       if (!cleanBlogData.title || !cleanBlogData.content || !cleanBlogData.author) {
@@ -276,11 +282,39 @@ export default async function handler(req: any, res: any) {
     
     if (req.method === 'PUT') {
       const { id } = req.query
-      const updateData = req.body as Partial<BlogPost>
+      const rawUpdateData = req.body as Partial<BlogPost>
       
       if (!id) {
         return res.status(400).json({ error: 'Blog ID is required' })
       }
+      
+      // Clean the update data to ensure JSON serialization
+      const updateData = {
+        title: rawUpdateData.title ? String(rawUpdateData.title) : undefined,
+        content: rawUpdateData.content ? String(rawUpdateData.content) : undefined,
+        author: rawUpdateData.author ? String(rawUpdateData.author) : undefined,
+        excerpt: rawUpdateData.excerpt ? String(rawUpdateData.excerpt) : undefined,
+        slug: rawUpdateData.slug ? String(rawUpdateData.slug) : undefined,
+        authorImage: rawUpdateData.authorImage ? String(rawUpdateData.authorImage) : undefined,
+        featuredImage: rawUpdateData.featuredImage ? String(rawUpdateData.featuredImage) : undefined,
+        category: rawUpdateData.category ? String(rawUpdateData.category) : undefined,
+        tags: Array.isArray(rawUpdateData.tags) ? rawUpdateData.tags.map(String) : undefined,
+        status: rawUpdateData.status ? String(rawUpdateData.status) : undefined,
+        metaTitle: rawUpdateData.metaTitle ? String(rawUpdateData.metaTitle) : undefined,
+        metaDescription: rawUpdateData.metaDescription ? String(rawUpdateData.metaDescription) : undefined,
+        metaKeywords: rawUpdateData.metaKeywords ? String(rawUpdateData.metaKeywords) : undefined,
+        featured: rawUpdateData.featured !== undefined ? Boolean(rawUpdateData.featured) : undefined
+      }
+      
+      // Remove undefined values
+      Object.keys(updateData).forEach(key => {
+        if (updateData[key as keyof typeof updateData] === undefined) {
+          delete updateData[key as keyof typeof updateData]
+        }
+      })
+      
+      console.log('📝 Updating blog post:', id)
+      console.log('📊 Cleaned update data:', updateData)
       
       const existingBlog = await redis.hget(BLOG_KEY, id as string)
       if (!existingBlog) {

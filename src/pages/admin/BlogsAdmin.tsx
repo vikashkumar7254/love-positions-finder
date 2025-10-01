@@ -121,11 +121,20 @@ const BlogsAdminContent = () => {
                         Array.isArray(formData.tags) ? (formData.tags as string[]).join(', ') : 
                         (formData.tags ? String(formData.tags) : '')
       
+      // Clean all form data to ensure JSON serialization
       const blogData = {
-        ...formData,
+        title: String(formData.title || ''),
+        excerpt: String(formData.excerpt || ''),
+        content: String(formData.content || ''),
+        author: String(formData.author || ''),
+        featuredImage: String(formData.featuredImage || ''),
+        category: String(formData.category || ''),
         tags: tagsString.split(',').map(tag => tag.trim()).filter(Boolean),
-        metaTitle: formData.metaTitle || formData.title,
-        metaDescription: formData.metaDescription || formData.excerpt
+        status: String(formData.status || 'draft'),
+        metaTitle: String(formData.metaTitle || formData.title || ''),
+        metaDescription: String(formData.metaDescription || formData.excerpt || ''),
+        metaKeywords: String(formData.metaKeywords || ''),
+        featured: Boolean(formData.featured)
       }
       
       console.log('📊 Processed blog data:', blogData)
