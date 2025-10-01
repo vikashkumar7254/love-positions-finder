@@ -346,7 +346,19 @@ export default async function handler(req: any, res: any) {
       // Check if slug already exists
       const allBlogs = await redis.hgetall(BLOG_KEY)
       const existingSlug = Object.values(allBlogs || {}).find((blogStr: any) => {
-        const blog = JSON.parse(blogStr)
+        let blog
+        if (typeof blogStr === 'string') {
+          try {
+            blog = JSON.parse(blogStr)
+          } catch (error) {
+            console.error('❌ Failed to parse blog for slug check in POST:', error)
+            return false
+          }
+        } else if (typeof blogStr === 'object' && blogStr !== null) {
+          blog = blogStr
+        } else {
+          return false
+        }
         return blog.slug === slug
       })
       
