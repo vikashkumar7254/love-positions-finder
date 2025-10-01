@@ -295,21 +295,29 @@ export default async function handler(req: any, res: any) {
         likes: Math.max(0, Math.floor(Number(newBlog.likes || 0))),
         createdAt: String(newBlog.createdAt),
         updatedAt: String(newBlog.updatedAt),
-        publishedAt: newBlog.publishedAt ? String(newBlog.publishedAt) : null,
+        publishedAt: newBlog.publishedAt ? String(newBlog.publishedAt) : '',
         seoScore: Math.max(0, Math.min(100, Math.floor(Number(newBlog.seoScore || 0)))),
         featured: Boolean(newBlog.featured)
       }
       
-      console.log('📊 Final blog data for Redis:', blogForRedis)
+      // Final validation - ensure no undefined values
+      const finalBlogData = Object.fromEntries(
+        Object.entries(blogForRedis).map(([key, value]) => [
+          key, 
+          value === undefined ? '' : value
+        ])
+      )
+      
+      console.log('📊 Final blog data for Redis:', finalBlogData)
       console.log('📊 Data types check:', {
-        seoScore: typeof blogForRedis.seoScore,
-        readTime: typeof blogForRedis.readTime,
-        views: typeof blogForRedis.views,
-        likes: typeof blogForRedis.likes,
-        publishedAt: typeof blogForRedis.publishedAt
+        seoScore: typeof finalBlogData.seoScore,
+        readTime: typeof finalBlogData.readTime,
+        views: typeof finalBlogData.views,
+        likes: typeof finalBlogData.likes,
+        publishedAt: typeof finalBlogData.publishedAt
       })
       
-      await redis.hset(BLOG_KEY, { [id]: JSON.stringify(blogForRedis) })
+      await redis.hset(BLOG_KEY, { [id]: JSON.stringify(finalBlogData) })
       console.log('✅ Blog saved to database')
       
       return res.status(201).json(newBlog)
@@ -418,14 +426,22 @@ export default async function handler(req: any, res: any) {
         likes: Math.max(0, Math.floor(Number(updatedBlog.likes || 0))),
         createdAt: String(updatedBlog.createdAt),
         updatedAt: String(updatedBlog.updatedAt),
-        publishedAt: updatedBlog.publishedAt ? String(updatedBlog.publishedAt) : null,
+        publishedAt: updatedBlog.publishedAt ? String(updatedBlog.publishedAt) : '',
         seoScore: Math.max(0, Math.min(100, Math.floor(Number(updatedBlog.seoScore || 0)))),
         featured: Boolean(updatedBlog.featured)
       }
       
-      console.log('📊 Final updated blog data for Redis:', blogForRedis)
+      // Final validation - ensure no undefined values
+      const finalUpdatedData = Object.fromEntries(
+        Object.entries(blogForRedis).map(([key, value]) => [
+          key, 
+          value === undefined ? '' : value
+        ])
+      )
       
-      await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(blogForRedis) })
+      console.log('📊 Final updated blog data for Redis:', finalUpdatedData)
+      
+      await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(finalUpdatedData) })
       
       return res.status(200).json(updatedBlog)
     }
