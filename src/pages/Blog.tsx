@@ -52,7 +52,7 @@ const Blog = () => {
           const transformedData = data.map((post: any) => ({
             ...post,
             date: post.publishedAt || post.createdAt || new Date().toISOString(),
-            readTime: `${post.readTime || 5} min read`
+            readTime: post.readTime ? `${post.readTime} min read` : '5 min read'
           }))
           
           console.log('📊 Transformed data:', transformedData)
@@ -286,8 +286,8 @@ const Blog = () => {
                   <div className="relative">
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <img
-                        src={getCoverFor(post.category)}
-                        alt={post.title}
+                        src={getCoverFor(post.category || 'General')}
+                        alt={post.title || 'Untitled'}
                         className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300"
                       />
                     </div>
@@ -300,17 +300,17 @@ const Blog = () => {
                   <CardHeader className="pb-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
                       <Calendar className="w-4 h-4" />
-                      <span>{new Date(post.date).toLocaleDateString()}</span>
+                      <span>{new Date(post.date || new Date()).toLocaleDateString()}</span>
                       <Clock className="w-4 h-4 ml-2" />
-                      <span>{post.readTime}</span>
+                      <span>{post.readTime || '5 min read'}</span>
                     </div>
                     <div className="inline-block px-2 py-1 bg-romantic/10 text-romantic text-xs rounded-full">
-                      {post.category}
+                      {post.category || 'General'}
                     </div>
                   </CardHeader>
                   <CardContent>
                     <CardDescription className="text-base mb-4 line-clamp-3">
-                      {post.excerpt}
+                      {post.excerpt || 'No description available'}
                     </CardDescription>
                     <div className="text-romantic/80 text-sm inline-flex items-center gap-2">
                       <Heart className="w-4 h-4" />
