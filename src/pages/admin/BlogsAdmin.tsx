@@ -114,12 +114,21 @@ const BlogsAdminContent = () => {
     e.preventDefault()
     
     try {
+      console.log('📝 Form data before processing:', formData)
+      
+      // Ensure tags is always a string before splitting
+      const tagsString = typeof formData.tags === 'string' ? formData.tags : 
+                        Array.isArray(formData.tags) ? (formData.tags as string[]).join(', ') : 
+                        (formData.tags ? String(formData.tags) : '')
+      
       const blogData = {
         ...formData,
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+        tags: tagsString.split(',').map(tag => tag.trim()).filter(Boolean),
         metaTitle: formData.metaTitle || formData.title,
         metaDescription: formData.metaDescription || formData.excerpt
       }
+      
+      console.log('📊 Processed blog data:', blogData)
 
       const url = editingBlog ? `/api/blogs?id=${editingBlog.id}` : '/api/blogs'
       const method = editingBlog ? 'PUT' : 'POST'
@@ -214,7 +223,7 @@ const BlogsAdminContent = () => {
       author: blog.author,
       featuredImage: blog.featuredImage,
       category: blog.category,
-      tags: blog.tags.join(', '),
+      tags: Array.isArray(blog.tags) ? blog.tags.join(', ') : (blog.tags ? String(blog.tags) : ''),
       status: blog.status,
       metaTitle: blog.metaTitle || '',
       metaDescription: blog.metaDescription || '',

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/enhanced-button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Search, 
@@ -476,7 +477,7 @@ const SEOManagement = () => {
                         <Switch
                           id="enableSEOQuickActions"
                           checked={config.enableSEOQuickActions}
-                          onCheckedChange={(checked) => updateGlobalConfig('enableSEOQuickActions', checked)}
+                          onCheckedChange={(checked: boolean) => updateGlobalConfig('enableSEOQuickActions', String(checked))}
                         />
                         <Label htmlFor="enableSEOQuickActions">Enable SEO Quick Actions</Label>
                       </div>
