@@ -170,6 +170,8 @@ const SpinForDesire = () => {
                   {allItems.map((item, index) => {
                     const angle = (360 / allItems.length) * index
                     const nextAngle = (360 / allItems.length) * (index + 1)
+                    const isEven = index % 2 === 0
+                    const rotationAngle = (angle + nextAngle) / 2 - 90
                     
                     return (
                       <div
@@ -181,13 +183,16 @@ const SpinForDesire = () => {
                       >
                         <div 
                           className="w-full h-full flex items-center justify-center relative"
-                          style={{ backgroundColor: item.color }}
+                          style={{ 
+                            backgroundColor: item.color,
+                            background: `linear-gradient(135deg, ${item.color} 0%, ${item.color}dd 50%, ${item.color}aa 100%)`
+                          }}
                         >
                           {/* Background Image */}
                           <LazyImage
                             src={item.image}
                             alt={item.title}
-                            className="absolute inset-0 w-full h-full object-cover opacity-40"
+                            className="absolute inset-0 w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-300"
                             width={200}
                             height={200}
                             onError={(e) => {
@@ -197,38 +202,79 @@ const SpinForDesire = () => {
                             }}
                           />
                           
-                          {/* Content */}
-                          <div className="relative z-10 text-center p-2 sm:p-4">
-                            <div className="text-white font-bold text-xs sm:text-sm transform rotate-0 drop-shadow-lg">
+                          {/* Gradient Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-black/50"></div>
+                          
+                          {/* Content - Rotated to fit the section */}
+                          <div 
+                            className="relative z-10 text-center p-1 sm:p-2"
+                            style={{
+                              transform: `rotate(${rotationAngle}deg)`,
+                              transformOrigin: 'center'
+                            }}
+                          >
+                            <div className="text-white font-bold text-xs sm:text-sm drop-shadow-lg text-center leading-tight">
                               {item.title.split(' ')[0]}
                             </div>
-                            <div className="text-white/80 text-xs transform rotate-0 drop-shadow-lg">
+                            <div className="text-white/90 text-xs drop-shadow-lg font-medium">
                               {item.category}
                             </div>
+                          </div>
+                          
+                          {/* Decorative Border Lines */}
+                          <div 
+                            className="absolute top-0 left-1/2 w-px h-full bg-white/40"
+                            style={{ transform: 'translateX(-50%)' }}
+                          ></div>
+                          <div 
+                            className="absolute top-1/2 left-0 w-full h-px bg-white/20"
+                            style={{ transform: 'translateY(-50%)' }}
+                          ></div>
+                          
+                          {/* Hover Effect */}
+                          <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+                          
+                          {/* Section Number (for debugging) */}
+                          <div className="absolute top-1 left-1 text-white/60 text-xs font-bold">
+                            {index + 1}
                           </div>
                         </div>
                       </div>
                     )
                   })}
+                  
+                  {/* Center Circle Background */}
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-4 sm:border-6 border-white shadow-2xl z-10"></div>
                 </div>
 
                 {/* Interactive Center Circle with Selected Image */}
                 <div 
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-4 sm:border-6 border-white shadow-2xl overflow-hidden z-10 transition-all duration-300 hover:scale-110 hover:shadow-yellow-400/50 cursor-pointer"
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-4 sm:border-6 border-white shadow-2xl overflow-hidden z-20 transition-all duration-300 hover:scale-110 hover:shadow-yellow-400/50 cursor-pointer"
                   onClick={() => selectedItem && !isSpinning && setShowImagePopup(true)}
                 >
                   {selectedItem && !isSpinning ? (
-                    <LazyImage
-                      src={selectedItem.image}
-                      alt={selectedItem.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      onClick={() => setShowImagePopup(true)}
-                      width={128}
-                      height={128}
-                    />
+                    <div className="relative w-full h-full">
+                      <LazyImage
+                        src={selectedItem.image}
+                        alt={selectedItem.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        onClick={() => setShowImagePopup(true)}
+                        width={128}
+                        height={128}
+                      />
+                      {/* Overlay with title */}
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                        <div className="text-white text-xs font-bold text-center px-2">
+                          {selectedItem.title.split(' ')[0]}
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Sparkles className="w-12 h-12 text-white" />
+                      <div className="text-center">
+                        <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white mx-auto mb-1" />
+                        <div className="text-white text-xs font-bold">SPIN</div>
+                      </div>
                     </div>
                   )}
                 </div>
