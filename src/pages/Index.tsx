@@ -136,36 +136,81 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="pt-16 sm:pt-20 lg:pt-24 pb-6 sm:pb-8 px-3 sm:px-6 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-center">
-          <div className="lg:col-span-2 text-white">
-            <p className="uppercase tracking-wide text-white/80 mb-2 text-sm sm:text-base">ScratchSexPositions</p>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">Level Up Your Intimate Life</h1>
-            <p className="text-white/90 mb-4 sm:mb-6 max-w-2xl text-sm sm:text-base">
-              Explore our collection of 500+ intimate positions, from romantic to adventurous. Perfect for couples seeking to
-              enhance their connection.
-            </p>
-            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
-              <Link to="/positions/custom-poster"><Button variant="hero" className="w-full sm:w-auto text-sm sm:text-base"><Palette className="w-4 h-4"/> Create Your Poster</Button></Link>
-              <Link to="/positions/all"><Button variant="tender" className="w-full sm:w-auto text-sm sm:text-base"><Grid3X3 className="w-4 h-4"/> Explore Positions</Button></Link>
+      <section className="pt-20 sm:pt-24 lg:pt-28 pb-8 sm:pb-12 px-4 sm:px-6 bg-gradient-hero">
+        <div className="max-w-7xl mx-auto">
+          {/* Mobile Layout */}
+          <div className="lg:hidden text-center text-white">
+            <div className="mb-6">
+              <p className="uppercase tracking-wide text-white/80 mb-3 text-sm font-medium">ScratchSexPositions</p>
+              <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">Level Up Your Intimate Life</h1>
+              <p className="text-white/90 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
+                Explore our collection of 500+ intimate positions, from romantic to adventurous. Perfect for couples seeking to enhance their connection.
+              </p>
+            </div>
+            
+            {/* Stats Cards Mobile */}
+            <div className="grid grid-cols-3 gap-3 mb-8">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold mb-1">500+</div>
+                <div className="text-xs text-white/80">Sex Positions</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold mb-1">❤️</div>
+                <div className="text-xs text-white/80">Kama Sutra Inspired</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
+                <div className="text-2xl font-bold mb-1">✨</div>
+                <div className="text-xs text-white/80">Customizable Poster</div>
+              </div>
+            </div>
+            
+            {/* Buttons Mobile */}
+            <div className="space-y-3">
+              <Link to="/positions/custom-poster" className="block">
+                <Button variant="hero" className="w-full py-3 text-base font-semibold">
+                  <Palette className="w-5 h-5 mr-2"/>
+                  Create Your Poster
+                </Button>
+              </Link>
+              <Link to="/positions/all" className="block">
+                <Button variant="tender" className="w-full py-3 text-base font-semibold">
+                  <Grid3X3 className="w-5 h-5 mr-2"/>
+                  Explore Positions
+                </Button>
+              </Link>
             </div>
           </div>
-          <Card variant="elegant" className="bg-white/20 backdrop-blur-sm mt-4 lg:mt-0">
-            <CardContent className="p-4 sm:p-6 grid grid-cols-3 gap-2 sm:gap-4 text-center text-white">
-              <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">500+</div>
-                <div className="text-xs sm:text-sm">Sex Positions</div>
+
+          {/* Desktop Layout */}
+          <div className="hidden lg:grid grid-cols-3 gap-6 items-center">
+            <div className="col-span-2 text-white">
+              <p className="uppercase tracking-wide text-white/80 mb-2 text-base">ScratchSexPositions</p>
+              <h1 className="text-4xl lg:text-5xl font-bold mb-3">Level Up Your Intimate Life</h1>
+              <p className="text-white/90 mb-6 max-w-2xl text-lg">
+                Explore our collection of 500+ intimate positions, from romantic to adventurous. Perfect for couples seeking to enhance their connection.
+              </p>
+              <div className="flex gap-3">
+                <Link to="/positions/custom-poster"><Button variant="hero" className="text-base"><Palette className="w-4 h-4 mr-2"/> Create Your Poster</Button></Link>
+                <Link to="/positions/all"><Button variant="tender" className="text-base"><Grid3X3 className="w-4 h-4 mr-2"/> Explore Positions</Button></Link>
               </div>
-              <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">❤️</div>
-                <div className="text-xs sm:text-sm">Kama Sutra Inspired</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">✨</div>
-                <div className="text-xs sm:text-sm">Customizable Poster</div>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+            <Card variant="elegant" className="bg-white/20 backdrop-blur-sm">
+              <CardContent className="p-6 grid grid-cols-3 gap-4 text-center text-white">
+                <div>
+                  <div className="text-3xl font-bold">500+</div>
+                  <div className="text-sm">Sex Positions</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">❤️</div>
+                  <div className="text-sm">Kama Sutra Inspired</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">✨</div>
+                  <div className="text-sm">Customizable Poster</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Most Popular pills temporarily removed per request */}
