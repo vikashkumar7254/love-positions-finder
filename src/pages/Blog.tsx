@@ -244,16 +244,11 @@ const Blog = () => {
             <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-8">
               Discover the art of intimate connection through expert insights, romantic guides, and passionate adventures designed for couples who want to deepen their love.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex items-center justify-center">
               <Link to="/blog/new">
                 <Button variant="tender" size="lg" className="shadow-2xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white border-0 px-8 py-4 text-lg">
                   <Heart className="w-5 h-5 mr-2" />
                   Share Your Story
-                </Button>
-              </Link>
-              <Link to="/positions">
-                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg">
-                  Explore Positions
                 </Button>
               </Link>
             </div>
@@ -480,16 +475,11 @@ const Blog = () => {
             <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
               Join our passionate community of couples who believe in the power of love, intimacy, and connection. Share your experiences, learn from others, and help create a world where every relationship thrives.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex items-center justify-center">
               <Link to="/blog/new">
                 <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
                   <Heart className="w-5 h-5 mr-2" />
                   Write Your Story
-                </Button>
-              </Link>
-              <Link to="/positions">
-                <Button variant="outline" className="border-rose-300 text-rose-600 hover:bg-rose-50 px-8 py-4 text-lg font-semibold rounded-full">
-                  Explore Positions
                 </Button>
               </Link>
             </div>

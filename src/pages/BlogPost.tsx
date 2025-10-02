@@ -303,16 +303,11 @@ const BlogPost = () => {
               <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
                 Discover more inspiring articles about love, intimacy, and relationships that will help you deepen your connection.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex items-center justify-center">
                 <Link to="/blog">
                   <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
                     <Heart className="w-5 h-5 mr-2" />
                     View All Love Stories
-                  </Button>
-                </Link>
-                <Link to="/positions">
-                  <Button variant="outline" className="border-rose-300 text-rose-600 hover:bg-rose-50 px-8 py-4 text-lg font-semibold rounded-full">
-                    Explore Positions
                   </Button>
                 </Link>
               </div>
