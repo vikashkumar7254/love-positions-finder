@@ -1,224 +1,142 @@
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Sparkles, Star, Grid3X3, Shuffle, ArrowRight, Heart, TrendingUp } from "lucide-react"
-import { positions, getPopularPositions, getFeaturedPositions } from "@/data/positions"
+import { Sparkles, Heart, ArrowRight, Gamepad2, Shuffle } from "lucide-react"
 import { Helmet } from "react-helmet-async"
 
 const Positions = () => {
-  const popularPositions = getPopularPositions().slice(0, 3)
-  const featuredPositions = getFeaturedPositions().slice(0, 6)
-  
-  const categories = [
-    { name: "Romantic", count: positions.filter(p => p.style === 'romantic').length, color: "bg-romantic/10 text-romantic", icon: Heart },
-    { name: "Passionate", count: positions.filter(p => p.style === 'passionate').length, color: "bg-passionate/10 text-passionate", icon: Sparkles },
-    { name: "Adventurous", count: positions.filter(p => p.style === 'adventurous').length, color: "bg-sensual/10 text-sensual", icon: Star },
-    { name: "Mixed", count: positions.filter(p => p.style === 'mixed').length, color: "bg-warm/10 text-warm", icon: Shuffle }
-  ]
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
       <Helmet>
-        <title>Positions Collection | 500+ Romantic & Passionate Styles</title>
-        <meta name="description" content="Browse 500+ intimate positions across romantic, passionate, adventurous, and mixed styles. Filters, featured, and most popular." />
+        <title>Positions Collection | Love & Intimacy Guide</title>
+        <meta name="description" content="Discover intimate positions and romantic guides designed to enhance your connection and bring you closer together." />
         <link rel="canonical" href={`${window.location.origin}/positions`} />
-        <meta property="og:title" content="Positions Collection | 500+ Romantic & Passionate Styles" />
-        <meta property="og:description" content="Browse featured and popular intimate positions. Discover your next favorite." />
+        <meta property="og:title" content="Positions Collection | Love & Intimacy Guide" />
+        <meta property="og:description" content="Discover intimate positions and romantic guides designed to enhance your connection." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${window.location.origin}/positions`} />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
+      
       <main className="pt-20">
         {/* Hero Section */}
         <section className="py-20 px-6 text-center">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <Sparkles className="w-12 h-12 text-romantic" />
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
-                Positions Collection
+              <Sparkles className="w-12 h-12 text-rose-500" />
+              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                Love & Intimacy
               </h1>
-              <Heart className="w-12 h-12 text-passionate" />
+              <Heart className="w-12 h-12 text-pink-500" />
             </div>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Explore our comprehensive collection of 500+ intimate positions designed to enhance your connection and bring you closer together
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+              Discover the art of intimate connection through romantic guides, passionate adventures, and love stories designed to deepen your relationship.
             </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-romantic mb-2">500+</div>
-                <div className="text-muted-foreground">Unique Positions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-passionate mb-2">4</div>
-                <div className="text-muted-foreground">Style Categories</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-sensual mb-2">All</div>
-                <div className="text-muted-foreground">Difficulty Levels</div>
-              </div>
-            </div>
           </div>
         </section>
 
         {/* Quick Access */}
-        <section className="py-12 px-6 bg-gradient-card">
+        <section className="py-12 px-6 bg-gradient-to-r from-rose-50 to-pink-50">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Quick Access</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Explore Our Collection</h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Link to="/positions/most-popular">
-                <Card variant="romantic" className="hover-romantic group cursor-pointer h-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Link to="/blog">
+                <Card className="bg-white hover:shadow-xl transition-all duration-300 group cursor-pointer h-full border-0 shadow-lg">
                   <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
-                      <div className="w-16 h-16 bg-romantic/20 rounded-full flex items-center justify-center group-hover:bg-romantic/30 transition-colors">
-                        <TrendingUp className="w-8 h-8 text-romantic" />
+                      <div className="w-16 h-16 bg-gradient-to-r from-rose-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Heart className="w-8 h-8 text-white" />
                       </div>
                     </div>
-                    <CardTitle className="text-xl text-romantic">Most Popular</CardTitle>
+                    <CardTitle className="text-xl text-gray-800">Love Stories</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <p className="text-muted-foreground mb-4">
-                      Discover the most loved positions by our community
+                    <p className="text-gray-600 mb-4">
+                      Read inspiring love stories and romantic guides from our community
                     </p>
-                    <Button variant="romantic" className="w-full" data-testid="button-most-popular">
-                      <TrendingUp className="w-4 h-4" />
-                      View Popular
+                    <Button className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white">
+                      <Heart className="w-4 h-4 mr-2" />
+                      Read Stories
                     </Button>
                   </CardContent>
                 </Card>
               </Link>
 
-              <Link to="/positions/all">
-                <Card variant="elegant" className="hover-romantic group cursor-pointer h-full">
+              <Link to="/games">
+                <Card className="bg-white hover:shadow-xl transition-all duration-300 group cursor-pointer h-full border-0 shadow-lg">
                   <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
-                      <div className="w-16 h-16 bg-passionate/20 rounded-full flex items-center justify-center group-hover:bg-passionate/30 transition-colors">
-                        <Grid3X3 className="w-8 h-8 text-passionate" />
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Gamepad2 className="w-8 h-8 text-white" />
                       </div>
                     </div>
-                    <CardTitle className="text-xl text-passionate">All Positions</CardTitle>
+                    <CardTitle className="text-xl text-gray-800">Interactive Games</CardTitle>
                   </CardHeader>
                   <CardContent className="text-center">
-                    <p className="text-muted-foreground mb-4">
-                      Browse our complete collection with filters and search
+                    <p className="text-gray-600 mb-4">
+                      Play fun and romantic games designed for couples
                     </p>
-                    <Button variant="passionate" className="w-full" data-testid="button-all-positions">
-                      <Grid3X3 className="w-4 h-4" />
-                      Browse All
+                    <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
+                      <Gamepad2 className="w-4 h-4 mr-2" />
+                      Play Games
                     </Button>
                   </CardContent>
                 </Card>
               </Link>
 
-              {/* Random Generator removed */}
-            </div>
-          </div>
-        </section>
-
-        {/* Categories */}
-        <section className="py-12 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Browse by Style</h2>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {categories.map((category) => {
-                const IconComponent = category.icon
-                return (
-                  <Card key={category.name} variant="elegant" className="hover-tender cursor-pointer text-center p-6">
+              <Link to="/journey-planner">
+                <Card className="bg-white hover:shadow-xl transition-all duration-300 group cursor-pointer h-full border-0 shadow-lg">
+                  <CardHeader className="text-center">
                     <div className="flex justify-center mb-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${category.color}`}>
-                        <IconComponent className="w-6 h-6" />
+                      <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Shuffle className="w-8 h-8 text-white" />
                       </div>
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">{category.name}</h3>
-                    <p className="text-sm text-muted-foreground">{category.count} positions</p>
-                  </Card>
-                )
-              })}
+                    <CardTitle className="text-xl text-gray-800">Journey Planner</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <p className="text-gray-600 mb-4">
+                      Plan your romantic journey with personalized guides
+                    </p>
+                    <Button className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white">
+                      <Shuffle className="w-4 h-4 mr-2" />
+                      Plan Journey
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Featured Positions */}
-        <section className="py-12 px-6 bg-gradient-card">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl font-bold">Featured Positions</h2>
-              <Link to="/positions/all">
-                <Button variant="outline" data-testid="button-view-all-featured">
-                  View All
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredPositions.map((position) => (
-                <Card key={position.id} variant="elegant" className="hover-romantic group cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-center justify-between mb-2">
-                      <CardTitle className="text-lg text-romantic">{position.name}</CardTitle>
-                      <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        position.style === 'romantic' ? 'bg-romantic/10 text-romantic' :
-                        position.style === 'passionate' ? 'bg-passionate/10 text-passionate' :
-                        position.style === 'adventurous' ? 'bg-sensual/10 text-sensual' :
-                        'bg-warm/10 text-warm'
-                      }`}>
-                        {position.style}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{position.difficulty}</span>
-                      <span className="text-xs text-muted-foreground">⭐ {position.rating}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-3">{position.description}</p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>👁️ {position.views.toLocaleString()} views</span>
-                      <span>⏱️ {position.duration}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Popular Positions Preview */}
-        <section className="py-12 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl font-bold">Most Popular</h2>
-              <Link to="/positions/most-popular">
-                <Button variant="outline" data-testid="button-view-all-popular">
-                  View All Popular
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </Link>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {popularPositions.map((position, index) => (
-                <Card key={position.id} variant="romantic" className="hover-romantic group cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 bg-romantic rounded-full flex items-center justify-center text-white font-bold">
-                        #{index + 1}
-                      </div>
-                      <CardTitle className="text-lg text-romantic">{position.name}</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-3">{position.description}</p>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-romantic font-medium">⭐ {position.rating}/5</span>
-                      <span className="text-muted-foreground">👁️ {position.views.toLocaleString()}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+        {/* CTA Section */}
+        <section className="py-20 px-6 bg-gradient-to-br from-rose-100 via-pink-100 to-purple-100">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border border-white/20">
+              <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-full text-sm font-semibold">
+                <Heart className="w-4 h-4" />
+                Start Your Journey
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Ready to Deepen Your Connection?
+              </h2>
+              <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Join our community of couples who believe in the power of love, intimacy, and connection. Discover new ways to strengthen your relationship and create lasting memories together.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/blog">
+                  <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                    <Heart className="w-5 h-5 mr-2" />
+                    Read Love Stories
+                  </Button>
+                </Link>
+                <Link to="/games">
+                  <Button variant="outline" className="border-rose-300 text-rose-600 hover:bg-rose-50 px-8 py-4 text-lg font-semibold rounded-full">
+                    Play Games
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
