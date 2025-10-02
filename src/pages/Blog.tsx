@@ -11,7 +11,7 @@ import LazyImage from "@/components/LazyImage"
 
 // Removed static demo posts; now loading from API
 
-const categories = ["All", "General", "Tips & Advice", "Romance", "Communication", "Intimacy", "Science", "Long-term Love"]
+const categories = ["All", "General", "Tips & Advice", "Romance", "Communication", "Intimacy", "Science", "Long-term Love", "Most Popular", "Date Ideas", "Mindfulness"]
 
 // No local storage merge; show only published/approved posts from API
 
@@ -201,9 +201,6 @@ const Blog = () => {
     return matchesSearch && matchesCategory
   })
 
-  const topicPills = [
-    "Most Popular","Romance","Intimacy","Communication","Date Ideas","Science","Mindfulness","Tips & Advice"
-  ]
 
   return (
     <div className="min-h-screen bg-background">
@@ -260,18 +257,22 @@ const Blog = () => {
       {/* Search and Filter */}
       <section className="py-6 sm:py-8 bg-gradient-to-r from-slate-50 to-pink-50">
         <div className="container max-w-6xl mx-auto px-3 sm:px-4">
-          <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 items-start lg:items-center justify-between">
-            <div className="relative w-full lg:w-96">
-              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-rose-400 w-4 h-4 sm:w-5 sm:h-5" />
-              <Input
-                placeholder="Search for love, intimacy, romance..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-white/80 backdrop-blur-sm border-rose-200 focus:border-rose-400 focus:ring-rose-400/20 rounded-lg sm:rounded-xl shadow-sm text-sm sm:text-base"
-              />
+          <div className="space-y-6">
+            {/* Search Bar */}
+            <div className="flex justify-center">
+              <div className="relative w-full max-w-md">
+                <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-rose-400 w-4 h-4 sm:w-5 sm:h-5" />
+                <Input
+                  placeholder="Search for love, intimacy, romance..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-white/80 backdrop-blur-sm border-rose-200 focus:border-rose-400 focus:ring-rose-400/20 rounded-lg sm:rounded-xl shadow-sm text-sm sm:text-base w-full"
+                />
+              </div>
             </div>
             
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            {/* Categories */}
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
               {categories.map((category) => (
                 <Button
                   key={category}
@@ -280,23 +281,14 @@ const Blog = () => {
                   onClick={() => setSelectedCategory(category)}
                   className={`text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2 rounded-full transition-all duration-200 ${
                     selectedCategory === category 
-                      ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg' 
-                      : 'bg-white/60 text-gray-700 border-rose-200 hover:bg-rose-50 hover:border-rose-300'
+                      ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg transform scale-105' 
+                      : 'bg-white/60 text-gray-700 border-rose-200 hover:bg-rose-50 hover:border-rose-300 hover:scale-105'
                   }`}
                 >
                   {category}
                 </Button>
               ))}
             </div>
-          </div>
-
-          {/* Topics bar */}
-          <div className="mt-6 sm:mt-8 flex flex-wrap gap-2 sm:gap-3">
-            {topicPills.map(p => (
-              <span key={p} className="px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 border border-rose-200 hover:from-rose-200 hover:to-pink-200 transition-all duration-200 cursor-pointer">
-                {p}
-              </span>
-            ))}
           </div>
         </div>
       </section>

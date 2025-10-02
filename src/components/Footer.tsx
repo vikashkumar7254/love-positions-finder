@@ -55,7 +55,7 @@ const Footer = () => {
             <Link to="/" className="flex items-center gap-2 mb-3 sm:mb-4">
               <Heart className="w-6 h-6 sm:w-8 sm:h-8 text-romantic animate-heart-pulse" />
               <span className="text-lg sm:text-xl font-bold text-white hover:text-romantic transition-colors">
-                Scratch Positions
+                ScratchSexPositions
               </span>
             </Link>
             <p className="text-slate-300 text-xs sm:text-sm mb-4 sm:mb-6 leading-relaxed">
@@ -143,7 +143,7 @@ const Footer = () => {
             <div className="text-slate-400 text-xs sm:text-sm text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 mb-1 sm:mb-2">
                 <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-romantic" />
-                <span>© {currentYear} Scratch Positions. All rights reserved.</span>
+                <span>© {currentYear} ScratchSexPositions. All rights reserved.</span>
               </div>
               <p className="text-xs text-slate-500 hidden sm:block">
                 Made with ❤️ for couples everywhere

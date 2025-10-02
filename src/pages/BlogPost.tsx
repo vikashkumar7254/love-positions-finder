@@ -7,18 +7,21 @@ import { Card, CardContent } from "@/components/ui/card"
 import { getCategoryImage } from "@/utils/imageManager"
 import MediaDisplay from "@/components/MediaDisplay"
 import LazyImage from "@/components/LazyImage"
+import { formatBlogContent, getFormattedContentStyles } from "@/utils/contentFormatter"
 import "../styles/blog-content.css"
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>()
   const [selected, setSelected] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const [contentLoading, setContentLoading] = useState(false)
 
   useEffect(() => {
     (async () => {
       if (!slug) return
       try {
         setLoading(true)
+        setContentLoading(true)
         console.log('🔍 Fetching blog with slug:', slug)
         const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`)
         console.log('📡 Blog fetch response status:', res.status)
@@ -37,6 +40,8 @@ const BlogPost = () => {
               excerpt: data.excerpt || '',
               featuredImage: data.featuredImage || '',
             })
+            // Process content asynchronously for faster loading
+            setTimeout(() => setContentLoading(false), 50)
           } else {
             console.warn('⚠️ Blog data is empty or invalid:', data)
             // Try fallback
@@ -52,8 +57,10 @@ const BlogPost = () => {
                 excerpt: fallbackBlog.excerpt,
                 featuredImage: fallbackBlog.featuredImage,
               })
+              setTimeout(() => setContentLoading(false), 50)
             } else {
               setSelected(null)
+              setContentLoading(false)
             }
           }
         } else {
@@ -73,8 +80,10 @@ const BlogPost = () => {
               excerpt: fallbackBlog.excerpt,
               featuredImage: fallbackBlog.featuredImage,
             })
+            setTimeout(() => setContentLoading(false), 50)
           } else {
             setSelected(null)
+            setContentLoading(false)
           }
         }
       } catch (error) {
@@ -93,11 +102,14 @@ const BlogPost = () => {
               excerpt: fallbackBlog.excerpt,
               featuredImage: fallbackBlog.featuredImage,
             })
+            setTimeout(() => setContentLoading(false), 50)
           } else {
             setSelected(null)
+            setContentLoading(false)
           }
         } catch {
           setSelected(null)
+          setContentLoading(false)
         }
       } finally {
         setLoading(false)
@@ -272,12 +284,22 @@ const BlogPost = () => {
                 </div>
               ) : selected ? (
                 <div className="prose prose-sm sm:prose-lg max-w-none p-4 sm:p-8 lg:p-12">
-                  <div
-                    className="blog-content"
-                    dangerouslySetInnerHTML={{
-                      __html: selected.content || selected.excerpt || "No content available"
-                    }}
-                  />
+                  <style>{getFormattedContentStyles()}</style>
+                  {contentLoading ? (
+                    <div className="flex items-center justify-center py-8">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="animate-spin rounded-full h-8 w-8 border-4 border-rose-200 border-t-rose-500"></div>
+                        <span className="text-gray-600 text-sm">Formatting content...</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="blog-content"
+                      dangerouslySetInnerHTML={{
+                        __html: formatBlogContent(selected.content || selected.excerpt || "No content available")
+                      }}
+                    />
+                  )}
                 </div>
               ) : (
                 <div className="text-center py-12 sm:py-20">
