@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
 import { getCategoryImage } from "@/utils/imageManager"
 import MediaDisplay from "@/components/MediaDisplay"
+import LazyImage from "@/components/LazyImage"
 
 // Removed static demo posts; now loading from API
 
@@ -224,7 +225,7 @@ const Blog = () => {
       </Helmet>
       
       {/* Header */}
-      <section className="pt-24 pb-16 bg-gradient-to-br from-rose-900 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
+      <section className="pt-16 sm:pt-24 pb-12 sm:pb-16 bg-gradient-to-br from-rose-900 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-10 w-32 h-32 bg-pink-400 rounded-full blur-3xl"></div>
@@ -232,22 +233,22 @@ const Blog = () => {
           <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-rose-400 rounded-full blur-3xl"></div>
         </div>
         
-        <div className="container max-w-6xl mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
-              <Heart className="w-5 h-5 text-pink-300" />
-              <span className="text-pink-200 font-medium">Love & Intimacy Blog</span>
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4 relative z-10">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-3 py-1 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-pink-300" />
+              <span className="text-pink-200 font-medium text-sm sm:text-base">Love & Intimacy Blog</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-200 via-white to-purple-200 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-pink-200 via-white to-purple-200 bg-clip-text text-transparent">
               Ignite Your Passion
             </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-8">
+            <p className="text-base sm:text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-6 sm:mb-8">
               Discover the art of intimate connection through expert insights, romantic guides, and passionate adventures designed for couples who want to deepen their love.
             </p>
             <div className="flex items-center justify-center">
               <Link to="/blog/new">
-                <Button variant="tender" size="lg" className="shadow-2xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white border-0 px-8 py-4 text-lg">
-                  <Heart className="w-5 h-5 mr-2" />
+                <Button variant="tender" size="lg" className="shadow-2xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white border-0 px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg">
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Share Your Story
                 </Button>
               </Link>
@@ -257,27 +258,27 @@ const Blog = () => {
       </section>
 
       {/* Search and Filter */}
-      <section className="py-12 bg-gradient-to-r from-slate-50 to-pink-50">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between">
+      <section className="py-8 sm:py-12 bg-gradient-to-r from-slate-50 to-pink-50">
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4">
+          <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 items-start lg:items-center justify-between">
             <div className="relative w-full lg:w-96">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-rose-400 w-5 h-5" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-rose-400 w-4 h-4 sm:w-5 sm:h-5" />
               <Input
                 placeholder="Search for love, intimacy, romance..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border-rose-200 focus:border-rose-400 focus:ring-rose-400/20 rounded-xl shadow-sm"
+                className="pl-10 sm:pl-12 pr-4 py-2 sm:py-3 bg-white/80 backdrop-blur-sm border-rose-200 focus:border-rose-400 focus:ring-rose-400/20 rounded-lg sm:rounded-xl shadow-sm text-sm sm:text-base"
               />
             </div>
             
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {categories.map((category) => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
-                  className={`text-sm px-4 py-2 rounded-full transition-all duration-200 ${
+                  className={`text-xs sm:text-sm px-3 py-1 sm:px-4 sm:py-2 rounded-full transition-all duration-200 ${
                     selectedCategory === category 
                       ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg' 
                       : 'bg-white/60 text-gray-700 border-rose-200 hover:bg-rose-50 hover:border-rose-300'
@@ -290,9 +291,9 @@ const Blog = () => {
           </div>
 
           {/* Topics bar */}
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 sm:mt-8 flex flex-wrap gap-2 sm:gap-3">
             {topicPills.map(p => (
-              <span key={p} className="px-4 py-2 rounded-full text-sm bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 border border-rose-200 hover:from-rose-200 hover:to-pink-200 transition-all duration-200 cursor-pointer">
+              <span key={p} className="px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 border border-rose-200 hover:from-rose-200 hover:to-pink-200 transition-all duration-200 cursor-pointer">
                 {p}
               </span>
             ))}
@@ -301,9 +302,9 @@ const Blog = () => {
       </section>
 
       {/* Blog Posts Grid */}
-      <section className="py-12">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="py-8 sm:py-12">
+        <div className="container max-w-6xl mx-auto px-3 sm:px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {(() => {
               const postsToRender = filteredPosts.slice(0, visibleCount)
               console.log('🔍 Rendering blogs:', {
@@ -348,64 +349,63 @@ const Blog = () => {
               
               return (
               <Link key={post.id} to={`/blog/${postSlug}`} className="block group">
-                <Card className="bg-white border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full overflow-hidden rounded-2xl group-hover:-translate-y-2">
+                <Card className="bg-white border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full overflow-hidden rounded-xl sm:rounded-2xl group-hover:-translate-y-1 sm:group-hover:-translate-y-2">
                   {/* Cover Image */}
                   <div className="relative overflow-hidden">
-                    <div className="w-full aspect-[16/10] overflow-hidden">
-                      <MediaDisplay
+                    <div className="w-full aspect-[4/3] sm:aspect-[16/10] overflow-hidden">
+                      <LazyImage
                         src={post.featuredImage || getCoverFor(post?.category || 'General')}
                         alt={post.title || 'Untitled'}
                         className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                        type="image"
                       />
                     </div>
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-xs font-semibold rounded-full shadow-lg">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+                      <span className="px-2 py-1 sm:px-3 sm:py-1 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-xs font-semibold rounded-full shadow-lg">
                         {post?.category || 'General'}
                       </span>
                     </div>
                     {/* Read Time Badge */}
-                    <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 bg-black/50 backdrop-blur-sm text-white text-xs font-medium rounded-full">
+                    <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+                      <span className="px-2 py-1 sm:px-3 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs font-medium rounded-full">
                         {post.readTime || '5 min read'}
                       </span>
                     </div>
                     {/* Hover Title Overlay */}
-                    <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <h3 className="text-white text-lg font-bold leading-tight line-clamp-2">
+                    <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <h3 className="text-white text-base sm:text-lg font-bold leading-tight line-clamp-2">
                         {post.title}
                       </h3>
                     </div>
                   </div>
                   
-                  <CardContent className="p-6">
+                  <CardContent className="p-4 sm:p-6">
                     {/* Date */}
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
-                      <Calendar className="w-4 h-4 text-rose-400" />
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-3">
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 text-rose-400" />
                       <span>{new Date(post.date || new Date()).toLocaleDateString()}</span>
                     </div>
                     
                     {/* Title */}
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-rose-600 transition-colors duration-200">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-rose-600 transition-colors duration-200">
                       {post.title}
                     </h3>
                     
                     {/* Excerpt */}
-                    <p className="text-gray-600 text-base mb-6 line-clamp-3 leading-relaxed">
+                    <p className="text-gray-600 text-sm sm:text-base mb-4 sm:mb-6 line-clamp-3 leading-relaxed">
                       {post.excerpt || 'No description available'}
                     </p>
                     
                     {/* Read More Button */}
                     <div className="flex items-center justify-between">
-                      <div className="text-rose-500 text-sm font-semibold inline-flex items-center gap-2 group-hover:text-rose-600 transition-colors duration-200">
-                        <Heart className="w-4 h-4" />
+                      <div className="text-rose-500 text-xs sm:text-sm font-semibold inline-flex items-center gap-2 group-hover:text-rose-600 transition-colors duration-200">
+                        <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
                         Read More
                       </div>
-                      <div className="w-8 h-8 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
-                        <Heart className="w-4 h-4 text-white" />
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
+                        <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                       </div>
                     </div>
                   </CardContent>

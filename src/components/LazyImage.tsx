@@ -4,32 +4,14 @@ interface LazyImageProps {
   src: string
   alt: string
   className?: string
-  fallbackSrc?: string
-  onLoad?: () => void
-  onError?: () => void
-  onClick?: () => void
-  width?: number
-  height?: number
+  placeholder?: string
 }
 
-const LazyImage = ({
-  src,
-  alt,
-  className = '',
-  fallbackSrc = 'https://via.placeholder.com/400x300?text=Image+Loading',
-  onLoad,
-  onError,
-  onClick,
-  width,
-  height
-}: LazyImageProps) => {
+const LazyImage = ({ src, alt, className = '', placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5YTNhZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvYWRpbmcuLi48L3RleHQ+PC9zdmc+' }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [isInView, setIsInView] = useState(false)
-  const [imageSrc, setImageSrc] = useState(fallbackSrc)
-  const [hasError, setHasError] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  // Intersection Observer for lazy loading
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -38,7 +20,7 @@ const LazyImage = ({
           observer.disconnect()
         }
       },
-      { threshold: 0.1, rootMargin: '50px' }
+      { threshold: 0.1 }
     )
 
     if (imgRef.current) {
@@ -48,43 +30,25 @@ const LazyImage = ({
     return () => observer.disconnect()
   }, [])
 
-  // Load image when in view
-  useEffect(() => {
-    if (isInView && !isLoaded && !hasError) {
-      const img = new Image()
-
-      img.onload = () => {
-        setImageSrc(src)
-        setIsLoaded(true)
-        onLoad?.()
-      }
-
-      img.onerror = () => {
-        setHasError(true)
-        setImageSrc(fallbackSrc)
-        onError?.()
-      }
-
-      img.src = src
-    }
-  }, [isInView, isLoaded, hasError, src, fallbackSrc, onLoad, onError])
-
   return (
-    <img
-      ref={imgRef}
-      src={imageSrc}
-      alt={alt}
-      className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-      width={width}
-      height={height}
-      loading="lazy"
-      onLoad={() => setIsLoaded(true)}
-      onError={() => {
-        setHasError(true)
-        setImageSrc(fallbackSrc)
-      }}
-      onClick={onClick}
-    />
+    <div ref={imgRef} className={`relative ${className}`}>
+      {!isLoaded && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin"></div>
+        </div>
+      )}
+      {isInView && (
+        <img
+          src={src}
+          alt={alt}
+          className={`w-full h-full object-cover transition-opacity duration-300 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          } ${className}`}
+          onLoad={() => setIsLoaded(true)}
+          loading="lazy"
+        />
+      )}
+    </div>
   )
 }
 
