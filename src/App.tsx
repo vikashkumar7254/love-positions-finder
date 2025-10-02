@@ -48,13 +48,14 @@ import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
 import DefaultImagesAdmin from "./pages/admin/DefaultImagesAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
 import SpinDesiresAdmin from "./pages/admin/SpinDesiresAdmin";
-import SEOManagement from "./pages/admin/SEOManagement";
+import SEOAdmin from "./pages/admin/SEOAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
 import { initializeDefaultImages } from "./utils/initializeDefaultImages";
 import { addSampleBlogs } from "./utils/sampleBlogData";
 import { getPositionsOptimized } from "./utils/positionsCache";
+import "./utils/performanceOptimizer";
 
 const queryClient = new QueryClient();
 
@@ -134,7 +135,7 @@ const App = () => {
               <Route path="/admin/spin-desires" element={<SpinDesiresAdmin />} />
               <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
               <Route path="/admin/default-images" element={<DefaultImagesAdmin />} />
-              <Route path="/admin/seo" element={<SEOManagement />} />
+              <Route path="/admin/seo" element={<SEOAdmin />} />
               
               {/* Other Routes */}
               <Route path="/journey-planner" element={<JourneyPlanner />} />

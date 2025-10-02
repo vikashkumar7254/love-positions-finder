@@ -7,6 +7,7 @@ import PositionSelector from "@/components/PositionSelector"
 import ScratchCards from "@/components/ScratchCards"
 import RomanticIdeas from "@/components/RomanticIdeas"
 import { getCategoryImage } from "@/utils/imageManager"
+import { generateWebsiteSchema, generateOrganizationSchema, generateStructuredData, defaultSEOConfig } from "@/utils/seoUtils"
 
 const Index = () => {
   useEffect(() => {
@@ -99,30 +100,33 @@ const Index = () => {
     if (!keywords) { keywords = document.createElement('meta'); keywords.name = 'keywords'; document.head.appendChild(keywords) }
     keywords.content = 'sex positions, intimate positions, love positions, romantic games, intimacy guide, relationship tips, adult games, scratch cards, position generator'
 
-    // Structured Data (JSON-LD)
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "ScratchSexPositions",
-      "description": desc,
-      "url": url,
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": `${url}/?search={search_term_string}`
-        },
-        "query-input": "required name=search_term_string"
-      }
-    }
+    // Enhanced Structured Data (JSON-LD)
+    const seoConfig = {
+      ...defaultSEOConfig,
+      title,
+      description: desc,
+      canonical: url,
+      ogImage: image
+    };
 
-    let script = document.querySelector('script[type="application/ld+json"]') as HTMLScriptElement | null
-    if (!script) {
-      script = document.createElement('script')
-      script.type = 'application/ld+json'
-      document.head.appendChild(script)
-    }
-    script.textContent = JSON.stringify(structuredData)
+    const websiteSchema = generateWebsiteSchema(seoConfig);
+    const organizationSchema = generateOrganizationSchema(seoConfig);
+
+    // Remove existing structured data
+    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
+    existingScripts.forEach(script => script.remove());
+
+    // Add Website schema
+    const websiteScript = document.createElement('script');
+    websiteScript.type = 'application/ld+json';
+    websiteScript.textContent = JSON.stringify(websiteSchema);
+    document.head.appendChild(websiteScript);
+
+    // Add Organization schema
+    const organizationScript = document.createElement('script');
+    organizationScript.type = 'application/ld+json';
+    organizationScript.textContent = JSON.stringify(organizationSchema);
+    document.head.appendChild(organizationScript);
   }, [])
   const sampleScratchCards = [
     { id: 1, title: "Wrapped Cradle", description: "Close, cozy, and romantic", revealed: false },

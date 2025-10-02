@@ -24,7 +24,9 @@ import {
   FileText,
   Globe,
   Palette,
-  Calendar
+  Calendar,
+  Zap,
+  Target
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
@@ -142,13 +144,15 @@ const AdminDashboardContent = () => {
       ]
     },
     {
-      title: "SEO Management",
-      description: "Manage meta tags, titles, and SEO settings",
-      icon: Search,
+      title: "Advanced SEO",
+      description: "Advanced SEO tools, analytics, and optimization",
+      icon: Zap,
       color: "from-orange-500 to-yellow-500",
-      stats: "SEO optimized",
+      stats: "Top Google Rankings",
       actions: [
-        { label: "SEO Management", href: "/admin/seo", icon: Search }
+        { label: "SEO Dashboard", href: "/admin/seo", icon: Target },
+        { label: "Analytics", href: "/admin/seo", icon: BarChart3 },
+        { label: "Performance", href: "/admin/seo", icon: Zap }
       ]
     }
   ]
