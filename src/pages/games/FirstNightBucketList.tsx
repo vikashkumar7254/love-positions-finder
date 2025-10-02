@@ -271,6 +271,105 @@ const FirstNightBucketList = () => {
       sweetLevel: 3,
       tips: ['Bring a shared blanket', 'Keep the playlist low'],
       spiceTips: ['Hold hands under the blanket', 'Rest your head on each other’s shoulder']
+    },
+    {
+      id: 'sensual-massage',
+      title: 'Full Body Sensual Massage',
+      description: 'Give each other a complete sensual massage with warm oils, exploring every inch of each other\'s body',
+      category: 'intimate',
+      difficulty: 'medium',
+      duration: '45-60 minutes',
+      sweetLevel: 5,
+      tips: ['Use high-quality massage oil', 'Warm the oil in your hands first', 'Start with gentle pressure', 'Focus on erogenous zones', 'Communicate about pressure and comfort'],
+      spiceTips: ['Use different textures - silk, feathers, ice cubes', 'Whisper sweet nothings while massaging', 'End with a passionate kiss']
+    },
+    {
+      id: 'striptease-performance',
+      title: 'Private Striptease Performance',
+      description: 'Take turns performing a seductive striptease for each other, building anticipation and desire',
+      category: 'intimate',
+      difficulty: 'medium',
+      duration: '20-30 minutes',
+      sweetLevel: 5,
+      tips: ['Choose music that makes you feel confident', 'Practice your moves beforehand', 'Make eye contact throughout', 'Move slowly and sensually', 'End with a dramatic reveal'],
+      spiceTips: ['Use props like scarves or gloves', 'Incorporate your partner into the performance', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'roleplay-fantasy',
+      title: 'Roleplay Fantasy Night',
+      description: 'Act out your deepest fantasies together, creating characters and scenarios that excite you both',
+      category: 'intimate',
+      difficulty: 'special',
+      duration: '60-90 minutes',
+      sweetLevel: 5,
+      tips: ['Discuss fantasies beforehand', 'Choose characters you both find attractive', 'Set clear boundaries and safe words', 'Use costumes or props if desired', 'Stay in character throughout'],
+      spiceTips: ['Create a detailed backstory for your characters', 'Use different voices and mannerisms', 'End with passionate lovemaking in character']
+    },
+    {
+      id: 'blindfold-exploration',
+      title: 'Blindfolded Sensual Exploration',
+      description: 'Take turns being blindfolded while your partner explores your body with different textures and sensations',
+      category: 'intimate',
+      difficulty: 'medium',
+      duration: '30-45 minutes',
+      sweetLevel: 5,
+      tips: ['Use a soft, comfortable blindfold', 'Start with gentle touches', 'Use different textures - silk, feathers, ice', 'Communicate about what feels good', 'Switch roles halfway through'],
+      spiceTips: ['Use food items like chocolate or whipped cream', 'Incorporate temperature play with ice and warm oil', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'shower-passion',
+      title: 'Passionate Shower Together',
+      description: 'Turn your shower into a steamy, passionate experience with soap, water, and intimate touching',
+      category: 'intimate',
+      difficulty: 'easy',
+      duration: '20-30 minutes',
+      sweetLevel: 4,
+      tips: ['Adjust water temperature to comfortable level', 'Use waterproof lube if needed', 'Be careful of slippery surfaces', 'Take turns washing each other', 'Enjoy the steam and intimacy'],
+      spiceTips: ['Use shower gel for sensual massaging', 'Play with water pressure and temperature', 'End with passionate kissing under the water']
+    },
+    {
+      id: 'lingerie-reveal',
+      title: 'Lingerie Surprise Reveal',
+      description: 'Surprise your partner with sexy lingerie and perform a seductive reveal, building anticipation and desire',
+      category: 'intimate',
+      difficulty: 'easy',
+      duration: '15-25 minutes',
+      sweetLevel: 4,
+      tips: ['Choose lingerie that makes you feel confident', 'Practice your reveal beforehand', 'Make eye contact throughout', 'Move slowly and sensually', 'Let your partner undress you slowly'],
+      spiceTips: ['Use multiple layers for a longer reveal', 'Incorporate music and lighting', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'dirty-talk-session',
+      title: 'Dirty Talk and Fantasy Sharing',
+      description: 'Share your dirtiest fantasies and desires while engaging in passionate dirty talk together',
+      category: 'intimate',
+      difficulty: 'medium',
+      duration: '30-45 minutes',
+      sweetLevel: 5,
+      tips: ['Start with gentle, romantic dirty talk', 'Share fantasies you both find exciting', 'Use descriptive language', 'Be open about your desires', 'End with passionate lovemaking'],
+      spiceTips: ['Use your partner\'s name frequently', 'Describe what you want to do to them', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'toys-exploration',
+      title: 'Intimate Toys Exploration',
+      description: 'Explore each other\'s bodies using intimate toys and accessories, discovering new sensations together',
+      category: 'intimate',
+      difficulty: 'medium',
+      duration: '45-60 minutes',
+      sweetLevel: 5,
+      tips: ['Choose toys you both find exciting', 'Start with gentle, smaller toys', 'Use plenty of lube', 'Communicate about pressure and speed', 'Take turns being pleasured'],
+      spiceTips: ['Use different textures and vibrations', 'Incorporate the toys into foreplay', 'End with passionate lovemaking']
+    },
+    {
+      id: 'passionate-kissing',
+      title: 'Passionate Kissing Marathon',
+      description: 'Spend an entire session focused on passionate, intense kissing, exploring each other\'s mouths and lips',
+      category: 'intimate',
+      difficulty: 'easy',
+      duration: '20-30 minutes',
+      sweetLevel: 4,
+      tips: ['Start with gentle, soft kisses', 'Vary pressure and intensity', 'Use your tongue sensually', 'Make eye contact between kisses', 'End with passionate lovemaking'],
+      spiceTips: ['Use different kissing techniques', 'Incorporate gentle biting and sucking', 'End with passionate touching and kissing']
     }
   ]
 
@@ -324,14 +423,14 @@ const FirstNightBucketList = () => {
       <main className="pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
           {/* Header */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-              <Moon className="w-8 h-8 sm:w-12 sm:h-12 text-pink-300" />
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent text-center">
+          <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4 lg:mb-6">
+              <Moon className="w-6 h-6 sm:w-8 sm:h-8 lg:w-12 lg:h-12 text-pink-300" />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent text-center">
                 First Night Bucket List
               </h1>
             </div>
-            <p className="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
+            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
               Gentle and memorable ideas for your special night. Create beautiful moments together with love and care.
             </p>
 
@@ -354,24 +453,37 @@ const FirstNightBucketList = () => {
           </div>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6 sm:mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 lg:mb-8">
             {categories.map(category => {
               const IconComponent = category.icon
               return (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg border-2 transition-all duration-300 text-xs sm:text-sm font-medium hover:scale-105 flex items-center gap-2 ${
+                  className={`px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg border-2 transition-all duration-300 text-xs sm:text-sm font-medium hover:scale-105 flex items-center gap-1 sm:gap-2 ${
                     selectedCategory === category.id
                       ? `${category.color} shadow-lg scale-105` 
                       : 'bg-black/20 border-white/20 text-white/70 hover:border-white/40'
                   }`}
                 >
                   <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
-                  {category.label}
+                  <span className="hidden sm:inline">{category.label}</span>
+                  <span className="sm:hidden">{category.label.split(' ')[0]}</span>
                 </button>
               )
             })}
+          </div>
+
+          {/* Spice Toggle - Now visible on mobile */}
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
+            <button
+              onClick={() => setShowSpice(s => !s)}
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm transition-all bg-black/20 border-white/20 text-white/80 hover:border-white/40"
+              title="Show extra romantic tips"
+            >
+              <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-orange-300" />
+              {showSpice ? 'Hide Extra Tips' : 'Show Extra Tips'}
+            </button>
           </div>
 
           {/* First Night Items */}
@@ -439,12 +551,12 @@ const FirstNightBucketList = () => {
                         </span>
                       </div>
 
-                      {/* Tips - Hidden on mobile */}
-                      <div className="hidden sm:block">
-                        <h4 className="text-white font-semibold mb-2 text-sm">Sweet Tips:</h4>
+                      {/* Tips - Now visible on mobile */}
+                      <div className="block">
+                        <h4 className="text-white font-semibold mb-2 text-xs sm:text-sm">How to do it:</h4>
                         <ul className="space-y-1">
-                          {item.tips.slice(0, 2).map((tip, index) => (
-                            <li key={index} className="flex items-start gap-2 text-xs text-white/60">
+                          {item.tips.slice(0, 3).map((tip, index) => (
+                            <li key={index} className="flex items-start gap-2 text-xs text-white/70">
                               <span className="w-1 h-1 rounded-full bg-pink-300 mt-2 flex-shrink-0"></span>
                               <span className="break-words hyphens-auto">{tip}</span>
                             </li>
@@ -452,7 +564,7 @@ const FirstNightBucketList = () => {
                         </ul>
                         {showSpice && item.spiceTips && item.spiceTips.length>0 && (
                           <div className="mt-3">
-                            <h5 className="text-white font-semibold mb-2 text-sm flex items-center gap-2"><Flame className="w-4 h-4 text-orange-300"/>Spice it up (optional):</h5>
+                            <h5 className="text-white font-semibold mb-2 text-xs sm:text-sm flex items-center gap-2"><Flame className="w-3 h-3 sm:w-4 sm:h-4 text-orange-300"/>Extra Tips:</h5>
                             <ul className="space-y-1">
                               {item.spiceTips.slice(0,2).map((tip, i)=>(
                                 <li key={i} className="flex items-start gap-2 text-xs text-white/70">

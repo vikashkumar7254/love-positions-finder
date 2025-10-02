@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
-import { Heart, Sparkles, Coffee, Music, Camera, Gift, Clock, RefreshCw } from "lucide-react"
+import { Heart, Sparkles, Coffee, Music, Camera, Gift, Clock, RefreshCw, Wine } from "lucide-react"
 
 const romanticIdeas = [
   {
@@ -111,6 +111,258 @@ const romanticIdeas = [
     category: "Adventure",
     duration: "Full day",
     difficulty: "Medium"
+  },
+  {
+    id: 13,
+    title: "Hot Air Balloon Ride",
+    description: "Soar above the clouds together in a romantic hot air balloon ride with champagne and breathtaking views.",
+    icon: Sparkles,
+    category: "Adventure",
+    duration: "3-4 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 14,
+    title: "Cooking Class Together",
+    description: "Learn to cook a new cuisine together at a professional cooking class, then recreate the meal at home.",
+    icon: Heart,
+    category: "Date Night",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 15,
+    title: "Wine Tasting Tour",
+    description: "Visit local wineries, taste different wines, and learn about winemaking while enjoying each other's company.",
+    icon: Wine,
+    category: "Outdoor",
+    duration: "4-6 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 16,
+    title: "Couples Massage",
+    description: "Book a side-by-side couples massage at a spa for ultimate relaxation and intimate connection.",
+    icon: Sparkles,
+    category: "Relaxation",
+    duration: "1-2 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 17,
+    title: "Sunset Beach Walk",
+    description: "Take a romantic walk along the beach at sunset, hand in hand, collecting seashells and making memories.",
+    icon: Sparkles,
+    category: "Outdoor",
+    duration: "1-2 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 18,
+    title: "Art Gallery Date",
+    description: "Visit an art gallery or museum together, discuss the artwork, and discover each other's artistic preferences.",
+    icon: Camera,
+    category: "Cultural",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 19,
+    title: "Karaoke Night at Home",
+    description: "Set up a karaoke system at home and sing your favorite love songs to each other.",
+    icon: Music,
+    category: "Indoor Fun",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 20,
+    title: "Scenic Drive Adventure",
+    description: "Take a spontaneous road trip to a nearby scenic location, stopping at interesting places along the way.",
+    icon: Camera,
+    category: "Adventure",
+    duration: "Half day",
+    difficulty: "Easy"
+  },
+  {
+    id: 21,
+    title: "Couples Yoga Session",
+    description: "Practice yoga together, focusing on partner poses and mindful connection through movement.",
+    icon: Heart,
+    category: "Wellness",
+    duration: "1-2 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 22,
+    title: "Farmers Market Date",
+    description: "Browse a local farmers market together, pick out fresh ingredients, and cook a meal together.",
+    icon: Gift,
+    category: "Outdoor",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 23,
+    title: "Bookstore Browsing",
+    description: "Spend time in a cozy bookstore, recommend books to each other, and find a quiet corner to read together.",
+    icon: Heart,
+    category: "Cultural",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 24,
+    title: "Ice Skating Date",
+    description: "Hold hands while ice skating together, whether at an outdoor rink or indoor facility.",
+    icon: Sparkles,
+    category: "Outdoor",
+    duration: "1-2 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 25,
+    title: "Pottery Class Together",
+    description: "Get your hands dirty in a pottery class, creating something beautiful together while laughing at your attempts.",
+    icon: Gift,
+    category: "Creative",
+    duration: "2-3 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 26,
+    title: "Sunrise Hike",
+    description: "Wake up early and hike to a scenic viewpoint to watch the sunrise together, bringing coffee and breakfast.",
+    icon: Sparkles,
+    category: "Adventure",
+    duration: "3-4 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 27,
+    title: "Couples Game Night",
+    description: "Play board games, card games, or video games together, making it competitive and fun.",
+    icon: Heart,
+    category: "Indoor Fun",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 28,
+    title: "Boat Ride Date",
+    description: "Rent a paddleboat, canoe, or take a romantic boat ride on a lake or river together.",
+    icon: Sparkles,
+    category: "Outdoor",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 29,
+    title: "Candle Making Workshop",
+    description: "Create custom scented candles together, choosing fragrances that remind you of each other.",
+    icon: Gift,
+    category: "Creative",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 30,
+    title: "Flea Market Treasure Hunt",
+    description: "Browse flea markets or antique shops together, looking for unique items and sharing stories about interesting finds.",
+    icon: Camera,
+    category: "Adventure",
+    duration: "3-4 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 31,
+    title: "Couples Photography Session",
+    description: "Hire a photographer or take turns photographing each other in beautiful locations around your city.",
+    icon: Camera,
+    category: "Creative",
+    duration: "1-2 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 32,
+    title: "Live Music Concert",
+    description: "Attend a live music concert or intimate acoustic performance together, sharing the experience of music.",
+    icon: Music,
+    category: "Cultural",
+    duration: "2-4 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 33,
+    title: "Cooking Competition",
+    description: "Have a friendly cooking competition at home, each preparing a dish and having a taste test.",
+    icon: Heart,
+    category: "Indoor Fun",
+    duration: "2-3 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 34,
+    title: "Planetarium Visit",
+    description: "Visit a planetarium and learn about the stars and planets together in a romantic, educational setting.",
+    icon: Sparkles,
+    category: "Cultural",
+    duration: "1-2 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 35,
+    title: "Couples Meditation",
+    description: "Practice meditation together, focusing on gratitude and your connection with each other.",
+    icon: Heart,
+    category: "Wellness",
+    duration: "30-60 minutes",
+    difficulty: "Easy"
+  },
+  {
+    id: 36,
+    title: "Thrift Store Fashion Show",
+    description: "Go thrift shopping together and have a fashion show at home, trying on different outfits and taking photos.",
+    icon: Camera,
+    category: "Indoor Fun",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 37,
+    title: "Sunset Rooftop Dinner",
+    description: "Find a rooftop restaurant or create your own rooftop dining experience with city views and sunset.",
+    icon: Sparkles,
+    category: "Date Night",
+    duration: "2-3 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 38,
+    title: "Couples Workout",
+    description: "Exercise together at the gym, go for a run, or try a new fitness class as a couple.",
+    icon: Heart,
+    category: "Wellness",
+    duration: "1-2 hours",
+    difficulty: "Medium"
+  },
+  {
+    id: 39,
+    title: "Local Festival Visit",
+    description: "Attend a local festival, fair, or cultural event together, enjoying food, music, and activities.",
+    icon: Music,
+    category: "Cultural",
+    duration: "3-4 hours",
+    difficulty: "Easy"
+  },
+  {
+    id: 40,
+    title: "Couples Journaling",
+    description: "Start a shared journal where you both write about your relationship, dreams, and daily experiences.",
+    icon: Heart,
+    category: "Intimate",
+    duration: "1-2 hours",
+    difficulty: "Easy"
   }
 ]
 
@@ -118,14 +370,7 @@ const RomanticIdeas = () => {
   const [currentIdea, setCurrentIdea] = useState(romanticIdeas[0])
   const [isAnimating, setIsAnimating] = useState(false)
 
-  // Auto-rotate ideas every 8 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getNewIdea()
-    }, 8000)
-
-    return () => clearInterval(interval)
-  }, [])
+  // No auto-rotation - manual only
 
   const getNewIdea = () => {
     setIsAnimating(true)
@@ -145,7 +390,10 @@ const RomanticIdeas = () => {
       "Intimate": "bg-warm/20 text-warm",
       "Indoor Fun": "bg-romantic/20 text-romantic",
       "Sweet Gesture": "bg-sensual/20 text-sensual",
-      "Relaxation": "bg-warm/20 text-warm"
+      "Relaxation": "bg-warm/20 text-warm",
+      "Cultural": "bg-purple-100 text-purple-700",
+      "Wellness": "bg-green-100 text-green-700",
+      "Creative": "bg-pink-100 text-pink-700"
     }
     return colors[category as keyof typeof colors] || "bg-romantic/20 text-romantic"
   }
@@ -167,7 +415,7 @@ const RomanticIdeas = () => {
             💕 Romantic Ideas for Couples
           </h2>
           <p className="text-sm sm:text-base md:text-lg text-foreground/80 max-w-2xl mx-auto">
-            Fresh romantic ideas to keep the spark alive in your relationship. New ideas every few seconds!
+            Fresh romantic ideas to keep the spark alive in your relationship. Click "Get New Idea" to discover more!
           </p>
         </div>
 
@@ -204,20 +452,15 @@ const RomanticIdeas = () => {
                 {currentIdea.description}
               </p>
               
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <div className="flex justify-center">
                 <Button 
                   variant="romantic" 
                   onClick={getNewIdea}
-                  className="px-6 py-2 flex items-center gap-2 w-full sm:w-auto"
+                  className="px-8 py-3 flex items-center gap-2 text-base font-semibold"
                   disabled={isAnimating}
                 >
-                  <RefreshCw className={`w-4 h-4 ${isAnimating ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-5 h-5 ${isAnimating ? 'animate-spin' : ''}`} />
                   {isAnimating ? 'Getting New Idea...' : 'Get New Idea'}
-                </Button>
-                
-                <Button variant="outline" className="px-6 py-2 w-full sm:w-auto">
-                  <Heart className="w-4 h-4 mr-2" />
-                  Save This Idea
                 </Button>
               </div>
             </CardContent>

@@ -82,12 +82,12 @@ const RandomPosition = () => {
         <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8">
           
           {/* Header */}
-          <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight px-2">
               Random Position Generator
             </h1>
-            <p className="text-white/80 text-base sm:text-lg max-w-2xl mx-auto px-2">
-              Discover your next intimate adventure with a single click. Let fate choose your perfect position!
+            <p className="text-white/80 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto px-2 leading-relaxed">
+              Get instant random position suggestions with a single click. Perfect for spontaneous intimate moments!
             </p>
           </div>
           {/* Main Game Area */}
@@ -98,12 +98,12 @@ const RandomPosition = () => {
               {!currentPosition ? (
                 // Initial state
                 <Card variant="elegant" className="bg-gradient-to-br from-black/60 to-black/80 border-pink-500/30 shadow-2xl rounded-2xl backdrop-blur-sm">
-                  <CardContent className="p-6 sm:p-8 text-center">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
-                      <Shuffle className="w-12 h-12 sm:w-16 sm:h-16 text-white/60" />
+                  <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 mx-auto mb-3 sm:mb-4 lg:mb-6 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 flex items-center justify-center">
+                      <Shuffle className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 text-white/60" />
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Ready to Discover?</h3>
-                    <p className="text-white/70 text-sm sm:text-base">Click the button below to reveal a random position</p>
+                    <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2">Ready to Discover?</h3>
+                    <p className="text-white/70 text-xs sm:text-sm lg:text-base">Click the button below to reveal a random position</p>
                   </CardContent>
                 </Card>
               ) : (
@@ -113,7 +113,7 @@ const RandomPosition = () => {
                 }`}>
                   <div className="relative">
                     {/* Image */}
-                    <div className="h-48 sm:h-64 bg-muted overflow-hidden relative">
+                    <div className="h-40 sm:h-48 lg:h-64 bg-muted overflow-hidden relative">
                       <img
                         src={currentPosition.image}
                         alt={currentPosition.title}
@@ -129,8 +129,8 @@ const RandomPosition = () => {
                       {isRevealing && (
                         <div className="absolute inset-0 bg-gradient-to-r from-pink-500/30 to-purple-500/30 flex items-center justify-center">
                           <div className="text-white text-center">
-                            <Sparkles className="w-8 h-8 mx-auto mb-2 animate-spin" />
-                            <p className="text-sm">Revealing...</p>
+                            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-2 animate-spin" />
+                            <p className="text-xs sm:text-sm">Revealing...</p>
                           </div>
                         </div>
                       )}
@@ -138,7 +138,7 @@ const RandomPosition = () => {
 
                     {/* Title */}
                     <CardContent className="p-2 sm:p-3">
-                      <h3 className={`text-lg sm:text-xl font-bold text-white text-center transition-all duration-300 ${
+                      <h3 className={`text-base sm:text-lg lg:text-xl font-bold text-white text-center transition-all duration-300 px-2 ${
                         isRevealing ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
                       }`}>
                         {currentPosition.title}
@@ -157,17 +157,17 @@ const RandomPosition = () => {
                   disabled={positions.length === 0 || isRevealing}
                   variant="romantic"
                   size="lg"
-                  className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+                  className="px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-semibold w-full sm:w-auto"
                 >
                   {isRevealing ? (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2 animate-spin" />
-                      Revealing...
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                      <span className="text-xs sm:text-sm lg:text-base">Revealing...</span>
                     </>
                   ) : (
                     <>
-                      <Shuffle className="w-5 h-5 mr-2" />
-                      Generate Random Position
+                      <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      <span className="text-xs sm:text-sm lg:text-base">Generate Random Position</span>
                     </>
                   )}
                 </Button>
@@ -177,10 +177,10 @@ const RandomPosition = () => {
                   disabled={positions.length === 0 || isRevealing}
                   variant="romantic"
                   size="lg"
-                  className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+                  className="px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4 text-sm sm:text-base lg:text-lg font-semibold w-full sm:w-auto"
                 >
-                  <Shuffle className="w-5 h-5 mr-2" />
-                  Get Another Position
+                  <Shuffle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  <span className="text-xs sm:text-sm lg:text-base">Get Another Position</span>
                 </Button>
               )}
             </div>
@@ -201,30 +201,30 @@ const RandomPosition = () => {
 
           {/* How it Works */}
           <Card variant="elegant" className="bg-black/20 border-white/10 backdrop-blur-sm mx-4">
-            <CardHeader>
-              <CardTitle className="text-white text-center text-lg sm:text-xl">How It Works</CardTitle>
+            <CardHeader className="pb-3 sm:pb-4">
+              <CardTitle className="text-white text-center text-base sm:text-lg lg:text-xl">How It Works</CardTitle>
             </CardHeader>
-            <CardContent className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 text-center">
                 <div>
-                  <div className="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-pink-300 font-bold">1</span>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <span className="text-pink-300 font-bold text-sm sm:text-base">1</span>
                   </div>
-                  <h4 className="text-white font-semibold mb-2 text-sm sm:text-base">Click Generate</h4>
+                  <h4 className="text-white font-semibold mb-1 sm:mb-2 text-xs sm:text-sm lg:text-base">Click Generate</h4>
                   <p className="text-white/70 text-xs sm:text-sm">Press the button to start the random selection</p>
                 </div>
                 <div>
-                  <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-purple-300 font-bold">2</span>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <span className="text-purple-300 font-bold text-sm sm:text-base">2</span>
                   </div>
-                  <h4 className="text-white font-semibold mb-2 text-sm sm:text-base">Watch the Magic</h4>
+                  <h4 className="text-white font-semibold mb-1 sm:mb-2 text-xs sm:text-sm lg:text-base">Watch the Magic</h4>
                   <p className="text-white/70 text-xs sm:text-sm">Enjoy the suspenseful reveal animation</p>
                 </div>
                 <div>
-                  <div className="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span className="text-pink-300 font-bold">3</span>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-500/20 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <span className="text-pink-300 font-bold text-sm sm:text-base">3</span>
                   </div>
-                  <h4 className="text-white font-semibold mb-2 text-sm sm:text-base">Discover & Enjoy</h4>
+                  <h4 className="text-white font-semibold mb-1 sm:mb-2 text-xs sm:text-sm lg:text-base">Discover & Enjoy</h4>
                   <p className="text-white/70 text-xs sm:text-sm">Your random position is revealed - time to explore!</p>
                 </div>
               </div>

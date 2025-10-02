@@ -136,45 +136,45 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="pt-20 sm:pt-24 lg:pt-28 pb-8 sm:pb-12 px-4 sm:px-6 bg-gradient-hero">
+      <section className="pt-24 sm:pt-28 lg:pt-32 pb-8 sm:pb-12 px-4 sm:px-6 bg-gradient-hero">
         <div className="max-w-7xl mx-auto">
           {/* Mobile Layout */}
           <div className="lg:hidden text-center text-white">
-            <div className="mb-6">
-              <p className="uppercase tracking-wide text-white/80 mb-3 text-sm font-medium">ScratchSexPositions</p>
-              <h1 className="text-3xl sm:text-4xl font-bold mb-4 leading-tight">Level Up Your Intimate Life</h1>
-              <p className="text-white/90 mb-6 text-base leading-relaxed max-w-2xl mx-auto">
+            <div className="mb-4 sm:mb-6">
+              <p className="uppercase tracking-wide text-white/80 mb-2 sm:mb-3 text-xs sm:text-sm font-medium px-2 leading-tight">ScratchSexPositions</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 leading-tight px-2">Level Up Your Intimate Life</h1>
+              <p className="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto px-2">
                 Explore our collection of 500+ intimate positions, from romantic to adventurous. Perfect for couples seeking to enhance their connection.
               </p>
             </div>
             
             {/* Stats Cards Mobile */}
-            <div className="grid grid-cols-3 gap-3 mb-8">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold mb-1">500+</div>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6 sm:mb-8">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 sm:p-4 text-center">
+                <div className="text-xl sm:text-2xl font-bold mb-1">500+</div>
                 <div className="text-xs text-white/80">Sex Positions</div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold mb-1">❤️</div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 sm:p-4 text-center">
+                <div className="text-xl sm:text-2xl font-bold mb-1">❤️</div>
                 <div className="text-xs text-white/80">Kama Sutra Inspired</div>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold mb-1">✨</div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3 sm:p-4 text-center">
+                <div className="text-xl sm:text-2xl font-bold mb-1">✨</div>
                 <div className="text-xs text-white/80">Customizable Poster</div>
               </div>
             </div>
             
             {/* Buttons Mobile */}
-            <div className="space-y-3">
-              <Link to="/positions/custom-poster" className="block">
-                <Button variant="hero" className="w-full py-3 text-base font-semibold">
-                  <Palette className="w-5 h-5 mr-2"/>
+            <div className="flex gap-3">
+              <Link to="/positions/custom-poster" className="flex-1">
+                <Button variant="hero" className="w-full py-3 text-sm font-semibold">
+                  <Palette className="w-4 h-4 mr-2"/>
                   Create Your Poster
                 </Button>
               </Link>
-              <Link to="/positions/all" className="block">
-                <Button variant="tender" className="w-full py-3 text-base font-semibold">
-                  <Grid3X3 className="w-5 h-5 mr-2"/>
+              <Link to="/positions/all" className="flex-1">
+                <Button variant="tender" className="w-full py-3 text-sm font-semibold">
+                  <Grid3X3 className="w-4 h-4 mr-2"/>
                   Explore Positions
                 </Button>
               </Link>
@@ -192,24 +192,24 @@ const Index = () => {
               <div className="flex gap-3">
                 <Link to="/positions/custom-poster"><Button variant="hero" className="text-base"><Palette className="w-4 h-4 mr-2"/> Create Your Poster</Button></Link>
                 <Link to="/positions/all"><Button variant="tender" className="text-base"><Grid3X3 className="w-4 h-4 mr-2"/> Explore Positions</Button></Link>
-              </div>
             </div>
-            <Card variant="elegant" className="bg-white/20 backdrop-blur-sm">
-              <CardContent className="p-6 grid grid-cols-3 gap-4 text-center text-white">
-                <div>
-                  <div className="text-3xl font-bold">500+</div>
+          </div>
+          <Card variant="elegant" className="bg-white/20 backdrop-blur-sm">
+            <CardContent className="p-6 grid grid-cols-3 gap-4 text-center text-white">
+              <div>
+                <div className="text-3xl font-bold">500+</div>
                   <div className="text-sm">Sex Positions</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold">❤️</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold">❤️</div>
                   <div className="text-sm">Kama Sutra Inspired</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold">✨</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold">✨</div>
                   <div className="text-sm">Customizable Poster</div>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CardContent>
+          </Card>
           </div>
         </div>
 
@@ -510,62 +510,583 @@ const Index = () => {
                     default: return <Sparkles className={`${base}`} />
                   }
                 }
-                const activities = [
-                      {
-                        title:'Seductive Strip Tease',
-                        sub:'Master the art of slow seduction',
-                        icon: Flame,
-                        spicy:[
-                          'Perform a sultry lap dance',
-                          'Remove clothing piece by piece',
-                          'Use props like silk scarves',
-                          'Incorporate body oil or lotion',
-                          'Play with ice cubes',
-                        ],
-                        tips:[
-                          'Maintain eye contact',
-                          'Move slowly and deliberately',
-                          'Use music to set the mood',
-                          'Tease and deny access',
-                        ],
-                      },
-                      {
-                        title:'Anticipation Building',
-                        sub:'Build excitement throughout the day',
-                        icon: Sparkles,
-                        spicy:[
-                          'Send provocative text messages',
-                          'Share intimate photos (consensually)',
-                          'Leave suggestive notes',
-                          "Describe what you'll do later",
-                          'Voice messages with heavy breathing',
-                        ],
-                        tips:[
-                          'Start subtle and build intensity',
-                          'Mix sweet and spicy messages',
-                          'Use suggestive emojis',
-                          'Reference past intimate moments',
-                        ],
-                      },
-                      {
-                        title:'Strip Tease Art',
-                        sub:'Master the art of seductive undressing',
-                        icon: Star,
-                        spicy:[
-                          'Create a playlist of sensual songs',
-                          'Practice slow, deliberate movements',
-                          'Maintain eye contact',
-                          'Use props like silk scarves',
-                          'Dance slowly and sensually',
-                        ],
-                        tips:[
-                          'Dim the lights for ambiance',
-                          'Wear layers to remove slowly',
-                          'Move with confidence',
-                          'Take your time',
-                        ],
-                      },
-                    ]
+                const getActivitiesForCategory = (category: string) => {
+                  switch (category) {
+                    case 'Sensual Teasing':
+                      return [
+                        {
+                          title:'Seductive Strip Tease',
+                          sub:'Master the art of slow seduction',
+                          icon: Flame,
+                          spicy:[
+                            'Perform a sultry lap dance',
+                            'Remove clothing piece by piece',
+                            'Use props like silk scarves',
+                            'Incorporate body oil or lotion',
+                            'Play with ice cubes',
+                          ],
+                          tips:[
+                            'Maintain eye contact',
+                            'Move slowly and deliberately',
+                            'Use music to set the mood',
+                            'Tease and deny access',
+                          ],
+                        },
+                        {
+                          title:'Anticipation Building',
+                          sub:'Build excitement throughout the day',
+                          icon: Sparkles,
+                          spicy:[
+                            'Send provocative text messages',
+                            'Share intimate photos (consensually)',
+                            'Leave suggestive notes',
+                            "Describe what you'll do later",
+                            'Voice messages with heavy breathing',
+                          ],
+                          tips:[
+                            'Start subtle and build intensity',
+                            'Mix sweet and spicy messages',
+                            'Use suggestive emojis',
+                            'Reference past intimate moments',
+                          ],
+                        },
+                        {
+                          title:'Strip Tease Art',
+                          sub:'Master the art of seductive undressing',
+                          icon: Star,
+                          spicy:[
+                            'Create a playlist of sensual songs',
+                            'Practice slow, deliberate movements',
+                            'Maintain eye contact',
+                            'Use props like silk scarves',
+                            'Dance slowly and sensually',
+                          ],
+                          tips:[
+                            'Dim the lights for ambiance',
+                            'Wear layers to remove slowly',
+                            'Move with confidence',
+                            'Take your time',
+                          ],
+                        },
+                      ]
+                    case 'Intimate Play':
+                      return [
+                        {
+                          title:'Sensual Massage',
+                          sub:'Explore each other with touch',
+                          icon: Heart,
+                          spicy:[
+                            'Use warm massage oil',
+                            'Focus on erogenous zones',
+                            'Use different pressures',
+                            'Incorporate feathers or silk',
+                            'Take turns being the giver',
+                          ],
+                          tips:[
+                            'Start with gentle strokes',
+                            'Communicate about pressure',
+                            'Use scented oils',
+                            'Create a relaxing atmosphere',
+                          ],
+                        },
+                        {
+                          title:'Kissing Techniques',
+                          sub:'Master the art of passionate kissing',
+                          icon: Heart,
+                          spicy:[
+                            'Try different kissing styles',
+                            'Use your tongue sensually',
+                            'Kiss different body parts',
+                            'Build intensity gradually',
+                            'Mix soft and passionate kisses',
+                          ],
+                          tips:[
+                            'Start slow and gentle',
+                            'Make eye contact before kissing',
+                            'Use your hands while kissing',
+                            'Vary the rhythm and pressure',
+                          ],
+                        },
+                        {
+                          title:'Body Exploration',
+                          sub:'Discover each other\'s sensitive spots',
+                          icon: Heart,
+                          spicy:[
+                            'Map out erogenous zones',
+                            'Use different textures',
+                            'Try temperature play',
+                            'Focus on non-intimate areas',
+                            'Communicate what feels good',
+                          ],
+                          tips:[
+                            'Take your time exploring',
+                            'Ask for feedback',
+                            'Be gentle and patient',
+                            'Focus on pleasure, not performance',
+                          ],
+                        },
+                      ]
+                    case 'Fantasy Fulfillment':
+                      return [
+                        {
+                          title:'Roleplay Scenarios',
+                          sub:'Act out your deepest fantasies',
+                          icon: Wand2,
+                          spicy:[
+                            'Create character backstories',
+                            'Use costumes and props',
+                            'Set up different scenarios',
+                            'Stay in character throughout',
+                            'Explore power dynamics',
+                          ],
+                          tips:[
+                            'Discuss boundaries beforehand',
+                            'Choose scenarios you both enjoy',
+                            'Use safe words if needed',
+                            'Have fun and be creative',
+                          ],
+                        },
+                        {
+                          title:'Dirty Talk Mastery',
+                          sub:'Express your desires through words',
+                          icon: Wand2,
+                          spicy:[
+                            'Describe what you want to do',
+                            'Use your partner\'s name',
+                            'Share your fantasies',
+                            'Be descriptive and specific',
+                            'Match your partner\'s comfort level',
+                          ],
+                          tips:[
+                            'Start with gentle dirty talk',
+                            'Listen to your partner\'s responses',
+                            'Use positive reinforcement',
+                            'Build confidence gradually',
+                          ],
+                        },
+                        {
+                          title:'Fantasy Sharing',
+                          sub:'Open up about your deepest desires',
+                          icon: Wand2,
+                          spicy:[
+                            'Share your wildest fantasies',
+                            'Listen without judgment',
+                            'Explore new possibilities',
+                            'Be open to trying new things',
+                            'Create a safe space for sharing',
+                          ],
+                          tips:[
+                            'Start with lighter fantasies',
+                            'Be respectful of boundaries',
+                            'Focus on connection and trust',
+                            'Remember fantasies are just that',
+                          ],
+                        },
+                      ]
+                    case 'Intimate Innovation':
+                      return [
+                        {
+                          title:'New Positions',
+                          sub:'Discover fresh ways to connect',
+                          icon: FlaskConical,
+                          spicy:[
+                            'Try positions you\'ve never done',
+                            'Modify existing favorites',
+                            'Use pillows for support',
+                            'Experiment with angles',
+                            'Focus on comfort and pleasure',
+                          ],
+                          tips:[
+                            'Start with simple variations',
+                            'Communicate about comfort',
+                            'Use props to enhance positions',
+                            'Take breaks if needed',
+                          ],
+                        },
+                        {
+                          title:'Sensory Play',
+                          sub:'Engage all your senses',
+                          icon: FlaskConical,
+                          spicy:[
+                            'Use blindfolds for mystery',
+                            'Try different textures',
+                            'Incorporate scents',
+                            'Play with temperature',
+                            'Use music and sounds',
+                          ],
+                          tips:[
+                            'Start with one sense at a time',
+                            'Check in with your partner',
+                            'Use safe, body-friendly items',
+                            'Focus on pleasure and connection',
+                          ],
+                        },
+                        {
+                          title:'Technology Integration',
+                          sub:'Use modern tools for intimacy',
+                          icon: FlaskConical,
+                          spicy:[
+                            'Try remote-controlled toys',
+                            'Use apps for long-distance play',
+                            'Record intimate messages',
+                            'Share photos and videos',
+                            'Use virtual reality experiences',
+                          ],
+                          tips:[
+                            'Ensure privacy and security',
+                            'Get consent before recording',
+                            'Start with simple technology',
+                            'Focus on connection, not gadgets',
+                          ],
+                        },
+                      ]
+                    case 'Passionate Play':
+                      return [
+                        {
+                          title:'Rough and Tender',
+                          sub:'Balance intensity with gentleness',
+                          icon: PartyPopper,
+                          spicy:[
+                            'Alternate between rough and gentle',
+                            'Use your hands and mouth',
+                            'Try different pressures',
+                            'Mix soft touches with firm grips',
+                            'Communicate about intensity',
+                          ],
+                          tips:[
+                            'Start gentle and build up',
+                            'Check in with your partner',
+                            'Use safe words if needed',
+                            'Focus on mutual pleasure',
+                          ],
+                        },
+                        {
+                          title:'Passionate Kissing',
+                          sub:'Take kissing to the next level',
+                          icon: PartyPopper,
+                          spicy:[
+                            'Use your whole mouth',
+                            'Incorporate gentle biting',
+                            'Kiss different body parts',
+                            'Build intensity gradually',
+                            'Use your hands while kissing',
+                          ],
+                          tips:[
+                            'Start with soft kisses',
+                            'Make eye contact',
+                            'Vary the rhythm',
+                            'Focus on connection',
+                          ],
+                        },
+                        {
+                          title:'Intense Foreplay',
+                          sub:'Build anticipation and desire',
+                          icon: PartyPopper,
+                          spicy:[
+                            'Take your time with foreplay',
+                            'Use different techniques',
+                            'Focus on your partner\'s pleasure',
+                            'Build tension and release',
+                            'Communicate what feels good',
+                          ],
+                          tips:[
+                            'Don\'t rush the process',
+                            'Pay attention to responses',
+                            'Use variety in techniques',
+                            'Focus on the journey, not destination',
+                          ],
+                        },
+                      ]
+                    case 'Romance Rituals':
+                      return [
+                        {
+                          title:'Daily Intimacy',
+                          sub:'Create regular moments of connection',
+                          icon: Star,
+                          spicy:[
+                            'Start each day with a kiss',
+                            'Send loving messages',
+                            'Have regular date nights',
+                            'Create bedtime rituals',
+                            'Share daily appreciations',
+                          ],
+                          tips:[
+                            'Make it a habit',
+                            'Be consistent',
+                            'Keep it simple',
+                            'Focus on quality time',
+                          ],
+                        },
+                        {
+                          title:'Special Occasions',
+                          sub:'Celebrate your love regularly',
+                          icon: Star,
+                          spicy:[
+                            'Plan surprise romantic gestures',
+                            'Celebrate anniversaries',
+                            'Create your own holidays',
+                            'Mark special milestones',
+                            'Make ordinary days special',
+                          ],
+                          tips:[
+                            'Plan ahead',
+                            'Personalize the celebration',
+                            'Focus on your partner',
+                            'Make it meaningful',
+                          ],
+                        },
+                        {
+                          title:'Love Languages',
+                          sub:'Express love in your partner\'s language',
+                          icon: Star,
+                          spicy:[
+                            'Learn your partner\'s love language',
+                            'Express love in their preferred way',
+                            'Mix different love languages',
+                            'Be consistent in your expressions',
+                            'Ask what makes them feel loved',
+                          ],
+                          tips:[
+                            'Take the love language quiz',
+                            'Observe what your partner responds to',
+                            'Be genuine in your expressions',
+                            'Focus on their needs',
+                          ],
+                        },
+                      ]
+                    case 'Sensual Exploration':
+                      return [
+                        {
+                          title:'Body Mapping',
+                          sub:'Discover every sensitive spot',
+                          icon: Compass,
+                          spicy:[
+                            'Systematically explore each other',
+                            'Use different pressures',
+                            'Try different textures',
+                            'Focus on non-intimate areas',
+                            'Communicate about sensations',
+                          ],
+                          tips:[
+                            'Take your time',
+                            'Be patient and gentle',
+                            'Ask for feedback',
+                            'Focus on pleasure',
+                          ],
+                        },
+                        {
+                          title:'Sensual Touch',
+                          sub:'Master the art of intimate touching',
+                          icon: Compass,
+                          spicy:[
+                            'Use your fingertips lightly',
+                            'Try different hand positions',
+                            'Incorporate your whole hand',
+                            'Vary pressure and speed',
+                            'Focus on your partner\'s responses',
+                          ],
+                          tips:[
+                            'Start with light touches',
+                            'Pay attention to reactions',
+                            'Use your imagination',
+                            'Be present in the moment',
+                          ],
+                        },
+                        {
+                          title:'Erogenous Zones',
+                          sub:'Focus on the most sensitive areas',
+                          icon: Compass,
+                          spicy:[
+                            'Explore the neck and ears',
+                            'Focus on the inner thighs',
+                            'Try the lower back',
+                            'Don\'t forget the feet',
+                            'Discover hidden sensitive spots',
+                          ],
+                          tips:[
+                            'Start with gentle touches',
+                            'Ask what feels good',
+                            'Be patient and observant',
+                            'Focus on your partner\'s pleasure',
+                          ],
+                        },
+                      ]
+                    case 'Romantic Atmosphere':
+                      return [
+                        {
+                          title:'Mood Lighting',
+                          sub:'Create the perfect ambiance',
+                          icon: Sparkles,
+                          spicy:[
+                            'Use candles for soft light',
+                            'Try colored lighting',
+                            'Dim the main lights',
+                            'Use fairy lights',
+                            'Create shadows and highlights',
+                          ],
+                          tips:[
+                            'Start with dim lighting',
+                            'Use warm colors',
+                            'Avoid harsh overhead lights',
+                            'Create a cozy atmosphere',
+                          ],
+                        },
+                        {
+                          title:'Sensual Scents',
+                          sub:'Engage the sense of smell',
+                          icon: Sparkles,
+                          spicy:[
+                            'Use scented candles',
+                            'Try essential oils',
+                            'Use perfumes and colognes',
+                            'Incorporate food scents',
+                            'Create signature scents',
+                          ],
+                          tips:[
+                            'Choose scents you both like',
+                            'Start with subtle scents',
+                            'Test for allergies',
+                            'Focus on comfort',
+                          ],
+                        },
+                        {
+                          title:'Music and Sounds',
+                          sub:'Set the perfect soundtrack',
+                          icon: Sparkles,
+                          spicy:[
+                            'Create sensual playlists',
+                            'Use nature sounds',
+                            'Try different music genres',
+                            'Incorporate white noise',
+                            'Use music to set the pace',
+                          ],
+                          tips:[
+                            'Choose music you both enjoy',
+                            'Start with soft, slow music',
+                            'Use music to build intensity',
+                            'Focus on the mood',
+                          ],
+                        },
+                      ]
+                    case 'Kinky Adventures':
+                      return [
+                        {
+                          title:'Light Bondage',
+                          sub:'Explore restraint and control',
+                          icon: Dice6,
+                          spicy:[
+                            'Use silk scarves for binding',
+                            'Try blindfolds for mystery',
+                            'Use handcuffs or restraints',
+                            'Experiment with different positions',
+                            'Focus on trust and communication',
+                          ],
+                          tips:[
+                            'Start with simple restraints',
+                            'Always have scissors nearby',
+                            'Use safe words',
+                            'Focus on consent and trust',
+                          ],
+                        },
+                        {
+                          title:'Power Play',
+                          sub:'Explore dominance and submission',
+                          icon: Dice6,
+                          spicy:[
+                            'Take turns being dominant',
+                            'Use commands and requests',
+                            'Explore different power dynamics',
+                            'Focus on mutual pleasure',
+                            'Communicate about boundaries',
+                          ],
+                          tips:[
+                            'Discuss boundaries beforehand',
+                            'Use safe words',
+                            'Start with light power play',
+                            'Focus on fun and connection',
+                          ],
+                        },
+                        {
+                          title:'Sensation Play',
+                          sub:'Explore different physical sensations',
+                          icon: Dice6,
+                          spicy:[
+                            'Use feathers for light touches',
+                            'Try ice cubes for temperature play',
+                            'Use different textures',
+                            'Experiment with pressure',
+                            'Focus on your partner\'s responses',
+                          ],
+                          tips:[
+                            'Start with gentle sensations',
+                            'Check in with your partner',
+                            'Use safe, body-friendly items',
+                            'Focus on pleasure and connection',
+                          ],
+                        },
+                      ]
+                    case 'Erotic Games':
+                      return [
+                        {
+                          title:'Truth or Dare',
+                          sub:'Add excitement with intimate challenges',
+                          icon: Gamepad2,
+                          spicy:[
+                            'Create intimate truth questions',
+                            'Design spicy dares',
+                            'Use props and toys',
+                            'Set time limits for dares',
+                            'Focus on mutual pleasure',
+                          ],
+                          tips:[
+                            'Start with light questions',
+                            'Respect each other\'s boundaries',
+                            'Make it fun and playful',
+                            'Focus on connection',
+                          ],
+                        },
+                        {
+                          title:'Intimate Challenges',
+                          sub:'Create playful competitions',
+                          icon: Gamepad2,
+                          spicy:[
+                            'See who can last longer',
+                            'Try different positions',
+                            'Use timers and challenges',
+                            'Create scoring systems',
+                            'Focus on fun and pleasure',
+                          ],
+                          tips:[
+                            'Keep it light and fun',
+                            'Don\'t take it too seriously',
+                            'Focus on mutual enjoyment',
+                            'Celebrate each other\'s successes',
+                          ],
+                        },
+                        {
+                          title:'Roleplay Games',
+                          sub:'Turn intimacy into play',
+                          icon: Gamepad2,
+                          spicy:[
+                            'Create character scenarios',
+                            'Use costumes and props',
+                            'Set up different situations',
+                            'Stay in character',
+                            'Focus on creativity and fun',
+                          ],
+                          tips:[
+                            'Choose scenarios you both enjoy',
+                            'Be creative and imaginative',
+                            'Focus on having fun',
+                            'Don\'t worry about being perfect',
+                          ],
+                        },
+                      ]
+                    default:
+                      return []
+                  }
+                }
+                const activities = getActivitiesForCategory(selected)
                 const [activeIdx, setActiveIdx] = useState<number>(0)
 
                 return (
@@ -587,7 +1108,7 @@ const Index = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                       {/* Left: Activities List */}
                       <div className="space-y-3">
-                        <div className="text-sm font-semibold text-foreground/80 mb-1">Sensual Teasing Activities</div>
+                        <div className="text-sm font-semibold text-foreground/80 mb-1">{selected} Activities</div>
                         {activities.map((a, i)=> (
                           <button
                             key={a.title}

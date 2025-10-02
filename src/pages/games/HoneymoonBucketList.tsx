@@ -389,6 +389,126 @@ const HoneymoonBucketList = () => {
       estimatedCost: 'medium',
       bestTime: 'Morning',
       tips: ['Wear clothes you can get messy', 'Personalize with initials']
+    },
+    {
+      id: 'nude-beach-day',
+      title: 'Private Nude Beach Experience',
+      description: 'Find a secluded beach where you can enjoy complete privacy and freedom together',
+      category: 'intimate',
+      difficulty: 'medium',
+      location: 'Secluded Beach',
+      estimatedCost: 'low',
+      bestTime: 'Early Morning/Late Evening',
+      tips: ['Research local laws and customs', 'Choose a completely private location', 'Bring sunscreen and towels', 'Start with partial nudity if nervous', 'Enjoy the freedom and intimacy'],
+      spiceTips: ['Take sensual photos together', 'Give each other massages with sunscreen', 'End with passionate kissing in the water']
+    },
+    {
+      id: 'hotel-room-service',
+      title: 'Seductive Room Service Night',
+      description: 'Order room service and turn it into a seductive, intimate dining experience',
+      category: 'intimate',
+      difficulty: 'easy',
+      location: 'Hotel Room',
+      estimatedCost: 'medium',
+      bestTime: 'Evening',
+      tips: ['Order your favorite foods', 'Set up romantic lighting', 'Dress up for the occasion', 'Feed each other playfully', 'Enjoy the privacy'],
+      spiceTips: ['Use food items sensually', 'Take turns feeding each other', 'End with passionate lovemaking']
+    },
+    {
+      id: 'sensual-photoshoot',
+      title: 'Intimate Photoshoot Session',
+      description: 'Take sensual, tasteful photos of each other to create lasting intimate memories',
+      category: 'intimate',
+      difficulty: 'medium',
+      location: 'Hotel Room/Private Space',
+      estimatedCost: 'low',
+      bestTime: 'Anytime',
+      tips: ['Use natural lighting', 'Choose comfortable poses', 'Keep photos private and secure', 'Focus on connection and intimacy', 'Have fun with it'],
+      spiceTips: ['Use different outfits and props', 'Take turns being photographer', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'champagne-bath',
+      title: 'Champagne Bubble Bath Together',
+      description: 'Fill a large tub with champagne and bubbles for an ultra-luxurious, intimate experience',
+      category: 'intimate',
+      difficulty: 'easy',
+      location: 'Hotel Suite/Home',
+      estimatedCost: 'high',
+      bestTime: 'Evening',
+      tips: ['Use a large, comfortable tub', 'Add champagne and bubble bath', 'Set up romantic lighting', 'Bring towels and robes', 'Enjoy the luxury'],
+      spiceTips: ['Feed each other champagne', 'Give each other sensual massages', 'End with passionate kissing in the water']
+    },
+    {
+      id: 'midnight-swim',
+      title: 'Midnight Pool Swim',
+      description: 'Take a romantic midnight swim together, enjoying the privacy and intimacy',
+      category: 'intimate',
+      difficulty: 'easy',
+      location: 'Private Pool',
+      estimatedCost: 'low',
+      bestTime: 'Night',
+      tips: ['Ensure complete privacy', 'Check pool temperature', 'Bring towels and robes', 'Start with gentle swimming', 'Enjoy the intimacy'],
+      spiceTips: ['Swim together holding hands', 'Give each other underwater kisses', 'End with passionate touching']
+    },
+    {
+      id: 'sensual-dance',
+      title: 'Private Sensual Dance',
+      description: 'Dance together sensually in your private space, exploring movement and connection',
+      category: 'intimate',
+      difficulty: 'medium',
+      location: 'Hotel Room/Private Space',
+      estimatedCost: 'low',
+      bestTime: 'Evening',
+      tips: ['Choose music that moves you', 'Start with slow, sensual movements', 'Make eye contact throughout', 'Let the music guide you', 'Enjoy the connection'],
+      spiceTips: ['Dance in minimal clothing', 'Incorporate sensual touches', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'chocolate-fondue',
+      title: 'Chocolate Fondue Sensual Experience',
+      description: 'Turn chocolate fondue into a sensual, playful experience with feeding and touching',
+      category: 'intimate',
+      difficulty: 'easy',
+      location: 'Hotel Room/Private Space',
+      estimatedCost: 'medium',
+      bestTime: 'Evening',
+      tips: ['Prepare chocolate fondue', 'Use various fruits and treats', 'Feed each other playfully', 'Use fingers and tongues', 'Enjoy the mess and fun'],
+      spiceTips: ['Use chocolate as body paint', 'Give each other chocolate massages', 'End with passionate kissing']
+    },
+    {
+      id: 'mirror-play',
+      title: 'Mirror Intimacy Session',
+      description: 'Use mirrors to enhance your intimate experience, watching yourselves together',
+      category: 'intimate',
+      difficulty: 'medium',
+      location: 'Hotel Room/Private Space',
+      estimatedCost: 'low',
+      bestTime: 'Anytime',
+      tips: ['Set up mirrors strategically', 'Start with gentle touching', 'Make eye contact in the mirror', 'Explore different angles', 'Enjoy the visual connection'],
+      spiceTips: ['Use the mirror for guidance', 'Take sensual photos in the mirror', 'End with passionate lovemaking']
+    },
+    {
+      id: 'silk-scarves',
+      title: 'Silk Scarf Sensual Play',
+      description: 'Use silk scarves for gentle, sensual exploration and light bondage play',
+      category: 'intimate',
+      difficulty: 'medium',
+      location: 'Hotel Room/Private Space',
+      estimatedCost: 'low',
+      bestTime: 'Evening',
+      tips: ['Use soft, smooth scarves', 'Start with gentle binding', 'Communicate about comfort', 'Focus on sensation and trust', 'Have scissors nearby for safety'],
+      spiceTips: ['Use scarves for blindfolding', 'Incorporate gentle teasing', 'End with passionate kissing and touching']
+    },
+    {
+      id: 'temperature-play',
+      title: 'Temperature Sensation Play',
+      description: 'Explore different temperatures with ice, warm oil, and other sensations',
+      category: 'intimate',
+      difficulty: 'medium',
+      location: 'Hotel Room/Private Space',
+      estimatedCost: 'low',
+      bestTime: 'Evening',
+      tips: ['Test temperatures on your own skin first', 'Use ice cubes and warm oil', 'Start with gentle touches', 'Communicate about what feels good', 'Enjoy the contrast'],
+      spiceTips: ['Use ice cubes for teasing', 'Give warm oil massages', 'End with passionate kissing and touching']
     }
   ]
 
@@ -440,14 +560,14 @@ const HoneymoonBucketList = () => {
       <main className="pt-20 pb-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
           {/* Header */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-              <Heart className="w-8 h-8 sm:w-12 sm:h-12 text-pink-300" />
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent text-center">
+          <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-3 sm:mb-4 lg:mb-6">
+              <Heart className="w-6 h-6 sm:w-8 sm:h-8 lg:w-12 lg:h-12 text-pink-300" />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent text-center">
                 Honeymoon Bucket List
               </h1>
             </div>
-            <p className="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
+            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
               A sweet checklist of romantic honeymoon ideas to create unforgettable memories together
             </p>
 
@@ -470,34 +590,35 @@ const HoneymoonBucketList = () => {
           </div>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6 sm:mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 lg:mb-8">
             {categories.map(category => {
               const IconComponent = category.icon
               return (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg border-2 transition-all duration-300 text-xs sm:text-sm font-medium hover:scale-105 flex items-center gap-2 ${
+                  className={`px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 rounded-lg border-2 transition-all duration-300 text-xs sm:text-sm font-medium hover:scale-105 flex items-center gap-1 sm:gap-2 ${
                     selectedCategory === category.id
                       ? `${category.color} shadow-lg scale-105` 
                       : 'bg-black/20 border-white/20 text-white/70 hover:border-white/40'
                   }`}
                 >
                   <IconComponent className="w-3 h-3 sm:w-4 sm:h-4" />
-                  {category.label}
+                  <span className="hidden sm:inline">{category.label}</span>
+                  <span className="sm:hidden">{category.label.split(' ')[0]}</span>
                 </button>
               )
             })}
           </div>
 
-          {/* Desktop-only Spice Toggle */}
-          <div className="hidden sm:flex items-center justify-center mb-6">
+          {/* Spice Toggle - Now visible on mobile */}
+          <div className="flex items-center justify-center mb-4 sm:mb-6">
             <button
               onClick={() => setShowSpice(s => !s)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm transition-all bg-black/20 border-white/20 text-white/80 hover:border-white/40"
-              title="Show tasteful, optional spice tips (desktop only)"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm transition-all bg-black/20 border-white/20 text-white/80 hover:border-white/40"
+              title="Show extra romantic tips"
             >
-              <Flame className="w-4 h-4 text-orange-300" />
+              <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-orange-300" />
               {showSpice ? 'Hide Extra Tips' : 'Show Extra Tips'}
             </button>
           </div>
@@ -567,12 +688,12 @@ const HoneymoonBucketList = () => {
                         </span>
                       </div>
 
-                      {/* Tips - Hidden on mobile */}
-                      <div className="hidden sm:block">
-                        <h4 className="text-white font-semibold mb-2 text-sm">Tips:</h4>
+                      {/* Tips - Now visible on mobile */}
+                      <div className="block">
+                        <h4 className="text-white font-semibold mb-2 text-xs sm:text-sm">How to do it:</h4>
                         <ul className="space-y-1">
-                          {item.tips.slice(0, 2).map((tip, index) => (
-                            <li key={index} className="flex items-start gap-2 text-xs text-white/60">
+                          {item.tips.slice(0, 3).map((tip, index) => (
+                            <li key={index} className="flex items-start gap-2 text-xs text-white/70">
                               <span className="w-1 h-1 rounded-full bg-pink-300 mt-2 flex-shrink-0"></span>
                               <span className="break-words hyphens-auto">{tip}</span>
                             </li>
@@ -580,7 +701,7 @@ const HoneymoonBucketList = () => {
                         </ul>
                         {showSpice && item.spiceTips && item.spiceTips.length>0 && (
                           <div className="mt-3">
-                            <h5 className="text-white font-semibold mb-2 text-sm flex items-center gap-2"><Flame className="w-4 h-4 text-orange-300"/>Extras (optional):</h5>
+                            <h5 className="text-white font-semibold mb-2 text-xs sm:text-sm flex items-center gap-2"><Flame className="w-3 h-3 sm:w-4 sm:h-4 text-orange-300"/>Extra Tips:</h5>
                             <ul className="space-y-1">
                               {item.spiceTips.slice(0,2).map((tip, i)=>(
                                 <li key={i} className="flex items-start gap-2 text-xs text-white/70">

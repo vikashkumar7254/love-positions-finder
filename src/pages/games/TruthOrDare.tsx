@@ -58,45 +58,47 @@ const TruthOrDare = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
       
-      <main className="pt-20 pb-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
+      <main className="pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 space-y-4 sm:space-y-6 lg:space-y-8">
           {/* Header */}
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
-              <MessageCircle className="w-8 h-8 sm:w-12 sm:h-12 text-pink-300" />
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent text-center">Dirty Truth or Dare Game</h1>
+          <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 lg:gap-4 mb-3 sm:mb-4 lg:mb-6">
+              <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-pink-300" />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent text-center leading-tight">
+                Extreme Truth or Dare
+              </h1>
             </div>
-            <p className="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
-              Spice up your love life with our naughty truth or dare questions for adults. Perfect for couples seeking intimate adventures!
+            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
+              Ignite passion with extreme truth or dare questions for adults. Perfect for couples seeking intense intimate adventures!
             </p>
           </div>
 
           {!isPlaying ? (
             <>
-              {/* Spicy Game Categories section */}
-              <Card variant="elegant" className="bg-black/20 border-purple-500/20 shadow-2xl rounded-2xl backdrop-blur-sm mb-8">
-                <CardHeader>
-                  <CardTitle className="text-white text-xl flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-300" />
-                    Spicy Game Categories
+              {/* Game Categories section */}
+              <Card variant="elegant" className="bg-black/20 border-purple-500/20 shadow-2xl rounded-2xl backdrop-blur-sm mb-6 sm:mb-8">
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-300" />
+                    Extreme Game Categories
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center">
-                          <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center">
+                          <Eye className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white" />
                         </div>
                         <div>
-                          <div className="font-bold text-white text-base sm:text-lg break-words">Adult Truth Questions</div>
+                          <div className="font-bold text-white text-sm sm:text-base lg:text-lg break-words">Extreme Truth Questions</div>
                           <div className="text-white/70 text-xs sm:text-sm break-words">Revealing and intimate questions for couples</div>
                         </div>
                       </div>
-                      <div className="space-y-2 text-white/60 text-xs sm:text-sm">
+                      <div className="space-y-1.5 sm:space-y-2 text-white/60 text-xs sm:text-sm">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-pink-300 flex-shrink-0"></span>
-                          <span>Spicy confessions</span>
+                          <span>Extreme confessions</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-purple-300 flex-shrink-0"></span>
@@ -104,36 +106,36 @@ const TruthOrDare = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-red-300 flex-shrink-0"></span>
-                          <span>Naughty experiences</span>
+                          <span>Wild experiences</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-pink-400 flex-shrink-0"></span>
-                          <span>Personal fantasies</span>
+                          <span>Deep fantasies</span>
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-red-400 to-orange-400 flex items-center justify-center">
-                          <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-red-400 to-orange-400 flex items-center justify-center">
+                          <Flame className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white" />
                         </div>
                         <div>
-                          <div className="font-bold text-white text-base sm:text-lg break-words">Dirty Dares</div>
-                          <div className="text-white/70 text-xs sm:text-sm break-words">Exciting challenges for adventurous couples</div>
+                          <div className="font-bold text-white text-sm sm:text-base lg:text-lg break-words">Extreme Dares</div>
+                          <div className="text-white/70 text-xs sm:text-sm break-words">Intense challenges for adventurous couples</div>
                         </div>
                       </div>
-                      <div className="space-y-2 text-white/60 text-xs sm:text-sm">
+                      <div className="space-y-1.5 sm:space-y-2 text-white/60 text-xs sm:text-sm">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-red-300 flex-shrink-0"></span>
                           <span>Sensual challenges</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-orange-300 flex-shrink-0"></span>
-                          <span>Playful tasks</span>
+                          <span>Intense tasks</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-pink-300 flex-shrink-0"></span>
-                          <span>Spicy activities</span>
+                          <span>Wild activities</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-purple-300 flex-shrink-0"></span>
@@ -146,21 +148,21 @@ const TruthOrDare = () => {
               </Card>
 
               {/* Game Settings */}
-              <Card variant="elegant" className="bg-black/30 border-white/10 shadow-2xl rounded-2xl backdrop-blur-sm mb-8">
-                <CardHeader>
-                  <CardTitle className="text-white text-xl flex items-center gap-2">
-                    <Target className="w-5 h-5 text-purple-300" />
-                    Spicy Truth or Dare
+              <Card variant="elegant" className="bg-black/30 border-white/10 shadow-2xl rounded-2xl backdrop-blur-sm mb-6 sm:mb-8">
+                <CardHeader className="pb-3 sm:pb-4">
+                  <CardTitle className="text-white text-lg sm:text-xl flex items-center gap-2">
+                    <Target className="w-4 h-4 sm:w-5 sm:h-5 text-purple-300" />
+                    Extreme Truth or Dare
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-8">
+                <CardContent className="space-y-6 sm:space-y-8">
                   {/* Game Type Selection */}
                   <div>
-                    <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-yellow-300" />
-                      Intensity
+                    <h3 className="text-white font-bold mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                      <Zap className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-300" />
+                      Game Type
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                       {[
                         { id: 'truth', label: 'Truth', desc: 'Deep questions', icon: Eye, color: 'from-pink-500 to-purple-500' },
                         { id: 'dare', label: 'Dare', desc: 'Action challenges', icon: Flame, color: 'from-red-500 to-orange-500' },
@@ -171,7 +173,7 @@ const TruthOrDare = () => {
                           <button
                             key={type.id}
                             onClick={() => setGameType(type.id as 'truth' | 'dare' | 'random')}
-                            className={`p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 ${
+                            className={`p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl border-2 transition-all duration-300 ${
                               gameType === type.id 
                                 ? `bg-gradient-to-br ${type.color} border-white/30 shadow-lg` 
                                 : 'bg-black/20 border-white/20 hover:border-white/40'
@@ -179,8 +181,8 @@ const TruthOrDare = () => {
                             data-testid={`button-type-${type.id}`}
                           >
                             <div className="flex flex-col items-center gap-1 sm:gap-2">
-                              <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                              <span className="font-bold text-white text-sm sm:text-base">{type.label}</span>
+                              <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+                              <span className="font-bold text-white text-xs sm:text-sm lg:text-base">{type.label}</span>
                               <span className="text-xs text-white/70">{type.desc}</span>
                             </div>
                           </button>
@@ -189,13 +191,13 @@ const TruthOrDare = () => {
                     </div>
                   </div>
 
-                  {/* Spicy Level Selection */}
+                  {/* Category Selection */}
                   <div>
-                    <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                      <Flame className="w-4 h-4 text-red-300" />
+                    <h3 className="text-white font-bold mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                      <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-red-300" />
                       Category
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 lg:gap-3">
                       {[
                         { id: 'All', label: 'All', color: 'bg-white/30 text-white border-white/50' },
                         { id: 'Romance', label: 'Romance', color: 'bg-pink-500/30 text-pink-200 border-pink-500/50' },
@@ -207,7 +209,7 @@ const TruthOrDare = () => {
                         <button
                           key={cat.id}
                           onClick={() => setCategory(cat.id as 'All' | 'Romance' | 'Sensual' | 'Fantasy' | 'Touch' | 'Intimacy')}
-                          className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 transition-all duration-300 text-xs sm:text-sm font-medium hover:scale-105 ${
+                          className={`px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 lg:py-3 rounded-lg border-2 transition-all duration-300 text-xs sm:text-sm font-medium hover:scale-105 ${
                             category === cat.id
                               ? `${cat.color} shadow-lg scale-105` 
                               : 'bg-black/20 border-white/20 text-white/70 hover:border-white/40'
@@ -222,13 +224,13 @@ const TruthOrDare = () => {
 
                   {/* Intensity Level */}
                   <div>
-                    <h3 className="text-white font-bold mb-4">Spice Level: {getSpicyLevelText(spicyLevel)}</h3>
+                    <h3 className="text-white font-bold mb-3 sm:mb-4 text-sm sm:text-base">Intensity Level: {getSpicyLevelText(spicyLevel)}</h3>
                     <div className="flex gap-1 sm:gap-2">
                       {[1, 2, 3, 4, 5].map((level) => (
                         <button
                           key={level}
                           onClick={() => setSpicyLevel(level)}
-                          className={`flex-1 py-2 sm:py-3 rounded-lg border transition-all duration-300 text-xs sm:text-sm font-medium ${
+                          className={`flex-1 py-1.5 sm:py-2 lg:py-3 rounded-lg border transition-all duration-300 text-xs sm:text-sm font-medium ${
                             spicyLevel >= level
                               ? 'bg-gradient-to-r from-pink-500 to-red-500 border-red-400 text-white shadow-lg' 
                               : 'bg-black/20 border-white/20 text-white/70 hover:border-white/40'
@@ -239,7 +241,7 @@ const TruthOrDare = () => {
                         </button>
                       ))}
                     </div>
-                    <p className="text-sm text-white/60 mt-3 text-center">
+                    <p className="text-xs sm:text-sm text-white/60 mt-2 sm:mt-3 text-center">
                       Level {spicyLevel}: {getSpicyLevelText(spicyLevel)} - Choose your comfort zone
                     </p>
                   </div>
@@ -250,12 +252,12 @@ const TruthOrDare = () => {
               <div className="text-center">
                 <button 
                   onClick={getNewQuestion}
-                  className="px-8 sm:px-12 py-4 sm:py-6 bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 text-white font-bold text-lg sm:text-2xl rounded-xl sm:rounded-2xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 hover:scale-105 w-full max-w-sm sm:min-w-[300px]"
+                  className="px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 text-white font-bold text-base sm:text-lg lg:text-2xl rounded-lg sm:rounded-xl lg:rounded-2xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 hover:scale-105 w-full max-w-xs sm:max-w-sm lg:min-w-[300px]"
                   data-testid="button-start-game"
                 >
                   <div className="flex items-center justify-center gap-2 sm:gap-3">
-                    <Sparkles className="w-6 h-6 sm:w-8 sm:h-8" />
-                    <span>Play Now</span>
+                    <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8" />
+                    <span>Start Extreme Game</span>
                   </div>
                 </button>
               </div>
