@@ -136,33 +136,33 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="pt-24 pb-8 px-6 bg-gradient-hero">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+      <section className="pt-16 sm:pt-20 lg:pt-24 pb-6 sm:pb-8 px-3 sm:px-6 bg-gradient-hero">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-center">
           <div className="lg:col-span-2 text-white">
-            <p className="uppercase tracking-wide text-white/80 mb-2">Scratch Positions</p>
-            <h1 className="text-4xl md:text-5xl font-bold mb-3">Level Up Your Intimate Life</h1>
-            <p className="text-white/90 mb-6 max-w-2xl">
+            <p className="uppercase tracking-wide text-white/80 mb-2 text-sm sm:text-base">ScratchSexPositions</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3">Level Up Your Intimate Life</h1>
+            <p className="text-white/90 mb-4 sm:mb-6 max-w-2xl text-sm sm:text-base">
               Explore our collection of 500+ intimate positions, from romantic to adventurous. Perfect for couples seeking to
               enhance their connection.
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Link to="/positions/custom-poster"><Button variant="hero"><Palette className="w-4 h-4"/> Create Your Poster</Button></Link>
-              <Link to="/positions/all"><Button variant="tender"><Grid3X3 className="w-4 h-4"/> Explore Positions</Button></Link>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
+              <Link to="/positions/custom-poster"><Button variant="hero" className="w-full sm:w-auto text-sm sm:text-base"><Palette className="w-4 h-4"/> Create Your Poster</Button></Link>
+              <Link to="/positions/all"><Button variant="tender" className="w-full sm:w-auto text-sm sm:text-base"><Grid3X3 className="w-4 h-4"/> Explore Positions</Button></Link>
             </div>
           </div>
-          <Card variant="elegant" className="bg-white/20 backdrop-blur-sm">
-            <CardContent className="p-6 grid grid-cols-3 gap-4 text-center text-white">
+          <Card variant="elegant" className="bg-white/20 backdrop-blur-sm mt-4 lg:mt-0">
+            <CardContent className="p-4 sm:p-6 grid grid-cols-3 gap-2 sm:gap-4 text-center text-white">
               <div>
-                <div className="text-3xl font-bold">500+</div>
-                <div className="text-xs">Sex Positions</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">500+</div>
+                <div className="text-xs sm:text-sm">Sex Positions</div>
               </div>
               <div>
-                <div className="text-3xl font-bold">❤️</div>
-                <div className="text-xs">Kama Sutra Inspired</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">❤️</div>
+                <div className="text-xs sm:text-sm">Kama Sutra Inspired</div>
               </div>
               <div>
-                <div className="text-3xl font-bold">✨</div>
-                <div className="text-xs">Customizable Poster</div>
+                <div className="text-xl sm:text-2xl lg:text-3xl font-bold">✨</div>
+                <div className="text-xs sm:text-sm">Customizable Poster</div>
               </div>
             </CardContent>
           </Card>
@@ -172,20 +172,20 @@ const Index = () => {
       </section>
 
       {/* Quick Explore Grid (2x4) */}
-      <section className="px-6 py-8">
+      <section className="px-3 sm:px-6 py-6 sm:py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
             {/* 1. Random Positions */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-purple-500/30 bg-gradient-to-b from-purple-500/25 to-purple-500/10 border border-purple-500/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/random-position" className="block group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-purple-500/25 group-hover:bg-purple-500/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Shuffle className="w-6 h-6 text-purple-400" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-purple-500/25 group-hover:bg-purple-500/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                      <Shuffle className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
                     </div>
-                    <div className="font-semibold text-base md:text-lg text-foreground">Random Positions</div>
+                    <div className="font-semibold text-sm sm:text-base lg:text-lg text-foreground">Random Positions</div>
                   </div>
-                  <p className="text-sm text-foreground/80 mb-4">Get instant random position suggestions with a single click.</p>
+                  <p className="text-xs sm:text-sm text-foreground/80 mb-3 sm:mb-4">Get instant random position suggestions with a single click.</p>
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex gap-2">
                       <span className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400">Instant</span>
@@ -199,15 +199,15 @@ const Index = () => {
 
             {/* 2. Spin for Desire */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/spin-for-desire" className="block group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Sparkles className="w-6 h-6 text-romantic" />
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-romantic" />
                     </div>
-                    <div className="font-semibold text-base md:text-lg text-foreground">Spin for Desire</div>
+                    <div className="font-semibold text-sm sm:text-base lg:text-lg text-foreground">Spin for Desire</div>
                   </div>
-                  <p className="text-sm text-foreground/80 mb-4">Spin to pick a playful prompt or fantasy.</p>
+                  <p className="text-xs sm:text-sm text-foreground/80 mb-3 sm:mb-4">Spin to pick a playful prompt or fantasy.</p>
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex gap-2">
                       <span className="px-2 py-0.5 rounded bg-romantic/20 text-romantic">New</span>
@@ -221,10 +221,10 @@ const Index = () => {
 
             {/* 3. Custom Position (Poster) */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/positions/custom-poster" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Palette className="w-6 h-6 text-romantic" />
                     </div>
                     <div className="font-semibold text-base md:text-lg text-foreground">Custom Poster</div>
@@ -243,10 +243,10 @@ const Index = () => {
 
             {/* 4. Passion Dice */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/passion-dice" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Dice6 className="w-6 h-6 text-romantic" />
                     </div>
                     <div className="font-semibold text-base md:text-lg text-foreground">Passion Dice</div>
@@ -265,10 +265,10 @@ const Index = () => {
 
             {/* 5. Honeymoon Bucket */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/honeymoon-bucket-list" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Gift className="w-6 h-6 text-romantic" />
                     </div>
                     <div className="font-semibold text-base md:text-lg text-foreground">Honeymoon Bucket List</div>
@@ -287,10 +287,10 @@ const Index = () => {
 
             {/* 6. First Night Bucket List */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/first-night-bucket-list" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Heart className="w-6 h-6 text-romantic" />
                     </div>
                     <div className="font-semibold text-base md:text-lg text-foreground">First Night Bucket List</div>
@@ -308,10 +308,10 @@ const Index = () => {
             </Card>
             {/* 7. Scratch Random Position */}
              <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/scratch-position" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Gamepad2 className="w-6 h-6 text-romantic" />
                     </div>
                     <div className="font-semibold text-base md:text-lg text-foreground">Scratch Position</div>
@@ -330,10 +330,10 @@ const Index = () => {
 
             {/* 8. Dice to Spice Game */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <Link to="/games/dice-to-spice" className="block group">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <div className="flex gap-1">
                         <Dice6 className="w-3 h-3 text-romantic" />
                         <Dice6 className="w-3 h-3 text-romantic" />

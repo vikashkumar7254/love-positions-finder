@@ -44,6 +44,7 @@ const AddBlog = () => {
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [author, setAuthor] = useState("");
   const slug = useMemo(() => makeSlug(title), [title]);
+  const readTime = useMemo(() => estimateReadTime(content), [content]);
 
   const onSubmit = async () => {
     if (!title || !excerpt || !content) return;
@@ -126,18 +127,18 @@ const AddBlog = () => {
       <section className="pt-24 pb-12">
         <div className="container max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-romantic bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
               Add New Blog
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-gray-600 mt-2">
               Create and submit your article. It will be visible on the blog after admin approval.
             </p>
           </div>
 
           <Card className="border-0 bg-gradient-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-romantic" />
+              <CardTitle className="flex items-center gap-2 text-gray-800">
+                <BookOpen className="w-5 h-5 text-rose-500" />
                 Blog Details
               </CardTitle>
             </CardHeader>
@@ -172,7 +173,7 @@ const AddBlog = () => {
                   <label className="block text-sm font-medium mb-2 flex items-center gap-2">
                     <ClockIcon /> Estimated Read Time
                   </label>
-                  <Input value={estimateReadTime(content)} readOnly />
+                  <Input value={readTime} readOnly />
                 </div>
               </div>
 

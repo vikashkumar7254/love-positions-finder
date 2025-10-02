@@ -133,17 +133,17 @@ const SpinForDesire = () => {
           offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
         })}</script>
       </Helmet>
-      <main className="pt-24 pb-16">
-        <div className="max-w-6xl mx-auto px-6 space-y-8">
+      <main className="pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12 lg:pb-16">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 space-y-6 sm:space-y-8">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <Gift className="w-12 h-12 text-pink-300" />
-              <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-4 sm:mb-6">
+              <Gift className="w-8 h-8 sm:w-12 sm:h-12 text-pink-300" />
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-pink-300 via-purple-300 to-red-300 bg-clip-text text-transparent">
                 Spin for Desire
               </h1>
             </div>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
               Spin the wheel of passion and discover your next romantic adventure. Let fate decide your intimate moment!
             </p>
           </div>
@@ -154,14 +154,14 @@ const SpinForDesire = () => {
             <div className="flex justify-center">
               <div className="relative">
                 {/* Wheel Pointer */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-20">
-                  <div className="w-0 h-0 border-l-[20px] border-r-[20px] border-b-[40px] border-l-transparent border-r-transparent border-b-yellow-400 drop-shadow-lg"></div>
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1 sm:-translate-y-2 z-20">
+                  <div className="w-0 h-0 border-l-[15px] sm:border-l-[20px] border-r-[15px] sm:border-r-[20px] border-b-[30px] sm:border-b-[40px] border-l-transparent border-r-transparent border-b-yellow-400 drop-shadow-lg"></div>
                 </div>
 
                 {/* Spinning Wheel */}
                 <div 
                   ref={wheelRef}
-                  className="relative w-96 h-96 rounded-full border-8 border-yellow-400 shadow-2xl overflow-hidden"
+                  className="relative w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96 rounded-full border-6 sm:border-8 border-yellow-400 shadow-2xl overflow-hidden"
                   style={{
                     transform: `rotate(${rotation}deg)`,
                     transition: isSpinning ? 'transform 3s cubic-bezier(0.23, 1, 0.32, 1)' : 'none'
@@ -206,7 +206,7 @@ const SpinForDesire = () => {
 
                 {/* Interactive Center Circle with Selected Image */}
                 <div 
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-6 border-white shadow-2xl overflow-hidden z-10 transition-all duration-300 hover:scale-110 hover:shadow-yellow-400/50 cursor-pointer"
+                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full border-4 sm:border-6 border-white shadow-2xl overflow-hidden z-10 transition-all duration-300 hover:scale-110 hover:shadow-yellow-400/50 cursor-pointer"
                   onClick={() => selectedItem && !isSpinning && setShowImagePopup(true)}
                 >
                   {selectedItem && !isSpinning ? (
@@ -241,12 +241,12 @@ const SpinForDesire = () => {
                     <button
                       onClick={spinWheel}
                       disabled={isSpinning}
-                      className="px-10 py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 text-white font-bold text-xl rounded-2xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 sm:px-8 lg:px-10 py-3 sm:py-4 bg-gradient-to-r from-pink-500 via-purple-500 to-red-500 text-white font-bold text-base sm:text-lg lg:text-xl rounded-2xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                     >
-                      <div className="flex items-center gap-3">
-                        <Play className={`w-6 h-6 ${isSpinning ? 'animate-spin' : ''}`} />
+                      <div className="flex items-center justify-center gap-2 sm:gap-3">
+                        <Play className={`w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ${isSpinning ? 'animate-spin' : ''}`} />
                         <span>{isSpinning ? 'Spinning...' : 'Spin the Wheel'}</span>
-                        <Sparkles className="w-6 h-6" />
+                        <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
                       </div>
                     </button>
                   </div>
