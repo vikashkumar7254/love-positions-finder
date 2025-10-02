@@ -112,12 +112,13 @@ const AdminDashboardContent = () => {
     },
     {
       title: "Spin for Desire",
-      description: "Manage wheel desires and categories",
+      description: "Manage wheel desires, images and categories",
       icon: Gift,
       color: "from-pink-500 to-rose-600",
       stats: "Romantic wheel desires",
       actions: [
         { label: "Manage Desires", href: "/admin/spin-desires", icon: Edit3 },
+        { label: "Manage Images", href: "/admin/spin-for-desire", icon: Image },
         { label: "View Game", href: "/games/spin-for-desire", icon: Gamepad2 }
       ]
     },
@@ -133,13 +134,14 @@ const AdminDashboardContent = () => {
       ]
     },
     {
-      title: "Default Images",
-      description: "Manage default images used across the site",
-      icon: Palette,
+      title: "Image Management",
+      description: "Upload and manage all site images with categories",
+      icon: Image,
       color: "from-green-500 to-emerald-600",
-      stats: "Customizable defaults",
+      stats: "Upload & organize images",
       actions: [
-        { label: "Manage Images", href: "/admin/default-images", icon: Palette },
+        { label: "Manage Images", href: "/admin/image-management", icon: Image },
+        { label: "Default Images", href: "/admin/default-images", icon: Palette },
         { label: "View All Games", href: "/games", icon: Eye }
       ]
     },

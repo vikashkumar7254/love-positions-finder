@@ -267,5 +267,103 @@ export const desireItems: DesireItem[] = [
     image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
     category: 'passionate',
     color: '#6c5ce7'
+  },
+
+  // Additional Wheel Images for Better Visual Appeal
+  {
+    id: 'romantic_breakfast',
+    title: 'Romantic Breakfast in Bed',
+    description: 'Surprise your partner with breakfast in bed and morning cuddles',
+    image: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&h=400&fit=crop&crop=center',
+    category: 'romantic',
+    color: '#ff7675'
+  },
+  {
+    id: 'couples_yoga',
+    title: 'Intimate Couples Yoga',
+    description: 'Practice yoga poses together that bring you closer physically and emotionally',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=400&fit=crop&crop=center',
+    category: 'sensual',
+    color: '#a29bfe'
+  },
+  {
+    id: 'candlelit_reading',
+    title: 'Candlelit Reading Session',
+    description: 'Read romantic poetry or stories to each other by candlelight',
+    image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop&crop=center',
+    category: 'romantic',
+    color: '#fd79a8'
+  },
+  {
+    id: 'sensual_cooking',
+    title: 'Sensual Cooking Together',
+    description: 'Cook a meal together while feeding each other and sharing intimate moments',
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop&crop=center',
+    category: 'playful',
+    color: '#fdcb6e'
+  },
+  {
+    id: 'massage_with_oils',
+    title: 'Aromatic Oil Massage',
+    description: 'Give each other relaxing massages with scented oils and gentle touches',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
+    category: 'sensual',
+    color: '#e17055'
+  },
+  {
+    id: 'dance_in_rain',
+    title: 'Dance in the Rain',
+    description: 'Dance together in the rain for a romantic and spontaneous moment',
+    image: 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop&crop=center',
+    category: 'passionate',
+    color: '#74b9ff'
+  },
+  {
+    id: 'moonlight_walk',
+    title: 'Moonlight Walk',
+    description: 'Take a romantic walk under the moonlight, holding hands and sharing dreams',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&crop=center',
+    category: 'romantic',
+    color: '#0984e3'
+  },
+  {
+    id: 'sensual_painting',
+    title: 'Sensual Body Painting',
+    description: 'Paint each other\'s bodies with safe, washable paints for artistic intimacy',
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop&crop=center',
+    category: 'playful',
+    color: '#6c5ce7'
+  },
+  {
+    id: 'hot_springs',
+    title: 'Hot Springs Relaxation',
+    description: 'Soak together in hot springs or a hot tub for ultimate relaxation',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center',
+    category: 'sensual',
+    color: '#00b894'
+  },
+  {
+    id: 'fireplace_cuddles',
+    title: 'Fireplace Cuddles',
+    description: 'Cuddle together by the fireplace with warm blankets and hot chocolate',
+    image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=600&h=400&fit=crop&crop=center',
+    category: 'romantic',
+    color: '#e84393'
+  },
+  {
+    id: 'sensual_photography',
+    title: 'Intimate Photography',
+    description: 'Take sensual photos of each other in romantic settings',
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=400&fit=crop&crop=center',
+    category: 'passionate',
+    color: '#f8b500'
+  },
+  {
+    id: 'chocolate_fondue',
+    title: 'Chocolate Fondue Night',
+    description: 'Feed each other chocolate fondue with fruits and intimate touches',
+    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=600&h=400&fit=crop&crop=center',
+    category: 'playful',
+    color: '#fd79a8'
   }
 ]

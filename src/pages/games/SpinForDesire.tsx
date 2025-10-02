@@ -185,17 +185,25 @@ const SpinForDesire = () => {
                         >
                           {/* Background Image */}
                           <LazyImage
-                            src={getCategoryImage('games', item.image)}
+                            src={item.image}
                             alt={item.title}
-                            className="absolute inset-0 w-full h-full object-cover opacity-30"
+                            className="absolute inset-0 w-full h-full object-cover opacity-40"
                             width={200}
                             height={200}
+                            onError={(e) => {
+                              // Fallback to solid color if image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                            }}
                           />
                           
                           {/* Content */}
-                          <div className="relative z-10 text-center p-4">
-                            <div className="text-white font-bold text-sm transform rotate-0">
+                          <div className="relative z-10 text-center p-2 sm:p-4">
+                            <div className="text-white font-bold text-xs sm:text-sm transform rotate-0 drop-shadow-lg">
                               {item.title.split(' ')[0]}
+                            </div>
+                            <div className="text-white/80 text-xs transform rotate-0 drop-shadow-lg">
+                              {item.category}
                             </div>
                           </div>
                         </div>
@@ -211,7 +219,7 @@ const SpinForDesire = () => {
                 >
                   {selectedItem && !isSpinning ? (
                     <LazyImage
-                      src={getCategoryImage('games', selectedItem.image)}
+                      src={selectedItem.image}
                       alt={selectedItem.title}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       onClick={() => setShowImagePopup(true)}
@@ -372,7 +380,7 @@ const SpinForDesire = () => {
             {/* Large Image */}
             <div className="relative">
               <LazyImage
-                src={getCategoryImage('games', selectedItem.image)}
+                src={selectedItem.image}
                 alt={selectedItem.title}
                 className="w-full h-auto max-h-[70vh] object-cover"
                 width={800}
