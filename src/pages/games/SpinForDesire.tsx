@@ -37,6 +37,7 @@ const SpinForDesire = () => {
   }
 
   // Load items: prefer server (admin-managed), fallback to defaults
+  // Always limit to 12 items for the wheel
   useEffect(() => {
     let mounted = true
     ;(async () => {
@@ -51,13 +52,14 @@ const SpinForDesire = () => {
             category: (it.category as DesireItem["category"]) || 'romantic',
             color: categoryColor((it.category as DesireItem["category"]) || 'romantic'),
           }))
-          setAllItems(mapped)
+          // Limit to 12 items for the wheel
+          setAllItems(mapped.slice(0, 12))
           return
         }
       } catch {}
       if (mounted) {
-        // Fallback: local defaults
-        setAllItems(desireItems)
+        // Fallback: local defaults - limit to 12 items
+        setAllItems(desireItems.slice(0, 12))
       }
     })()
     return () => { mounted = false }
@@ -188,11 +190,11 @@ const SpinForDesire = () => {
                             background: `linear-gradient(135deg, ${item.color} 0%, ${item.color}dd 50%, ${item.color}aa 100%)`
                           }}
                         >
-                          {/* Background Image */}
+                          {/* Background Image - More prominent */}
                           <LazyImage
                             src={item.image}
                             alt={item.title}
-                            className="absolute inset-0 w-full h-full object-cover opacity-60 hover:opacity-80 transition-opacity duration-300"
+                            className="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-90 transition-opacity duration-300"
                             width={200}
                             height={200}
                             onError={(e) => {
@@ -202,8 +204,8 @@ const SpinForDesire = () => {
                             }}
                           />
                           
-                          {/* Gradient Overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-transparent to-black/50"></div>
+                          {/* Gradient Overlay - Lighter for better visibility */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
                           
                           {/* Content - Rotated to fit the section */}
                           <div 
@@ -213,29 +215,29 @@ const SpinForDesire = () => {
                               transformOrigin: 'center'
                             }}
                           >
-                            <div className="text-white font-bold text-xs sm:text-sm drop-shadow-lg text-center leading-tight">
+                            <div className="text-white font-bold text-xs sm:text-sm drop-shadow-2xl text-center leading-tight bg-black/40 px-2 py-1 rounded">
                               {item.title.split(' ')[0]}
                             </div>
-                            <div className="text-white/90 text-xs drop-shadow-lg font-medium">
+                            <div className="text-white/90 text-xs drop-shadow-2xl font-medium bg-black/30 px-1 py-0.5 rounded mt-1">
                               {item.category}
                             </div>
                           </div>
                           
-                          {/* Decorative Border Lines */}
+                          {/* Decorative Border Lines - More visible */}
                           <div 
-                            className="absolute top-0 left-1/2 w-px h-full bg-white/40"
+                            className="absolute top-0 left-1/2 w-px h-full bg-white/60"
                             style={{ transform: 'translateX(-50%)' }}
                           ></div>
                           <div 
-                            className="absolute top-1/2 left-0 w-full h-px bg-white/20"
+                            className="absolute top-1/2 left-0 w-full h-px bg-white/40"
                             style={{ transform: 'translateY(-50%)' }}
                           ></div>
                           
                           {/* Hover Effect */}
                           <div className="absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                           
-                          {/* Section Number (for debugging) */}
-                          <div className="absolute top-1 left-1 text-white/60 text-xs font-bold">
+                          {/* Section Number - More visible */}
+                          <div className="absolute top-1 left-1 text-white/80 text-xs font-bold bg-black/50 px-1 py-0.5 rounded">
                             {index + 1}
                           </div>
                         </div>
@@ -337,33 +339,44 @@ const SpinForDesire = () => {
             </div>
           </div>
 
-          {/* Selected Result - Simple Text Display */}
+          {/* Selected Result - Enhanced Display */}
           {selectedItem && !isSpinning && (
-            <Card variant="elegant" className="bg-gradient-to-br from-black/40 to-black/60 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
+            <Card variant="elegant" className="bg-gradient-to-br from-black/40 to-black/60 border-yellow-400/40 shadow-2xl rounded-2xl backdrop-blur-sm animate-pulse">
               <CardContent className="p-8 text-center">
+                {/* Selected Item Image */}
+                <div className="mb-6">
+                  <LazyImage
+                    src={selectedItem.image}
+                    alt={selectedItem.title}
+                    className="w-32 h-32 mx-auto rounded-full object-cover border-4 border-yellow-400 shadow-2xl"
+                    width={128}
+                    height={128}
+                  />
+                </div>
+                
                 <div className="flex items-center justify-center gap-3 mb-4">
                   {(() => {
                     const IconComponent = getCategoryIcon(selectedItem.category)
                     return <IconComponent className="w-8 h-8 text-yellow-300" />
                   })()}
-                  <span className="px-4 py-2 bg-white/20 text-white rounded-full text-lg font-medium capitalize">
+                  <span className="px-4 py-2 bg-yellow-400/20 text-yellow-300 rounded-full text-lg font-medium capitalize border border-yellow-400/30">
                     {selectedItem.category}
                   </span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
                   {selectedItem.title}
                 </h2>
                 <p className="text-xl text-white/90 max-w-2xl mx-auto mb-6">
                   {selectedItem.description}
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
-                  <div className="px-4 py-2 bg-pink-500/20 text-pink-300 rounded-full text-sm">
+                  <div className="px-4 py-2 bg-pink-500/20 text-pink-300 rounded-full text-sm border border-pink-500/30">
                     ✨ Perfect for Tonight
                   </div>
-                  <div className="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full text-sm">
+                  <div className="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">
                     💕 Romantic
                   </div>
-                  <div className="px-4 py-2 bg-red-500/20 text-red-300 rounded-full text-sm">
+                  <div className="px-4 py-2 bg-red-500/20 text-red-300 rounded-full text-sm border border-red-500/30">
                     🔥 Passionate
                   </div>
                 </div>
@@ -371,27 +384,30 @@ const SpinForDesire = () => {
             </Card>
           )}
 
-          {/* All Options Preview */}
+          {/* All Options Preview - Show only wheel items */}
           <Card variant="elegant" className="bg-black/20 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-white text-xl text-center">All Desire Options</CardTitle>
+              <CardTitle className="text-white text-xl text-center">Wheel Options (12 Items)</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {allItems.map((item) => {
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {allItems.map((item, index) => {
                   const IconComponent = getCategoryIcon(item.category)
                   return (
                     <div
                       key={item.id}
                       className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                         selectedItem?.id === item.id
-                          ? 'border-yellow-400 bg-yellow-400/10 scale-105'
-                          : 'border-white/10 bg-white/5 hover:border-white/20'
+                          ? 'border-yellow-400 bg-yellow-400/20 scale-105 shadow-yellow-400/50'
+                          : 'border-white/10 bg-white/5 hover:border-white/20 hover:scale-105'
                       }`}
                     >
                       <div className="text-center">
-                        <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3" style={{ backgroundColor: item.color }}>
+                        <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3 relative" style={{ backgroundColor: item.color }}>
                           <IconComponent className="w-6 h-6 text-white" />
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 text-black text-xs font-bold rounded-full flex items-center justify-center">
+                            {index + 1}
+                          </div>
                         </div>
                         <h4 className="text-white font-medium text-sm mb-1">{item.title}</h4>
                         <p className="text-white/60 text-xs capitalize">{item.category}</p>
