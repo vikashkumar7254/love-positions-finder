@@ -87,7 +87,12 @@ const BLOG_KEY = 'love-positions:blogs'
 const BLOG_COUNTER_KEY = 'love-positions:blog-counter'
 
 // Generate slug from title
-function generateSlug(title: string): string {
+function generateSlug(title: string, blogId?: string): string {
+  // For non-English titles, use blog ID as fallback
+  if (!/^[a-zA-Z0-9\s\-_.,!?]+$/.test(title)) {
+    return blogId ? `blog-${blogId}` : 'blog-post'
+  }
+  
   return title
     .toLowerCase()
     .replace(/[^\w\s-]/g, '') // Remove special characters
@@ -184,7 +189,7 @@ export default async function handler(req: any, res: any) {
           }
           
           if (!blog.slug || blog.slug.trim() === '') {
-            const newSlug = generateSlug(blog.title)
+            const newSlug = generateSlug(blog.title, blog.id)
             blog.slug = newSlug
             blog.updatedAt = new Date().toISOString()
             
@@ -396,7 +401,7 @@ export default async function handler(req: any, res: any) {
       const id = `blog_${counter}`
       const slug = cleanBlogData.slug && cleanBlogData.slug.trim() !== '' 
         ? cleanBlogData.slug 
-        : generateSlug(cleanBlogData.title)
+        : generateSlug(cleanBlogData.title, id)
       
       console.log('📊 Generated slug:', slug, 'from title:', cleanBlogData.title)
       
@@ -598,7 +603,7 @@ export default async function handler(req: any, res: any) {
       
       // Update slug if title changed
       if (updateData.title && updateData.title !== blogData.title) {
-        const newSlug = generateSlug(updateData.title)
+        const newSlug = generateSlug(updateData.title, id)
         
         // Check if new slug already exists
         const allBlogs = await redis.hgetall(BLOG_KEY)
