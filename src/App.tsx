@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,16 +44,32 @@ import AddBlog from "./pages/AddBlog";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
+import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
+import DefaultImagesAdmin from "./pages/admin/DefaultImagesAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
 import SEOManagement from "./pages/admin/SEOManagement";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
+import { initializeDefaultImages } from "./utils/initializeDefaultImages";
+import { addSampleBlogs } from "./utils/sampleBlogData";
+import { getPositionsOptimized } from "./utils/positionsCache";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isVerified, setIsVerified] = useState(false);
+
+  // Initialize default images, sample data, and preload positions cache on app startup
+  React.useEffect(() => {
+    initializeDefaultImages();
+    addSampleBlogs(); // Add sample blog data for testing
+    
+    // Preload positions cache in background for instant loading
+    getPositionsOptimized().catch(() => {
+      // Silent fail for preload
+    });
+  }, []);
 
   if (!isVerified) {
     return (
@@ -100,6 +116,7 @@ const App = () => {
               {/* Positions Routes */}
               <Route path="/positions" element={<Positions />} />
               <Route path="/positions/most-popular" element={<MostPopular />} />
+              <Route path="/positions/custom-poster" element={<CustomPoster />} />
               <Route path="/positions/all" element={<Navigate to="/games/scratch-position?start=1#start" replace />} />
               {/** Removed Random Generator route **/}
               
@@ -113,6 +130,8 @@ const App = () => {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/blogs" element={<BlogsAdmin />} />
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
+              <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
+              <Route path="/admin/default-images" element={<DefaultImagesAdmin />} />
               <Route path="/admin/seo" element={<SEOManagement />} />
               
               {/* Other Routes */}

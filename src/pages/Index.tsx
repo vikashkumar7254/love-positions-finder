@@ -356,6 +356,36 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Create Your Poster Section */}
+      <section className="px-6 py-8">
+        <div className="max-w-7xl mx-auto">
+          <Card variant="elegant" className="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-romantic/10 border border-purple-500/20">
+            <CardContent className="p-8 text-center">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Palette className="w-8 h-8 text-purple-500" />
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-romantic bg-clip-text text-transparent">
+                  Create Your Poster
+                </h2>
+              </div>
+              <p className="text-lg text-foreground/80 mb-6 max-w-2xl mx-auto">
+                Design your own collection of favorite positions. Create a beautiful, personalized poster for your intimate journey.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Link to="/positions/custom-poster">
+                  <Button variant="romantic" size="lg" className="flex items-center gap-2 px-8 py-3">
+                    <Palette className="w-5 h-5" />
+                    Design Your Poster
+                  </Button>
+                </Link>
+                <div className="text-sm text-foreground/60">
+                  ✨ 7-day journey • 🎨 Custom themes • 📱 Download & share
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Section Title below Grid */}
       <section className="px-6 pt-1 pb-2">
         <div className="max-w-7xl mx-auto text-center">

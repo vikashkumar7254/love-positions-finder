@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { getPositions as apiGetPositions } from "@/lib/positionsApi"
+import { getPositionsOptimized } from "@/utils/positionsCache"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Shuffle, Heart, Sparkles } from "lucide-react"
@@ -19,16 +20,14 @@ const RandomPosition = () => {
   const [hasRevealed, setHasRevealed] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  // Load positions from API
+  // Load positions with instant cache
   useEffect(() => {
     const loadPositions = async () => {
       try {
-        const data = await apiGetPositions()
-        console.log('🎲 RandomPosition: Loaded', data.length, 'positions from API')
+        const data = await getPositionsOptimized()
         setPositions(data)
         setLoading(false)
       } catch (error) {
-        console.error('Error loading positions:', error)
         setLoading(false)
       }
     }

@@ -4,6 +4,7 @@ import { Heart, Lock, Sparkles } from 'lucide-react'
 import scratchCardBg from '@/assets/scratch-card.jpg'
 import { Link } from 'react-router-dom'
 import { useMemo, useState, useCallback, useRef, useEffect } from 'react'
+import { getDefaultImageForCategory } from '@/utils/defaultImageManager'
 import type React from 'react'
 
 type ScratchItem = {
@@ -276,7 +277,10 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
   }, [revealed])
 
   const renderMedia = (mediaUrl?: string | null) => {
-    if (!mediaUrl) return null
+    if (!mediaUrl) {
+      // Use default journey image when no mediaUrl is provided
+      return <img src={getDefaultImageForCategory('journey')} alt="position" className="w-full h-full object-cover" />
+    }
     const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl)
     if (isVideo) {
       return (

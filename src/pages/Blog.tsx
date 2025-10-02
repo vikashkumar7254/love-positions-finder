@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
 import { getCategoryImage } from "@/utils/imageManager"
+import MediaDisplay from "@/components/MediaDisplay"
 
 // Removed static demo posts; now loading from API
 
@@ -327,10 +328,11 @@ const Blog = () => {
                   {/* Cover Image */}
                   <div className="relative">
                     <div className="w-full aspect-[16/9] overflow-hidden">
-                      <img
-                        src={getCoverFor(post.category || 'General')}
+                      <MediaDisplay
+                        src={post.featuredImage || getCoverFor(post.category || 'General')}
                         alt={post.title || 'Untitled'}
                         className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300"
+                        type="image"
                       />
                     </div>
                     <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 via-black/20 to-transparent">

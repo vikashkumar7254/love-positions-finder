@@ -5,6 +5,7 @@ import { Calendar, Clock, Heart, ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/enhanced-button"
 import { Card, CardContent } from "@/components/ui/card"
 import { getCategoryImage } from "@/utils/imageManager"
+import MediaDisplay from "@/components/MediaDisplay"
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -129,22 +130,34 @@ const BlogPost = () => {
 
           {/* Hero Cover Image */}
           {(() => {
-            const categoryMap: Record<string, string> = {
-              "Tips & Advice": "blog",
-              "Date Ideas": "blog",
-              "Romance": "blog",
-              "Communication": "blog",
-              "Intimacy": "blog",
-              "Science": "blog",
-              "Long-term Love": "blog",
-              "General": "blog"
+            // Use featured image if available, otherwise fallback to category image
+            const featuredImage = selected.featuredImage
+            let src = featuredImage
+            
+            if (!src) {
+              const categoryMap: Record<string, string> = {
+                "Tips & Advice": "blog",
+                "Date Ideas": "blog",
+                "Romance": "blog",
+                "Communication": "blog",
+                "Intimacy": "blog",
+                "Science": "blog",
+                "Long-term Love": "blog",
+                "General": "blog"
+              }
+              const imageCategory = categoryMap[selected.category as string] || "blog"
+              src = getCategoryImage(imageCategory, "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=1200&auto=format&fit=crop&q=60")
             }
-            const imageCategory = categoryMap[selected.category as string] || "blog"
-            const src = getCategoryImage(imageCategory, "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=1200&auto=format&fit=crop&q=60")
+            
             return (
               <div className="mb-6 rounded-2xl overflow-hidden shadow">
                 <div className="relative w-full aspect-[16/9]">
-                  <img src={src} alt={selected.title} className="w-full h-full object-cover" />
+                  <MediaDisplay 
+                    src={src} 
+                    alt={selected.title} 
+                    className="w-full h-full object-cover"
+                    type="image"
+                  />
                   <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
                     <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">{selected.title}</h1>
                   </div>
@@ -180,20 +193,23 @@ const BlogPost = () => {
           <Card className="border-0 bg-gradient-card">
             <CardContent className="p-8">
               {loading ? (
-                <p className="text-muted-foreground">Loading...</p>
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-romantic"></div>
+                  <span className="ml-3 text-muted-foreground">Loading article...</span>
+                </div>
               ) : selected ? (
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `<p>${(selected.content || "")
-                      .replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/\n\n+/g, "</p><p>")
-                      .replace(/\n/g, "<br/>")}</p>`,
-                  }}
-                />
+                <div className="prose prose-lg max-w-none">
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: selected.content || selected.excerpt || "No content available"
+                    }}
+                  />
+                </div>
               ) : (
-                <p className="text-muted-foreground">Article not found</p>
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground text-lg">Article not found</p>
+                  <p className="text-muted-foreground text-sm mt-2">The article you're looking for doesn't exist or has been removed.</p>
+                </div>
               )}
             </CardContent>
           </Card>

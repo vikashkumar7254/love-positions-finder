@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { getPositions as apiGetPositions } from "@/lib/positionsApi"
+import { getPositionsOptimized, getCachedPositions, clearPositionsCache } from "@/utils/positionsCache"
 import { useLocation } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
@@ -24,6 +25,8 @@ const ScratchPosition = () => {
   const [isScratching, setIsScratching] = useState(false)
   const [visibleCount, setVisibleCount] = useState(4)
   const [started, setStarted] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadingMessage, setLoadingMessage] = useState('Loading positions...')
   const gridRef = useRef<HTMLDivElement | null>(null)
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([])
   const isDev = (import.meta as any)?.env?.DEV || (import.meta as any)?.env?.VITE_SHOW_DEBUG === 'true'
@@ -128,7 +131,6 @@ const ScratchPosition = () => {
         return []
       }
     } catch (error) {
-      console.error('Error loading positions:', error)
       return []
     }
   }
@@ -151,15 +153,36 @@ const ScratchPosition = () => {
   }
 
   useEffect(() => {
-    // Initial load from API
+    // Load positions with instant cache
     const load = async () => {
       try {
-        const positions = await apiGetPositions()
+        // Check cache first for instant loading
+        const cached = getCachedPositions()
+        if (cached.length > 0) {
+          setLoadingMessage('Loading from cache...')
+          applyPositions(cached.map(p => ({...p, revealed: false})))
+          setIsLoading(false)
+          
+          // Refresh in background
+          setLoadingMessage('Updating in background...')
+          const freshPositions = await getPositionsOptimized()
+          if (freshPositions.length > 0) {
+            applyPositions(freshPositions.map(p => ({...p, revealed: false})))
+          }
+          return
+        }
+        
+        // No cache, fetch from API
+        setLoadingMessage('Loading from server...')
+        const positions = await getPositionsOptimized()
         applyPositions(positions.map(p => ({...p, revealed: false})))
+        setIsLoading(false)
       } catch (e) {
-        // Fallback to localStorage (same-origin dev only)
+        setLoadingMessage('Loading fallback data...')
+        // Fallback to localStorage
         const fallback = loadPositions()
         applyPositions(fallback)
+        setIsLoading(false)
       }
     }
     load()
@@ -210,9 +233,9 @@ const ScratchPosition = () => {
       try {
         // Simple API poll every 1s
         await refreshFromApi('api-polling')
-      } catch (error) {
-        console.error('Polling error:', error)
-      }
+        } catch (error) {
+          // Silent fail for polling
+        }
     }, 5000)
 
     // Listen for all sync events
@@ -400,6 +423,25 @@ const ScratchPosition = () => {
   
 
   // Difficulty badges removed in simplified UI
+
+  // Show loading screen if still loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
+        <main className="pt-24 pb-16">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center py-20">
+              <div className="animate-spin w-12 h-12 border-4 border-pink-300/20 border-t-pink-300 rounded-full mx-auto mb-4"></div>
+              <p className="text-white/70 text-lg">{loadingMessage}</p>
+              <div className="mt-4 text-sm text-white/50">
+                {getCachedPositions().length > 0 ? '⚡ Loading from cache...' : '🔄 Fetching from server...'}
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-pink-900 to-red-900">
@@ -701,6 +743,19 @@ const ScratchPosition = () => {
                       className="px-4 py-2 bg-blue-500/20 border-blue-500/30 text-white hover:bg-blue-500/30"
                     >
                       🔄 Force Refresh
+                    </Button>
+                    
+                    <Button
+                      onClick={() => {
+                        clearPositionsCache()
+                        const positions = loadPositions()
+                        setCards(positions)
+                        alert('Cache cleared! Next load will fetch fresh data.')
+                      }}
+                      variant="outline"
+                      className="px-4 py-2 bg-orange-500/20 border-orange-500/30 text-white hover:bg-orange-500/30"
+                    >
+                      🗑️ Clear Cache
                     </Button>
                   </div>
                   <div className="text-xs text-white/60">

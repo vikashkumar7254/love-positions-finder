@@ -2,6 +2,8 @@
  * Utility functions for managing site images
  */
 
+import { getDefaultImageForCategory, getRandomDefaultImageForCategory } from './defaultImageManager'
+
 const STORAGE_KEY = 'site_images_custom'
 
 export interface SiteImageItem {
@@ -48,13 +50,20 @@ export const getImageById = (id: string): SiteImageItem | null => {
 
 /**
  * Get the first available image for a category, or fallback
+ * Now uses customizable default images from admin panel
  */
 export const getCategoryImage = (category: string, fallbackUrl?: string): string => {
   const categoryImages = getImagesByCategory(category)
   if (categoryImages.length > 0) {
     return categoryImages[0].image
   }
-  return fallbackUrl || 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=600&fit=crop&crop=center'
+  
+  // Use customizable default images from admin panel
+  if (fallbackUrl) {
+    return fallbackUrl
+  }
+  
+  return getDefaultImageForCategory(category)
 }
 
 /**
@@ -69,6 +78,21 @@ export const getCategoryImages = (category: string, limit?: number): string[] =>
   }
 
   return images
+}
+
+/**
+ * Get a random image for a category, using customizable defaults
+ */
+export const getRandomCategoryImage = (category: string): string => {
+  const categoryImages = getImagesByCategory(category)
+  
+  if (categoryImages.length > 0) {
+    const randomIndex = Math.floor(Math.random() * categoryImages.length)
+    return categoryImages[randomIndex].image
+  }
+  
+  // Use customizable default images from admin panel
+  return getRandomDefaultImageForCategory(category)
 }
 
 /**

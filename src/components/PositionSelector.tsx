@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanc
 import { Badge } from "@/components/ui/badge"
 import { Heart, Flame, Star, Sparkles, Clock, RefreshCw } from "lucide-react"
 import { getPositionsByStyle, getRandomPositions } from "@/data/positions"
-import { getCategoryImage } from "@/utils/imageManager"
+import { getCategoryImage, getRandomCategoryImage } from "@/utils/imageManager"
+import { getDefaultImageForJourneyStyle, getRandomDefaultImageForJourneyStyle } from "@/utils/defaultImageManager"
 import LazyImage from "@/components/LazyImage"
 import type { Position, StyleType } from "@/types"
 
@@ -124,8 +125,9 @@ const PositionSelector = () => {
                       <div key={p.id || `${p.name}-${idx}`} className="rounded-xl overflow-hidden bg-gradient-to-b from-romantic/10 to-background/20 border border-romantic/20 shadow-sm">
                         <div className="relative">
                           {(() => {
-                            const base = p.imageUrl || getCategoryImage('journey', `https://picsum.photos/seed/${encodeURIComponent((p.id || p.name) + '-' + renderStyle)}-idx${idx}/600/400`)
-                            const hiRes = p.imageUrl || getCategoryImage('journey', base.replace('/600/400', '/1200/800'))
+                            // Use position's imageUrl if available, otherwise use customizable default images
+                            const base = p.imageUrl || getDefaultImageForJourneyStyle(renderStyle)
+                            const hiRes = p.imageUrl || getDefaultImageForJourneyStyle(renderStyle)
                             return (
                               // eslint-disable-next-line @next/next/no-img-element
                               <LazyImage

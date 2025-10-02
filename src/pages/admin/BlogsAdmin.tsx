@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/enhanced-button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import MediaDisplay from '@/components/MediaDisplay'
 import { 
   Plus, 
   Edit, 
@@ -487,22 +488,78 @@ const BlogsAdminContent = () => {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <ImageIcon className="w-5 h-5" />
-                        Featured Image
+                        Featured Media
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <Input
-                        value={formData.featuredImage}
-                        onChange={(e) => setFormData({...formData, featuredImage: e.target.value})}
-                        placeholder="Image URL"
-                      />
-                      {formData.featuredImage && (
-                        <img 
-                          src={formData.featuredImage} 
-                          alt="Preview" 
-                          className="mt-2 w-full h-32 object-cover rounded"
+                    <CardContent className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Media URL</label>
+                        <Input
+                          value={formData.featuredImage}
+                          onChange={(e) => setFormData({...formData, featuredImage: e.target.value})}
+                          placeholder="Image, GIF, or Video URL"
                         />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Supports: JPG, PNG, GIF, MP4, WebM, OGG
+                        </p>
+                      </div>
+                      
+                      {formData.featuredImage && (
+                        <div className="mt-4">
+                          <label className="block text-sm font-medium mb-2">Preview</label>
+                          <div className="w-full h-48 rounded-lg overflow-hidden border">
+                            {(() => {
+                              const extension = formData.featuredImage.split('.').pop()?.toLowerCase()
+                              const isVideo = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv'].includes(extension || '')
+                              const isGif = extension === 'gif'
+                              
+                              if (isVideo) {
+                                return (
+                                  <video 
+                                    src={formData.featuredImage} 
+                                    controls 
+                                    className="w-full h-full object-cover"
+                                    poster={formData.featuredImage.replace(/\.[^/.]+$/, '.jpg')}
+                                  >
+                                    <source src={formData.featuredImage} type="video/mp4" />
+                                    <source src={formData.featuredImage} type="video/webm" />
+                                    <source src={formData.featuredImage} type="video/ogg" />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                )
+                              }
+                              
+                              return (
+                                <img 
+                                  src={formData.featuredImage} 
+                                  alt="Preview" 
+                                  className="w-full h-full object-cover"
+                                  loading="lazy"
+                                />
+                              )
+                            })()}
+                          </div>
+                        </div>
                       )}
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setFormData({...formData, featuredImage: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1200&h=630&fit=crop&crop=center'})}
+                        >
+                          Sample Image
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setFormData({...formData, featuredImage: 'https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif'})}
+                        >
+                          Sample GIF
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
 
@@ -634,10 +691,11 @@ const BlogsAdminContent = () => {
               {filteredBlogs.map((blog) => (
                 <Card key={blog.id} className="hover:shadow-lg transition-shadow">
                   <div className="relative">
-                    <img 
-                      src={blog.featuredImage} 
+                    <MediaDisplay 
+                      src={blog.featuredImage || 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&h=300&fit=crop&crop=center'} 
                       alt={blog.title}
                       className="w-full h-48 object-cover rounded-t-lg"
+                      type="image"
                     />
                     {blog.featured && (
                       <div className="absolute top-2 right-2">

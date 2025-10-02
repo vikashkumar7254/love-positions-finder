@@ -1,3 +1,5 @@
+import { getDefaultImageForCategory } from '@/utils/defaultImageManager'
+
 export type SpinDesireItem = {
   id: string
   title: string
@@ -35,13 +37,13 @@ export async function saveSpinDesires(items: SpinDesireItem[]): Promise<boolean>
   }
 }
 
-// Default images for categories
+// Default images for categories - now using customizable defaults
 export const DEFAULT_CATEGORY_IMAGES = {
-  romantic: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&h=300&fit=crop&crop=center',
-  sensual: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center',
-  passionate: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center',
-  playful: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400&h=300&fit=crop&crop=center',
-  luxurious: 'https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=400&h=300&fit=crop&crop=center'
+  romantic: getDefaultImageForCategory('romantic'),
+  sensual: getDefaultImageForCategory('sensual'),
+  passionate: getDefaultImageForCategory('passionate'),
+  playful: getDefaultImageForCategory('playful'),
+  luxurious: getDefaultImageForCategory('luxurious')
 }
 
 // Default desires for initial setup

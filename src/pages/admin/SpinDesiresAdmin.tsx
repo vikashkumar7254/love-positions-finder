@@ -365,6 +365,32 @@ const SpinDesiresAdminContent = () => {
                     Use Default
                   </Button>
                 </div>
+                <div className="flex gap-2 mt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setImage('https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&h=300&fit=crop&crop=center')}
+                    className="text-xs"
+                  >
+                    Romantic
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setImage('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&crop=center')}
+                    className="text-xs"
+                  >
+                    Passionate
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setImage('https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&h=300&fit=crop&crop=center')}
+                    className="text-xs"
+                  >
+                    Adventurous
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   Leave empty to use default image for {category} category
                 </p>
@@ -448,15 +474,22 @@ const SpinDesiresAdminContent = () => {
                     <div key={item.id} className={`border rounded-lg overflow-hidden ${
                       item.isDefault ? 'border-blue-200 bg-blue-50/50' : 'border-green-200 bg-green-50/50'
                     }`}>
-                      <div className="h-32 bg-muted overflow-hidden relative">
+                      <div className="h-32 bg-muted overflow-hidden relative group cursor-pointer" onClick={() => editItem(item)}>
                         <img
                           src={item.image}
                           alt={item.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           onError={(e) => {
                             e.currentTarget.src = 'https://via.placeholder.com/200x128?text=Invalid+URL'
                           }}
                         />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="bg-white/90 rounded-full p-2">
+                              <Edit3 className="w-4 h-4 text-gray-700" />
+                            </div>
+                          </div>
+                        </div>
                         <div className="absolute top-2 left-2">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             item.isDefault
@@ -470,6 +503,11 @@ const SpinDesiresAdminContent = () => {
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-500 text-white capitalize">
                             {item.category}
                           </span>
+                        </div>
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <div className="bg-black/50 text-white text-xs px-2 py-1 rounded text-center">
+                            Click to edit image
+                          </div>
                         </div>
                       </div>
                       <div className="p-3">

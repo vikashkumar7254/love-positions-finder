@@ -22,7 +22,9 @@ import {
   Tag,
   Search,
   FileText,
-  Globe
+  Globe,
+  Palette,
+  Calendar
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
@@ -36,46 +38,63 @@ const AdminDashboardContent = () => {
   })
 
   useEffect(() => {
-    // Load stats from localStorage
-    try {
-      const blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
-      const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
-      
-      setStats({
-        totalBlogs: blogs.length,
-        pendingBlogs: blogs.filter((b: any) => !b.approved).length,
-        totalPositions: 190, // Static + custom positions
-        totalScratchCards: scratchCards.length, // All positions (defaults + custom)
-        totalUsers: 1250 // Mock data
-      })
-    } catch {
-      // Handle error silently
+    // Load real stats from localStorage and API
+    const loadStats = async () => {
+      try {
+        // Load blogs from API
+        const blogsResponse = await fetch('/api/blogs')
+        const blogs = blogsResponse.ok ? await blogsResponse.json() : []
+        
+        // Load scratch cards from localStorage
+        const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
+        
+        // Load spin desires
+        const spinDesires = JSON.parse(localStorage.getItem('spinDesires') || '[]')
+        
+        // Load default images
+        const defaultImages = JSON.parse(localStorage.getItem('default_images_custom') || '[]')
+        
+        setStats({
+          totalBlogs: blogs.length,
+          pendingBlogs: blogs.filter((b: any) => b.status === 'pending').length,
+          totalPositions: scratchCards.length,
+          totalScratchCards: scratchCards.length,
+          totalUsers: 0 // Will be updated when user system is implemented
+        })
+      } catch (error) {
+        console.error('Error loading stats:', error)
+        // Fallback to localStorage only
+        try {
+          const blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
+          const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
+          
+          setStats({
+            totalBlogs: blogs.length,
+            pendingBlogs: blogs.filter((b: any) => !b.approved).length,
+            totalPositions: scratchCards.length,
+            totalScratchCards: scratchCards.length,
+            totalUsers: 0
+          })
+        } catch {
+          // Handle error silently
+        }
+      }
     }
 
-    document.title = "Admin Dashboard | ScratchSexPositions"
+    loadStats()
+    document.title = "Admin Dashboard | Love Positions Finder"
   }, [])
 
   const adminSections = [
     {
+      title: "Blog Management",
       description: "Manage blog posts, approve submissions, and edit content",
       icon: BookOpen,
       color: "from-blue-500 to-blue-600",
       stats: `${stats.totalBlogs} total, ${stats.pendingBlogs} pending`,
       actions: [
         { label: "Manage Blogs", href: "/admin/blogs", icon: BookOpen },
-        { label: "Add New Blog", href: "/admin/blogs", icon: Plus },
-        { label: "Categories", href: "/admin/blogs", icon: BarChart3 },
-        { label: "Tags", href: "/admin/blogs", icon: Tag }
-      ]
-    },
-    {
-      description: "Add, edit, and organize intimate positions",
-      icon: Heart,
-      color: "from-pink-500 to-red-500",
-      stats: `${stats.totalPositions} positions available`,
-      actions: [
-        { label: "Add Position", href: "/admin/positions/new", icon: Plus },
-        { label: "View All", href: "/positions/all", icon: Eye }
+        { label: "Add New Blog", href: "/admin/blogs", icon: Plus }
       ]
     },
     {
@@ -83,7 +102,7 @@ const AdminDashboardContent = () => {
       description: "Manage scratch card positions and images",
       icon: Image,
       color: "from-purple-500 to-purple-600",
-      stats: `${stats.totalScratchCards} custom cards`,
+      stats: `${stats.totalScratchCards} positions`,
       actions: [
         { label: "Manage Cards", href: "/admin/scratch-positions", icon: Edit3 },
         { label: "View Game", href: "/games/scratch-position", icon: Gamepad2 }
@@ -101,50 +120,35 @@ const AdminDashboardContent = () => {
       ]
     },
     {
-      title: "Games & Features",
-      description: "Configure games and interactive features",
-      icon: Gamepad2,
-      color: "from-green-500 to-emerald-600",
-      stats: "5 active games",
+      title: "Custom Poster",
+      description: "Manage custom poster positions and journey",
+      icon: Calendar,
+      color: "from-purple-500 to-indigo-600",
+      stats: "7-day journey positions",
       actions: [
-        { label: "All Games", href: "/games", icon: Eye },
-        { label: "All Positions", href: "/positions/all", icon: Settings },
-        { label: "Journey Images", href: "/admin/journey-images", icon: Image }
+        { label: "Manage Positions", href: "/admin/custom-poster", icon: Edit3 },
+        { label: "View Game", href: "/positions/custom-poster", icon: Gamepad2 }
       ]
     },
     {
-      title: "Analytics & Stats",
-      description: "View usage statistics and user engagement",
-      icon: BarChart3,
-      color: "from-orange-500 to-yellow-500",
-      stats: `${stats.totalUsers} active users`,
+      title: "Default Images",
+      description: "Manage default images used across the site",
+      icon: Palette,
+      color: "from-green-500 to-emerald-600",
+      stats: "Customizable defaults",
       actions: [
-        { label: "View Analytics", href: "#", icon: TrendingUp },
-        { label: "User Reports", href: "#", icon: Users }
+        { label: "Manage Images", href: "/admin/default-images", icon: Palette },
+        { label: "View All Games", href: "/games", icon: Eye }
       ]
     },
     {
       title: "SEO Management",
-      description: "Manage meta tags, titles, descriptions, and SEO settings",
+      description: "Manage meta tags, titles, and SEO settings",
       icon: Search,
-      color: "from-green-500 to-emerald-600",
+      color: "from-orange-500 to-yellow-500",
       stats: "SEO optimized",
       actions: [
-        { label: "SEO Management", href: "/admin/seo", icon: Search },
-        { label: "Meta Tags Editor", href: "/admin/seo", icon: FileText },
-        { label: "Sitemap & Robots", href: "/admin/seo", icon: Globe }
-      ]
-    },
-    {
-      title: "System Settings",
-      description: "Configure site settings, SEO, and preferences",
-      icon: Settings,
-      color: "from-gray-500 to-slate-600",
-      stats: "All systems operational",
-      actions: [
-        { label: "Site Settings", href: "#", icon: Settings },
-        { label: "Image Management", href: "/admin/images", icon: Image },
-        { label: "Database", href: "#", icon: Database }
+        { label: "SEO Management", href: "/admin/seo", icon: Search }
       ]
     }
   ]
@@ -178,7 +182,7 @@ const AdminDashboardContent = () => {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -186,15 +190,11 @@ const AdminDashboardContent = () => {
                 </div>
                 <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.totalBlogs}</div>
                 <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Total Blogs</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Heart className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.totalPositions}</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Positions</div>
+                {stats.pendingBlogs > 0 && (
+                  <div className="text-xs text-orange-600 font-medium mt-1">
+                    {stats.pendingBlogs} pending
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -203,13 +203,13 @@ const AdminDashboardContent = () => {
                   <Image className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.totalScratchCards}</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Scratch Cards</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Positions</div>
               </CardContent>
             </Card>
             <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Gamepad2 className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Gift className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-2xl font-bold text-slate-800 dark:text-white">6</div>
                 <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Active Games</div>
@@ -217,11 +217,11 @@ const AdminDashboardContent = () => {
             </Card>
             <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Palette className="w-6 h-6 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.totalUsers}</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Users</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">∞</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Custom Images</div>
               </CardContent>
             </Card>
           </div>
@@ -267,14 +267,14 @@ const AdminDashboardContent = () => {
             })}
           </div>
 
-          {/* Recent Activity */}
+          {/* Quick Actions */}
           <Card className="mt-12 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-xl">
             <CardHeader className="pb-6">
               <CardTitle className="flex items-center gap-3 text-2xl font-bold text-slate-800 dark:text-white">
                 <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
                   <TrendingUp className="w-5 h-5 text-white" />
                 </div>
-                Recent Activity
+                Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -295,37 +295,40 @@ const AdminDashboardContent = () => {
                     </Link>
                   </div>
                 )}
-                <Link to="/admin/scratch-positions" className="block p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 hover:from-pink-100 hover:to-purple-100 dark:hover:from-pink-900/30 dark:hover:to-purple-900/30 rounded-xl border border-pink-200 dark:border-pink-800 transition-all duration-300 hover:shadow-lg group">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Gift className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-800 dark:text-white">Scratch Positions</h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Manage all scratch cards and positions</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Edit defaults & add custom positions</span>
-                    <span className="text-purple-600 dark:text-purple-400 font-medium group-hover:translate-x-1 transition-transform">Manage →</span>
-                  </div>
-                </Link>
                 
-                <Link to="/admin/spin-desires" className="block p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-all duration-300 hover:shadow-lg group">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Sparkles className="w-6 h-6 text-white" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link to="/admin/scratch-positions" className="block p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 hover:from-pink-100 hover:to-purple-100 dark:hover:from-pink-900/30 dark:hover:to-purple-900/30 rounded-xl border border-pink-200 dark:border-pink-800 transition-all duration-300 hover:shadow-lg group">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Image className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-800 dark:text-white">Scratch Positions</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">Manage positions & images</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-slate-800 dark:text-white">Spin for Desire</h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Manage wheel desires and categories</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{stats.totalScratchCards} positions available</span>
+                      <span className="text-purple-600 dark:text-purple-400 font-medium group-hover:translate-x-1 transition-transform">Manage →</span>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Add romantic desires and customize wheel</span>
-                    <span className="text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">Configure →</span>
-                  </div>
-                </Link>
+                  </Link>
+                  
+                  <Link to="/admin/spin-desires" className="block p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-all duration-300 hover:shadow-lg group">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Gift className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-800 dark:text-white">Spin for Desire</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">Manage wheel desires</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">Click to change images</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">Configure →</span>
+                    </div>
+                  </Link>
+                </div>
               </div>
             </CardContent>
           </Card>
