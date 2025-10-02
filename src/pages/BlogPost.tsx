@@ -24,15 +24,36 @@ const BlogPost = () => {
         if (res.ok) {
           const data = await res.json()
           console.log('📊 Blog data received:', data)
-          setSelected({
-            title: data.title,
-            date: data.publishedAt || data.createdAt,
-            readTime: `${data.readTime || 5} min read`,
-            category: data.category || 'General',
-            content: data.content,
-            excerpt: data.excerpt,
-            featuredImage: data.featuredImage,
-          })
+          
+          if (data && data.title) {
+            setSelected({
+              title: data.title,
+              date: data.publishedAt || data.createdAt || new Date().toISOString(),
+              readTime: `${data.readTime || 5} min read`,
+              category: data.category || 'General',
+              content: data.content || '',
+              excerpt: data.excerpt || '',
+              featuredImage: data.featuredImage || '',
+            })
+          } else {
+            console.warn('⚠️ Blog data is empty or invalid:', data)
+            // Try fallback
+            const { sampleBlogs } = await import('@/utils/sampleBlogData')
+            const fallbackBlog = sampleBlogs.find(blog => blog.slug === slug)
+            if (fallbackBlog) {
+              setSelected({
+                title: fallbackBlog.title,
+                date: fallbackBlog.publishedAt || fallbackBlog.createdAt,
+                readTime: `${fallbackBlog.readTime || 5} min read`,
+                category: fallbackBlog.category || 'General',
+                content: fallbackBlog.content,
+                excerpt: fallbackBlog.excerpt,
+                featuredImage: fallbackBlog.featuredImage,
+              })
+            } else {
+              setSelected(null)
+            }
+          }
         } else {
           console.error('❌ Blog fetch failed:', res.status)
           const errorText = await res.text()
@@ -164,7 +185,7 @@ const BlogPost = () => {
           </Link>
 
           {/* Hero Cover Image */}
-          {(() => {
+          {selected && (() => {
             // Use featured image if available, otherwise fallback to category image
             const featuredImage = selected.featuredImage
             let src = featuredImage
@@ -189,7 +210,7 @@ const BlogPost = () => {
                 <div className="relative w-full aspect-[16/9]">
                   <MediaDisplay 
                     src={src} 
-                    alt={selected.title} 
+                    alt={selected.title || 'Blog Post'} 
                     className="w-full h-full object-cover"
                     type="image"
                   />
@@ -202,28 +223,30 @@ const BlogPost = () => {
           })()}
 
           {/* Article Header */}
-          <header className="mb-8">
-            <div className="inline-block px-3 py-1 bg-romantic/10 text-romantic text-sm rounded-full mb-4">
-              {selected.category || "General"}
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-              {selected.title}
-            </h1>
-            <div className="flex items-center gap-4 text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                <span>{new Date(selected.date).toLocaleDateString()}</span>
+          {selected && (
+            <header className="mb-8">
+              <div className="inline-block px-3 py-1 bg-romantic/10 text-romantic text-sm rounded-full mb-4">
+                {selected.category || "General"}
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                <span>{selected.readTime}</span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                {selected.title}
+              </h1>
+              <div className="flex items-center gap-4 text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>{selected.date ? new Date(selected.date).toLocaleDateString() : 'No date'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>{selected.readTime || '5 min read'}</span>
+                </div>
+                <Button variant="ghost" size="sm">
+                  <Share2 className="w-4 h-4" />
+                  Share
+                </Button>
               </div>
-              <Button variant="ghost" size="sm">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-            </div>
-          </header>
+            </header>
+          )}
           {/* Article Content */}
           <Card className="border-0 bg-gradient-card">
             <CardContent className="p-8">
