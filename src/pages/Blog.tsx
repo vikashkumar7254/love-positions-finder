@@ -224,49 +224,69 @@ const Blog = () => {
       </Helmet>
       
       {/* Header */}
-      <section className="pt-24 pb-12 bg-gradient-romantic text-white">
-        <div className="container max-w-6xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              ScratchSexPositions Blog
+      <section className="pt-24 pb-16 bg-gradient-to-br from-rose-900 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-pink-400 rounded-full blur-3xl"></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-purple-400 rounded-full blur-2xl"></div>
+          <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-rose-400 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="container max-w-6xl mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
+              <Heart className="w-5 h-5 text-pink-300" />
+              <span className="text-pink-200 font-medium">Love & Intimacy Blog</span>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-200 via-white to-purple-200 bg-clip-text text-transparent">
+              Ignite Your Passion
             </h1>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
-              Discover expert insights on love, relationships, and intimacy. Our carefully curated articles help couples create deeper connections and more passionate relationships.
+            <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-8">
+              Discover the art of intimate connection through expert insights, romantic guides, and passionate adventures designed for couples who want to deepen their love.
             </p>
-          </div>
-          <div className="flex items-center justify-center">
-            <Link to="/blog/new">
-              <Button variant="tender" size="lg" className="shadow-md">
-                <Heart className="w-5 h-5" />
-                Write a Blog
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link to="/blog/new">
+                <Button variant="tender" size="lg" className="shadow-2xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white border-0 px-8 py-4 text-lg">
+                  <Heart className="w-5 h-5 mr-2" />
+                  Share Your Story
+                </Button>
+              </Link>
+              <Link to="/positions">
+                <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 text-lg">
+                  Explore Positions
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Search and Filter */}
-      <section className="py-8 border-b">
+      <section className="py-12 bg-gradient-to-r from-slate-50 to-pink-50">
         <div className="container max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between">
+            <div className="relative w-full lg:w-96">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-rose-400 w-5 h-5" />
               <Input
-                placeholder="Search articles..."
+                placeholder="Search for love, intimacy, romance..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border-rose-200 focus:border-rose-400 focus:ring-rose-400/20 rounded-xl shadow-sm"
               />
             </div>
             
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-3">
               {categories.map((category) => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
-                  className="text-xs"
+                  className={`text-sm px-4 py-2 rounded-full transition-all duration-200 ${
+                    selectedCategory === category 
+                      ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-lg' 
+                      : 'bg-white/60 text-gray-700 border-rose-200 hover:bg-rose-50 hover:border-rose-300'
+                  }`}
                 >
                   {category}
                 </Button>
@@ -275,9 +295,9 @@ const Blog = () => {
           </div>
 
           {/* Topics bar */}
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-8 flex flex-wrap gap-3">
             {topicPills.map(p => (
-              <span key={p} className="px-3 py-1 rounded-full text-xs bg-gradient-to-r from-romantic/15 to-passionate/15 text-foreground/90 border border-white/10">
+              <span key={p} className="px-4 py-2 rounded-full text-sm bg-gradient-to-r from-rose-100 to-pink-100 text-rose-700 border border-rose-200 hover:from-rose-200 hover:to-pink-200 transition-all duration-200 cursor-pointer">
                 {p}
               </span>
             ))}
@@ -333,41 +353,65 @@ const Blog = () => {
               
               return (
               <Link key={post.id} to={`/blog/${postSlug}`} className="block group">
-                <Card className="hover-romantic border-0 bg-gradient-card h-full overflow-hidden">
+                <Card className="bg-white border-0 shadow-lg hover:shadow-2xl transition-all duration-500 h-full overflow-hidden rounded-2xl group-hover:-translate-y-2">
                   {/* Cover Image */}
-                  <div className="relative">
-                    <div className="w-full aspect-[16/9] overflow-hidden">
+                  <div className="relative overflow-hidden">
+                    <div className="w-full aspect-[16/10] overflow-hidden">
                       <MediaDisplay
                         src={post.featuredImage || getCoverFor(post?.category || 'General')}
                         alt={post.title || 'Untitled'}
-                        className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300"
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                         type="image"
                       />
                     </div>
-                    <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 via-black/20 to-transparent">
-                      <CardTitle className="text-white text-lg leading-snug line-clamp-2">
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    {/* Category Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-xs font-semibold rounded-full shadow-lg">
+                        {post?.category || 'General'}
+                      </span>
+                    </div>
+                    {/* Read Time Badge */}
+                    <div className="absolute top-4 right-4">
+                      <span className="px-3 py-1 bg-black/50 backdrop-blur-sm text-white text-xs font-medium rounded-full">
+                        {post.readTime || '5 min read'}
+                      </span>
+                    </div>
+                    {/* Hover Title Overlay */}
+                    <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <h3 className="text-white text-lg font-bold leading-tight line-clamp-2">
                         {post.title}
-                      </CardTitle>
+                      </h3>
                     </div>
                   </div>
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                      <Calendar className="w-4 h-4" />
+                  
+                  <CardContent className="p-6">
+                    {/* Date */}
+                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                      <Calendar className="w-4 h-4 text-rose-400" />
                       <span>{new Date(post.date || new Date()).toLocaleDateString()}</span>
-                      <Clock className="w-4 h-4 ml-2" />
-                      <span>{post.readTime || '5 min read'}</span>
                     </div>
-                    <div className="inline-block px-2 py-1 bg-romantic/10 text-romantic text-xs rounded-full">
-                      {post?.category || 'General'}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-base mb-4 line-clamp-3">
+                    
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-rose-600 transition-colors duration-200">
+                      {post.title}
+                    </h3>
+                    
+                    {/* Excerpt */}
+                    <p className="text-gray-600 text-base mb-6 line-clamp-3 leading-relaxed">
                       {post.excerpt || 'No description available'}
-                    </CardDescription>
-                    <div className="text-romantic/80 text-sm inline-flex items-center gap-2">
-                      <Heart className="w-4 h-4" />
-                      Read More
+                    </p>
+                    
+                    {/* Read More Button */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-rose-500 text-sm font-semibold inline-flex items-center gap-2 group-hover:text-rose-600 transition-colors duration-200">
+                        <Heart className="w-4 h-4" />
+                        Read More
+                      </div>
+                      <div className="w-8 h-8 bg-gradient-to-r from-rose-500 to-pink-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200">
+                        <Heart className="w-4 h-4 text-white" />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -382,37 +426,74 @@ const Blog = () => {
 
           {/* Show More */}
           {visibleCount < filteredPosts.length && (
-            <div className="text-center mt-10">
-              <Button variant="romantic" onClick={() => setVisibleCount(c => Math.min(c + 6, filteredPosts.length))}>
-                Load More Articles
+            <div className="text-center mt-16">
+              <Button 
+                variant="romantic" 
+                onClick={() => setVisibleCount(c => Math.min(c + 6, filteredPosts.length))}
+                className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
+              >
+                <Heart className="w-5 h-5 mr-2" />
+                Discover More Love Stories
               </Button>
-              <div className="text-xs text-muted-foreground mt-2">
-                Showing {Math.min(visibleCount, filteredPosts.length)} of {filteredPosts.length}
+              <div className="text-sm text-gray-500 mt-4">
+                Showing {Math.min(visibleCount, filteredPosts.length)} of {filteredPosts.length} articles
               </div>
             </div>
           )}
 
           {filteredPosts.length === 0 && (
-            <div className="text-center py-12">
-              <Heart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No articles found</h3>
-              <p className="text-muted-foreground">Try adjusting your search or filter criteria.</p>
+            <div className="text-center py-20">
+              <div className="w-24 h-24 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Heart className="w-12 h-12 text-rose-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">No articles found</h3>
+              <p className="text-gray-600 text-lg mb-8">Try adjusting your search or filter criteria to discover more love stories.</p>
+              <Button 
+                variant="outline" 
+                onClick={() => {setSearchTerm(''); setSelectedCategory('All')}}
+                className="border-rose-300 text-rose-600 hover:bg-rose-50 px-6 py-3 rounded-full"
+              >
+                Clear Filters
+              </Button>
             </div>
           )}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-muted">
-        <div className="container max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Have something interesting to share?</h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            Join our community to share your insights and experiences with other couples.
-          </p>
-          <Button variant="hero" size="lg">
-            <Heart className="w-5 h-5" />
-            Join Our Community
-          </Button>
+      <section className="py-20 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 right-10 w-40 h-40 bg-rose-400 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-32 h-32 bg-pink-400 rounded-full blur-2xl"></div>
+        </div>
+        
+        <div className="container max-w-5xl mx-auto px-4 text-center relative z-10">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-12 shadow-2xl border border-white/20">
+            <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-full text-sm font-semibold">
+              <Heart className="w-4 h-4" />
+              Share Your Love Story
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              Ready to Inspire Others?
+            </h2>
+            <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+              Join our passionate community of couples who believe in the power of love, intimacy, and connection. Share your experiences, learn from others, and help create a world where every relationship thrives.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link to="/blog/new">
+                <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                  <Heart className="w-5 h-5 mr-2" />
+                  Write Your Story
+                </Button>
+              </Link>
+              <Link to="/positions">
+                <Button variant="outline" className="border-rose-300 text-rose-600 hover:bg-rose-50 px-8 py-4 text-lg font-semibold rounded-full">
+                  Explore Positions
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </div>

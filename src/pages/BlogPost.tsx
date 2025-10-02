@@ -162,7 +162,7 @@ const BlogPost = () => {
   } : null
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-rose-50 to-pink-50">
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
@@ -177,11 +177,13 @@ const BlogPost = () => {
         )}
       </Helmet>
       <article className="pt-24 pb-12">
-        <div className="container max-w-4xl mx-auto px-4">
+        <div className="container max-w-5xl mx-auto px-4">
           {/* Back Button */}
-          <Link to="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-romantic transition-colors mb-8">
-            <ArrowLeft className="w-4 h-4" />
-            Back to Blog
+          <Link to="/blog" className="inline-flex items-center gap-3 text-gray-600 hover:text-rose-600 transition-colors mb-8 group">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-200">
+              <ArrowLeft className="w-5 h-5" />
+            </div>
+            <span className="font-medium">Back to Love Stories</span>
           </Link>
 
           {/* Hero Cover Image */}
@@ -206,16 +208,20 @@ const BlogPost = () => {
             }
             
             return (
-              <div className="mb-6 rounded-2xl overflow-hidden shadow">
-                <div className="relative w-full aspect-[16/9]">
+              <div className="mb-8 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="relative w-full aspect-[16/10]">
                   <MediaDisplay 
                     src={src} 
                     alt={selected.title || 'Blog Post'} 
                     className="w-full h-full object-cover"
                     type="image"
                   />
-                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 via-black/30 to-transparent">
-                    <h1 className="text-2xl md:text-3xl font-bold text-white leading-tight">{selected.title}</h1>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                  <div className="absolute inset-x-0 bottom-0 p-8">
+                    <div className="inline-block px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-semibold rounded-full mb-4">
+                      {selected?.category || "General"}
+                    </div>
+                    <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight">{selected.title}</h1>
                   </div>
                 </div>
               </div>
@@ -224,66 +230,93 @@ const BlogPost = () => {
 
           {/* Article Header */}
           {selected && (
-            <header className="mb-8">
-              <div className="inline-block px-3 py-1 bg-romantic/10 text-romantic text-sm rounded-full mb-4">
-                {selected?.category || "General"}
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-                {selected.title}
-              </h1>
-              <div className="flex items-center gap-4 text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>{selected.date ? new Date(selected.date).toLocaleDateString() : 'No date'}</span>
+            <header className="mb-12">
+              <div className="bg-white rounded-2xl p-8 shadow-lg border border-white/20">
+                <div className="flex items-center gap-4 text-gray-600 mb-6">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-rose-400" />
+                    <span className="font-medium">{selected.date ? new Date(selected.date).toLocaleDateString() : 'No date'}</span>
+                  </div>
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-rose-400" />
+                    <span className="font-medium">{selected.readTime || '5 min read'}</span>
+                  </div>
+                  <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                  <Button variant="ghost" size="sm" className="text-rose-600 hover:text-rose-700 hover:bg-rose-50">
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share
+                  </Button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>{selected.readTime || '5 min read'}</span>
-                </div>
-                <Button variant="ghost" size="sm">
-                  <Share2 className="w-4 h-4" />
-                  Share
-                </Button>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
+                  {selected.title}
+                </h1>
+                {selected.excerpt && (
+                  <p className="text-xl text-gray-600 leading-relaxed">
+                    {selected.excerpt}
+                  </p>
+                )}
               </div>
             </header>
           )}
           {/* Article Content */}
-          <Card className="border-0 bg-gradient-card">
-            <CardContent className="p-8">
+          <Card className="border-0 bg-white shadow-xl rounded-2xl overflow-hidden">
+            <CardContent className="p-0">
               {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-romantic"></div>
-                  <span className="ml-3 text-muted-foreground">Loading article...</span>
+                <div className="flex items-center justify-center py-20">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-4 border-rose-200 border-t-rose-500"></div>
+                    <span className="text-gray-600 text-lg font-medium">Loading your love story...</span>
+                  </div>
                 </div>
               ) : selected ? (
-                <div className="prose prose-lg max-w-none">
+                <div className="prose prose-lg max-w-none p-12">
                   <div
+                    className="text-gray-700 leading-relaxed text-lg"
                     dangerouslySetInnerHTML={{
                       __html: selected.content || selected.excerpt || "No content available"
                     }}
                   />
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground text-lg">Article not found</p>
-                  <p className="text-muted-foreground text-sm mt-2">The article you're looking for doesn't exist or has been removed.</p>
+                <div className="text-center py-20">
+                  <div className="w-24 h-24 bg-gradient-to-r from-rose-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Heart className="w-12 h-12 text-rose-400" />
+                  </div>
+                  <p className="text-gray-600 text-xl font-medium mb-3">Article not found</p>
+                  <p className="text-gray-500 text-lg">The love story you're looking for doesn't exist or has been removed.</p>
                 </div>
               )}
             </CardContent>
           </Card>
 
           {/* Related Articles CTA */}
-          <div className="mt-12 text-center">
-            <h3 className="text-2xl font-bold mb-4">Explore More Love Insights</h3>
-            <p className="text-muted-foreground mb-6">
-              Discover more articles about love, intimacy, and relationships
-            </p>
-            <Link to="/blog">
-              <Button variant="hero" size="lg">
-                <Heart className="w-5 h-5" />
-                View All Articles
-              </Button>
-            </Link>
+          <div className="mt-16 text-center">
+            <div className="bg-white rounded-2xl p-12 shadow-lg border border-white/20">
+              <div className="inline-flex items-center gap-3 mb-6 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-full text-sm font-semibold">
+                <Heart className="w-4 h-4" />
+                Continue Your Journey
+              </div>
+              <h3 className="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Explore More Love Stories
+              </h3>
+              <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Discover more inspiring articles about love, intimacy, and relationships that will help you deepen your connection.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link to="/blog">
+                  <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-8 py-4 text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+                    <Heart className="w-5 h-5 mr-2" />
+                    View All Love Stories
+                  </Button>
+                </Link>
+                <Link to="/positions">
+                  <Button variant="outline" className="border-rose-300 text-rose-600 hover:bg-rose-50 px-8 py-4 text-lg font-semibold rounded-full">
+                    Explore Positions
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </article>
