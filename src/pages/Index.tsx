@@ -174,24 +174,26 @@ const Index = () => {
       {/* Quick Explore Grid (2x4) */}
       <section className="px-4 py-8 sm:py-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {/* 1. Random Positions */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-purple-500/30 bg-gradient-to-b from-purple-500/25 to-purple-500/10 border border-purple-500/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/random-position" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-purple-500/25 group-hover:bg-purple-500/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Shuffle className="w-6 h-6 sm:w-7 sm:h-7 text-purple-400" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-purple-500/25 group-hover:bg-purple-500/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Shuffle className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-purple-400" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Random Positions</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Random Positions</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Get instant random position suggestions with a single click.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-medium">Instant</span>
-                      <span className="px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 text-xs font-medium">Random</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Get instant random position suggestions with a single click.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-medium">Instant</span>
+                      <span className="px-2 py-1 rounded-full bg-pink-500/20 text-pink-400 text-xs font-medium">Random</span>
                     </div>
-                    <span className="text-purple-400 group-hover:translate-x-0.5 transition-transform text-sm font-medium text-sm font-medium">Generate →</span>
+                    <div className="text-center">
+                      <span className="text-purple-400 group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Generate →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
@@ -199,21 +201,23 @@ const Index = () => {
 
             {/* 2. Spin for Desire */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/spin-for-desire" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 text-romantic" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-romantic" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Spin for Desire</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Spin for Desire</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Spin to pick a playful prompt or fantasy.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full bg-romantic/20 text-romantic text-xs font-medium">New</span>
-                      <span className="px-3 py-1 rounded-full bg-warm/20 text-warm text-xs font-medium">Playful</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Spin to pick a playful prompt or fantasy.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full bg-romantic/20 text-romantic text-xs font-medium">New</span>
+                      <span className="px-2 py-1 rounded-full bg-warm/20 text-warm text-xs font-medium">Playful</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Explore →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Explore →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
@@ -221,21 +225,23 @@ const Index = () => {
 
             {/* 3. Custom Position (Poster) */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/positions/custom-poster" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Palette className="w-6 h-6 text-romantic" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Palette className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-romantic" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Custom Poster</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Custom Poster</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Design your own collection of favorite positions.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Creator</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Free</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Design your own collection of favorite positions.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Creator</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Free</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Create →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Create →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
@@ -243,21 +249,23 @@ const Index = () => {
 
             {/* 4. Passion Dice */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/passion-dice" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Dice6 className="w-6 h-6 text-romantic" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Dice6 className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-romantic" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Passion Dice</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Passion Dice</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Roll for pleasure! Each combination reveals a steamy action - from gentle teasing to passionate encounters.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Hot</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-warm/20 text-warm">Steamy</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Roll for pleasure! Each combination reveals a steamy action - from gentle teasing to passionate encounters.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Hot</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-warm/20 text-warm">Steamy</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Roll →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Roll →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
@@ -265,21 +273,23 @@ const Index = () => {
 
             {/* 5. Honeymoon Bucket */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/honeymoon-bucket-list" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Gift className="w-6 h-6 text-romantic" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Gift className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-romantic" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Honeymoon Bucket List</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Honeymoon Bucket List</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">A sweet checklist of romantic honeymoon ideas.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Romance</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-warm/20 text-warm">Ideas</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">A sweet checklist of romantic honeymoon ideas.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Romance</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-warm/20 text-warm">Ideas</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Open →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Open →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
@@ -287,42 +297,46 @@ const Index = () => {
 
             {/* 6. First Night Bucket List */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/first-night-bucket-list" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Heart className="w-6 h-6 text-romantic" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Heart className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-romantic" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">First Night Bucket List</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">First Night Bucket List</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Gentle and memorable ideas for your special night.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Sweet</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Memories</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Gentle and memorable ideas for your special night.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Sweet</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Memories</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Open →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Open →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
             </Card>
             {/* 7. Scratch Random Position */}
              <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/scratch-position" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                      <Gamepad2 className="w-6 h-6 text-romantic" />
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
+                      <Gamepad2 className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-romantic" />
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Scratch Position</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Scratch Position</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Get a random intimate position to try right now.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Popular</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Fun</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Get a random intimate position to try right now.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-romantic/20 text-romantic">Popular</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Fun</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Explore →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Explore →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
@@ -330,24 +344,26 @@ const Index = () => {
 
             {/* 8. Dice to Spice Game */}
             <Card variant="elegant" className="hover-romantic transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ring-1 ring-romantic/30 bg-gradient-to-b from-romantic/25 to-romantic/10 border border-romantic/20">
-              <CardContent className="p-5 sm:p-6">
+              <CardContent className="p-3 sm:p-4 lg:p-6">
                 <Link to="/games/dice-to-spice" className="block group">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                  <div className="text-center mb-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-romantic/25 group-hover:bg-romantic/35 flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mx-auto mb-2">
                       <div className="flex gap-1">
                         <Dice6 className="w-3 h-3 text-romantic" />
                         <Dice6 className="w-3 h-3 text-romantic" />
                       </div>
                     </div>
-                    <div className="font-bold text-base sm:text-lg text-foreground">Dice to Spice</div>
+                    <div className="font-bold text-sm sm:text-base lg:text-lg text-foreground">Dice to Spice</div>
                   </div>
-                  <p className="text-sm sm:text-base text-foreground/80 mb-4 leading-relaxed">Roll two dice for exciting combinations! One shows actions, the other body parts. Choose from Cute, Spicy, or Custom difficulty levels.</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Interactive</span>
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-warm/20 text-warm">Two Dice</span>
+                  <p className="text-xs sm:text-sm lg:text-base text-foreground/80 mb-3 leading-relaxed text-center">Roll two dice for exciting combinations! One shows actions, the other body parts. Choose from Cute, Spicy, or Custom difficulty levels.</p>
+                  <div className="space-y-2">
+                    <div className="flex gap-1 justify-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-passionate/20 text-passionate">Interactive</span>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-warm/20 text-warm">Two Dice</span>
                     </div>
-                    <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-sm font-medium">Play →</span>
+                    <div className="text-center">
+                      <span className="text-romantic group-hover:translate-x-0.5 transition-transform text-xs sm:text-sm font-medium">Play →</span>
+                    </div>
                   </div>
                 </Link>
               </CardContent>
