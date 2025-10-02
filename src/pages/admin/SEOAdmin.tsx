@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
+import { realAnalyticsService, RealAnalyticsData, SEOHealthCheck } from '@/utils/realAnalytics';
 import { 
   Search, 
   Globe, 
@@ -166,48 +167,10 @@ const SEOAdmin: React.FC = () => {
     overall: 'good'
   });
 
-  const [analytics, setAnalytics] = useState<SEOAnalytics>({
-    totalPages: 25,
-    indexedPages: 23,
-    metaTitles: 25,
-    metaDescriptions: 25,
-    imagesWithAlt: 45,
-    totalImages: 50,
-    internalLinks: 120,
-    externalLinks: 15,
-    avgPageSpeed: 85,
-    mobileFriendly: true,
-    organicTraffic: 15420,
-    bounceRate: 32.5,
-    avgSessionDuration: 3.2,
-    conversionRate: 4.8,
-    topKeywords: [
-      { keyword: 'sex positions', position: 3, traffic: 3200 },
-      { keyword: 'romantic positions', position: 5, traffic: 2100 },
-      { keyword: 'intimate games', position: 7, traffic: 1800 },
-      { keyword: 'couple activities', position: 4, traffic: 1500 },
-      { keyword: 'love positions', position: 6, traffic: 1200 }
-    ],
-    topPages: [
-      { page: '/', views: 8500, bounceRate: 28.5 },
-      { page: '/games', views: 4200, bounceRate: 35.2 },
-      { page: '/positions', views: 3800, bounceRate: 30.1 },
-      { page: '/blog', views: 2100, bounceRate: 45.3 },
-      { page: '/games/truth-or-dare', views: 1800, bounceRate: 25.7 }
-    ],
-    backlinks: 156,
-    domainAuthority: 42,
-    pageSpeedInsights: {
-      mobile: 78,
-      desktop: 92
-    },
-    socialShares: {
-      facebook: 1250,
-      twitter: 890,
-      linkedin: 450,
-      pinterest: 2100
-    }
-  });
+  const [analytics, setAnalytics] = useState<RealAnalyticsData | null>(null);
+  const [seoHealth, setSeoHealth] = useState<SEOHealthCheck | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<string>('');
 
   const [optimization, setOptimization] = useState<SEOOptimization>({
     titleOptimization: true,
@@ -230,11 +193,56 @@ const SEOAdmin: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState('overview');
 
+  // Load real analytics data
+  useEffect(() => {
+    const loadRealData = async () => {
+      setLoading(true);
+      try {
+        const [analyticsData, healthData] = await Promise.all([
+          realAnalyticsService.getRealAnalyticsData(),
+          realAnalyticsService.getSEOHealthCheck()
+        ]);
+        
+        setAnalytics(analyticsData);
+        setSeoHealth(healthData);
+        setLastUpdated(analyticsData.lastUpdated);
+      } catch (error) {
+        console.error('Error loading real data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRealData();
+    
+    // Refresh data every 5 minutes
+    const interval = setInterval(loadRealData, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleInputChange = (field: keyof SEOData, value: string) => {
     setSeoData(prev => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  const refreshData = async () => {
+    setLoading(true);
+    try {
+      const [analyticsData, healthData] = await Promise.all([
+        realAnalyticsService.getRealAnalyticsData(),
+        realAnalyticsService.getSEOHealthCheck()
+      ]);
+      
+      setAnalytics(analyticsData);
+      setSeoHealth(healthData);
+      setLastUpdated(analyticsData.lastUpdated);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const generateSitemap = () => {
@@ -340,7 +348,9 @@ Allow: /games/`;
               <div className="flex items-center justify-center mb-2">
                 <TrendingUp className="w-5 h-5 text-green-500" />
               </div>
-              <div className="text-2xl font-bold text-green-600">{analytics.avgPageSpeed}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {loading ? '...' : analytics?.pageSpeedInsights?.desktop || 'N/A'}
+              </div>
               <div className="text-xs text-gray-600">Page Speed Score</div>
             </CardContent>
           </Card>
@@ -350,8 +360,10 @@ Allow: /games/`;
               <div className="flex items-center justify-center mb-2">
                 <FileText className="w-5 h-5 text-blue-500" />
               </div>
-              <div className="text-2xl font-bold text-blue-600">{analytics.indexedPages}/{analytics.totalPages}</div>
-              <div className="text-xs text-gray-600">Indexed Pages</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {loading ? '...' : `${seoHealth?.metaTitles?.optimized || 0}/${seoHealth?.metaTitles?.total || 0}`}
+              </div>
+              <div className="text-xs text-gray-600">Optimized Pages</div>
             </CardContent>
           </Card>
           
@@ -360,7 +372,9 @@ Allow: /games/`;
               <div className="flex items-center justify-center mb-2">
                 <Image className="w-5 h-5 text-purple-500" />
               </div>
-              <div className="text-2xl font-bold text-purple-600">{analytics.imagesWithAlt}/{analytics.totalImages}</div>
+              <div className="text-2xl font-bold text-purple-600">
+                {loading ? '...' : `${seoHealth?.imagesWithAlt?.withAlt || 0}/${seoHealth?.imagesWithAlt?.total || 0}`}
+              </div>
               <div className="text-xs text-gray-600">Images with Alt</div>
             </CardContent>
           </Card>
@@ -371,11 +385,25 @@ Allow: /games/`;
                 <Smartphone className="w-5 h-5 text-orange-500" />
               </div>
               <div className="text-2xl font-bold text-orange-600">
-                {analytics.mobileFriendly ? '✓' : '✗'}
+                {loading ? '...' : (analytics?.pageSpeedInsights?.mobile || 0) > 70 ? '✓' : '✗'}
               </div>
               <div className="text-xs text-gray-600">Mobile Ready</div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Data Status */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${loading ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}`}></div>
+            <span className="text-sm text-gray-600">
+              {loading ? 'Loading real data...' : `Last updated: ${lastUpdated ? new Date(lastUpdated).toLocaleTimeString() : 'Never'}`}
+            </span>
+          </div>
+          <Button onClick={refreshData} disabled={loading} size="sm" variant="outline">
+            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Refresh Data
+          </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -535,24 +563,53 @@ Allow: /games/`;
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">{analytics.organicTraffic.toLocaleString()}</div>
-                      <div className="text-sm text-gray-600">Organic Traffic</div>
+                  {loading ? (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-400">...</div>
+                        <div className="text-sm text-gray-600">Loading...</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-400">...</div>
+                        <div className="text-sm text-gray-600">Loading...</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-400">...</div>
+                        <div className="text-sm text-gray-600">Loading...</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-gray-400">...</div>
+                        <div className="text-sm text-gray-600">Loading...</div>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">{analytics.bounceRate}%</div>
-                      <div className="text-sm text-gray-600">Bounce Rate</div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {analytics?.organicTraffic?.toLocaleString() || 'N/A'}
+                        </div>
+                        <div className="text-sm text-gray-600">Organic Traffic</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-600">
+                          {analytics?.bounceRate?.toFixed(1) || 'N/A'}%
+                        </div>
+                        <div className="text-sm text-gray-600">Bounce Rate</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-purple-600">
+                          {analytics?.avgSessionDuration?.toFixed(1) || 'N/A'}m
+                        </div>
+                        <div className="text-sm text-gray-600">Avg Session</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-orange-600">
+                          {analytics?.conversionRate?.toFixed(1) || 'N/A'}%
+                        </div>
+                        <div className="text-sm text-gray-600">Conversion Rate</div>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-purple-600">{analytics.avgSessionDuration}m</div>
-                      <div className="text-sm text-gray-600">Avg Session</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-orange-600">{analytics.conversionRate}%</div>
-                      <div className="text-sm text-gray-600">Conversion Rate</div>
-                    </div>
-                  </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -569,15 +626,36 @@ Allow: /games/`;
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {analytics.topKeywords.map((keyword, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">#{keyword.position}</Badge>
-                          <span className="font-medium">{keyword.keyword}</span>
-                        </div>
-                        <div className="text-sm text-gray-600">{keyword.traffic.toLocaleString()} visits</div>
+                    {loading ? (
+                      <div className="space-y-2">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <div key={i} className="flex items-center justify-between animate-pulse">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-4 bg-gray-200 rounded"></div>
+                              <div className="w-24 h-4 bg-gray-200 rounded"></div>
+                            </div>
+                            <div className="w-16 h-4 bg-gray-200 rounded"></div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      analytics?.topKeywords?.map((keyword, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">#{Math.round(keyword.position)}</Badge>
+                            <span className="font-medium">{keyword.keyword}</span>
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {keyword.traffic.toLocaleString()} visits
+                            {keyword.ctr && (
+                              <span className="ml-2 text-xs text-blue-600">
+                                ({keyword.ctr.toFixed(1)}% CTR)
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )) || []
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -596,23 +674,45 @@ Allow: /games/`;
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {analytics.topPages.map((page, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-bold text-blue-600">{index + 1}</span>
+                  {loading ? (
+                    <div className="space-y-3">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="flex items-center justify-between p-3 border rounded-lg animate-pulse">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                            <div>
+                              <div className="w-24 h-4 bg-gray-200 rounded mb-1"></div>
+                              <div className="w-16 h-3 bg-gray-200 rounded"></div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="w-20 h-4 bg-gray-200 rounded mb-1"></div>
+                            <div className="w-16 h-3 bg-gray-200 rounded"></div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-medium">{page.page}</div>
-                          <div className="text-sm text-gray-600">{page.views.toLocaleString()} views</div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-medium">{page.bounceRate}% bounce rate</div>
-                        <div className="text-xs text-gray-500">Performance</div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  ) : (
+                    analytics?.topPages?.map((page, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-sm font-bold text-blue-600">{index + 1}</span>
+                          </div>
+                          <div>
+                            <div className="font-medium">{page.page}</div>
+                            <div className="text-sm text-gray-600">{page.views.toLocaleString()} views</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-medium">{page.bounceRate.toFixed(1)}% bounce rate</div>
+                          <div className="text-xs text-gray-500">
+                            {page.avgTime ? `${page.avgTime.toFixed(1)}m avg time` : 'Performance'}
+                          </div>
+                        </div>
+                      </div>
+                    )) || []
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -624,7 +724,9 @@ Allow: /games/`;
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Globe className="w-6 h-6 text-blue-600" />
                   </div>
-                  <div className="text-2xl font-bold text-blue-600">{analytics.socialShares.facebook.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {loading ? '...' : analytics?.socialShares?.facebook?.toLocaleString() || 'N/A'}
+                  </div>
                   <div className="text-sm text-gray-600">Facebook Shares</div>
                 </CardContent>
               </Card>
@@ -634,7 +736,9 @@ Allow: /games/`;
                   <div className="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Globe className="w-6 h-6 text-sky-600" />
                   </div>
-                  <div className="text-2xl font-bold text-sky-600">{analytics.socialShares.twitter.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-sky-600">
+                    {loading ? '...' : analytics?.socialShares?.twitter?.toLocaleString() || 'N/A'}
+                  </div>
                   <div className="text-sm text-gray-600">Twitter Shares</div>
                 </CardContent>
               </Card>
@@ -644,7 +748,9 @@ Allow: /games/`;
                   <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Globe className="w-6 h-6 text-blue-600" />
                   </div>
-                  <div className="text-2xl font-bold text-blue-600">{analytics.socialShares.linkedin.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {loading ? '...' : analytics?.socialShares?.linkedin?.toLocaleString() || 'N/A'}
+                  </div>
                   <div className="text-sm text-gray-600">LinkedIn Shares</div>
                 </CardContent>
               </Card>
@@ -654,7 +760,9 @@ Allow: /games/`;
                   <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Globe className="w-6 h-6 text-red-600" />
                   </div>
-                  <div className="text-2xl font-bold text-red-600">{analytics.socialShares.pinterest.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-red-600">
+                    {loading ? '...' : analytics?.socialShares?.pinterest?.toLocaleString() || 'N/A'}
+                  </div>
                   <div className="text-sm text-gray-600">Pinterest Shares</div>
                 </CardContent>
               </Card>
