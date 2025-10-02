@@ -225,7 +225,7 @@ const Blog = () => {
       </Helmet>
       
       {/* Header */}
-      <section className="pt-16 sm:pt-24 pb-12 sm:pb-16 bg-gradient-to-br from-rose-900 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
+      <section className="pt-16 sm:pt-24 pb-6 sm:pb-8 bg-gradient-to-br from-rose-900 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-10 w-32 h-32 bg-pink-400 rounded-full blur-3xl"></div>
@@ -234,15 +234,15 @@ const Blog = () => {
         </div>
         
         <div className="container max-w-6xl mx-auto px-3 sm:px-4 relative z-10">
-          <div className="text-center mb-8 sm:mb-12">
+          <div className="text-center mb-4 sm:mb-6">
             <div className="inline-flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 px-3 py-1 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
               <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-pink-300" />
               <span className="text-pink-200 font-medium text-sm sm:text-base">Love & Intimacy Blog</span>
             </div>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-pink-200 via-white to-purple-200 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-pink-200 via-white to-purple-200 bg-clip-text text-transparent">
               Ignite Your Passion
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-6 sm:mb-8">
+            <p className="text-base sm:text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed mb-4 sm:mb-6">
               Discover the art of intimate connection through expert insights, romantic guides, and passionate adventures designed for couples who want to deepen their love.
             </p>
             <div className="flex items-center justify-center">
@@ -258,7 +258,7 @@ const Blog = () => {
       </section>
 
       {/* Search and Filter */}
-      <section className="py-8 sm:py-12 bg-gradient-to-r from-slate-50 to-pink-50">
+      <section className="py-6 sm:py-8 bg-gradient-to-r from-slate-50 to-pink-50">
         <div className="container max-w-6xl mx-auto px-3 sm:px-4">
           <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 items-start lg:items-center justify-between">
             <div className="relative w-full lg:w-96">
