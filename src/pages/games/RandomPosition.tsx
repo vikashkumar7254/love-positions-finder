@@ -90,17 +90,6 @@ const RandomPosition = () => {
               Discover your next intimate adventure with a single click. Let fate choose your perfect position!
             </p>
           </div>
-
-          {/* Stats */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
-              <Heart className="w-4 h-4 text-pink-300" />
-              <span className="text-white/90 text-sm">
-                {positions.length} positions available
-              </span>
-            </div>
-          </div>
-
           {/* Main Game Area */}
           <div className="flex flex-col items-center space-y-6 sm:space-y-8">
             
