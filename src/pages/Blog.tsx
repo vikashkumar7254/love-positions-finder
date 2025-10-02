@@ -183,7 +183,7 @@ const Blog = () => {
       excerpt: b.excerpt || 'No description available',
       date: b.publishedAt || b.createdAt || new Date().toISOString(),
       readTime: `${b.readTime || 5} min read`,
-      category: b.category || "General",
+      category: b.category && b.category !== null ? b.category : "General",
       slug: b.slug || '',
       featuredImage: b.featuredImage,
     }))
@@ -338,7 +338,7 @@ const Blog = () => {
                   <div className="relative">
                     <div className="w-full aspect-[16/9] overflow-hidden">
                       <MediaDisplay
-                        src={post.featuredImage || getCoverFor(post.category || 'General')}
+                        src={post.featuredImage || getCoverFor(post?.category || 'General')}
                         alt={post.title || 'Untitled'}
                         className="w-full h-full object-cover transform group-hover:scale-[1.03] transition-transform duration-300"
                         type="image"
@@ -358,7 +358,7 @@ const Blog = () => {
                       <span>{post.readTime || '5 min read'}</span>
                     </div>
                     <div className="inline-block px-2 py-1 bg-romantic/10 text-romantic text-xs rounded-full">
-                      {post.category || 'General'}
+                      {post?.category || 'General'}
                     </div>
                   </CardHeader>
                   <CardContent>

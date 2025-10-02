@@ -143,7 +143,7 @@ const BlogPost = () => {
       "Long-term Love": "blog",
       "General": "blog"
     }
-    const imageCategory = categoryMap[selected.category as string] || "blog"
+    const imageCategory = categoryMap[selected?.category as string] || "blog"
     return getCategoryImage(imageCategory, "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=1200&h=630&fit=crop&crop=center")
   })()
 
@@ -158,7 +158,7 @@ const BlogPost = () => {
     datePublished: selected.date,
     dateModified: selected.date,
     mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    articleSection: selected.category || 'General'
+    articleSection: selected?.category || 'General'
   } : null
 
   return (
@@ -201,7 +201,7 @@ const BlogPost = () => {
                 "Long-term Love": "blog",
                 "General": "blog"
               }
-              const imageCategory = categoryMap[selected.category as string] || "blog"
+              const imageCategory = categoryMap[selected?.category as string] || "blog"
               src = getCategoryImage(imageCategory, "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=1200&auto=format&fit=crop&q=60")
             }
             
@@ -226,7 +226,7 @@ const BlogPost = () => {
           {selected && (
             <header className="mb-8">
               <div className="inline-block px-3 py-1 bg-romantic/10 text-romantic text-sm rounded-full mb-4">
-                {selected.category || "General"}
+                {selected?.category || "General"}
               </div>
               <h1 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
                 {selected.title}

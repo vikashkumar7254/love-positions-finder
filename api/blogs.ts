@@ -222,6 +222,11 @@ export default async function handler(req: any, res: any) {
           return res.status(500).json({ error: 'Invalid blog data format' })
         }
         
+        // Ensure category is not null
+        if (blogData.category === null || blogData.category === undefined) {
+          blogData.category = 'General'
+        }
+        
         // Increment view count
         blogData.views = (blogData.views || 0) + 1
         await redis.hset(BLOG_KEY, { [id as string]: JSON.stringify(blogData) })
@@ -265,6 +270,11 @@ export default async function handler(req: any, res: any) {
           blogData = blog
         }
         
+        // Ensure category is not null
+        if (blogData.category === null || blogData.category === undefined) {
+          blogData.category = 'General'
+        }
+        
         // Increment view count
         blogData.views = (blogData.views || 0) + 1
         await redis.hset(BLOG_KEY, { [blogData.id]: JSON.stringify(blogData) })
@@ -285,6 +295,10 @@ export default async function handler(req: any, res: any) {
           try {
             const parsed = JSON.parse(blogStr)
             console.log(`✅ Successfully parsed blog ${index}`)
+            // Ensure category is not null
+            if (parsed.category === null || parsed.category === undefined) {
+              parsed.category = 'General'
+            }
             return parsed
           } catch (error) {
             console.error(`❌ Failed to parse blog string ${index}:`, error)
@@ -294,6 +308,10 @@ export default async function handler(req: any, res: any) {
         } else if (typeof blogStr === 'object' && blogStr !== null) {
           // Already an object, return as is
           console.log(`✅ Blog ${index} is already an object`)
+          // Ensure category is not null
+          if (blogStr.category === null || blogStr.category === undefined) {
+            blogStr.category = 'General'
+          }
           return blogStr
         } else {
           console.error(`❌ Invalid blog data type ${index}:`, typeof blogStr)
