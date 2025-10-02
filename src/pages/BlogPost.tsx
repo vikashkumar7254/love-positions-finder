@@ -31,16 +31,51 @@ const BlogPost = () => {
             category: data.category || 'General',
             content: data.content,
             excerpt: data.excerpt,
+            featuredImage: data.featuredImage,
           })
         } else {
           console.error('❌ Blog fetch failed:', res.status)
           const errorText = await res.text()
           console.error('❌ Error details:', errorText)
-          setSelected(null)
+          // Try to find blog in sample data as fallback
+          const { sampleBlogs } = await import('@/utils/sampleBlogData')
+          const fallbackBlog = sampleBlogs.find(blog => blog.slug === slug)
+          if (fallbackBlog) {
+            setSelected({
+              title: fallbackBlog.title,
+              date: fallbackBlog.publishedAt || fallbackBlog.createdAt,
+              readTime: `${fallbackBlog.readTime || 5} min read`,
+              category: fallbackBlog.category || 'General',
+              content: fallbackBlog.content,
+              excerpt: fallbackBlog.excerpt,
+              featuredImage: fallbackBlog.featuredImage,
+            })
+          } else {
+            setSelected(null)
+          }
         }
       } catch (error) {
         console.error('❌ Blog fetch error:', error)
-        setSelected(null)
+        // Try to find blog in sample data as fallback
+        try {
+          const { sampleBlogs } = await import('@/utils/sampleBlogData')
+          const fallbackBlog = sampleBlogs.find(blog => blog.slug === slug)
+          if (fallbackBlog) {
+            setSelected({
+              title: fallbackBlog.title,
+              date: fallbackBlog.publishedAt || fallbackBlog.createdAt,
+              readTime: `${fallbackBlog.readTime || 5} min read`,
+              category: fallbackBlog.category || 'General',
+              content: fallbackBlog.content,
+              excerpt: fallbackBlog.excerpt,
+              featuredImage: fallbackBlog.featuredImage,
+            })
+          } else {
+            setSelected(null)
+          }
+        } catch {
+          setSelected(null)
+        }
       } finally {
         setLoading(false)
       }

@@ -53,17 +53,25 @@ const Blog = () => {
           const transformedData = data.map((post: any) => ({
             ...post,
             date: post.publishedAt || post.createdAt || new Date().toISOString(),
-            readTime: post.readTime ? `${post.readTime} min read` : '5 min read'
+            readTime: post.readTime ? `${post.readTime} min read` : '5 min read',
+            featuredImage: post.featuredImage
           }))
           
           console.log('📊 Transformed data:', transformedData)
           setPosts(transformedData)
         } else {
           console.error('❌ Failed to fetch blogs:', res.status)
-          setPosts([])
+          // Fallback to sample data if API fails
+          console.log('🔄 Loading fallback sample data...')
+          const { sampleBlogs } = await import('@/utils/sampleBlogData')
+          setPosts(sampleBlogs)
         }
-      } catch {
-        setPosts([])
+      } catch (error) {
+        console.error('❌ Blog loading error:', error)
+        // Fallback to sample data if API fails
+        console.log('🔄 Loading fallback sample data...')
+        const { sampleBlogs } = await import('@/utils/sampleBlogData')
+        setPosts(sampleBlogs)
       } finally {
         setLoading(false)
       }
@@ -177,6 +185,7 @@ const Blog = () => {
       readTime: `${b.readTime || 5} min read`,
       category: b.category || "General",
       slug: b.slug || '',
+      featuredImage: b.featuredImage,
     }))
 
   const filteredPosts = allPosts.filter(post => {

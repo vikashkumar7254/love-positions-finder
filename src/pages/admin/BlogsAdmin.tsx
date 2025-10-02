@@ -494,11 +494,11 @@ const BlogsAdminContent = () => {
                     <CardContent className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium mb-2">Media URL</label>
-                        <Input
-                          value={formData.featuredImage}
-                          onChange={(e) => setFormData({...formData, featuredImage: e.target.value})}
+                      <Input
+                        value={formData.featuredImage}
+                        onChange={(e) => setFormData({...formData, featuredImage: e.target.value})}
                           placeholder="Image, GIF, or Video URL"
-                        />
+                      />
                         <p className="text-xs text-gray-500 mt-1">
                           Supports: JPG, PNG, GIF, MP4, WebM, OGG
                         </p>
@@ -530,9 +530,9 @@ const BlogsAdminContent = () => {
                               }
                               
                               return (
-                                <img 
-                                  src={formData.featuredImage} 
-                                  alt="Preview" 
+                        <img 
+                          src={formData.featuredImage} 
+                          alt="Preview" 
                                   className="w-full h-full object-cover"
                                   loading="lazy"
                                 />
@@ -692,9 +692,9 @@ const BlogsAdminContent = () => {
                 <Card key={blog.id} className="hover:shadow-lg transition-shadow">
                   <div className="relative">
                     <MediaDisplay 
-                      src={blog.featuredImage || 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&h=300&fit=crop&crop=center'} 
+                      src={blog.featuredImage || 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=400&h=200&fit=crop&crop=center'} 
                       alt={blog.title}
-                      className="w-full h-48 object-cover rounded-t-lg"
+                      className="w-full h-32 object-cover rounded-t-lg"
                       type="image"
                     />
                     {blog.featured && (
@@ -712,7 +712,7 @@ const BlogsAdminContent = () => {
                     </div>
                   </div>
                   
-                  <CardContent className="p-4">
+                  <CardContent className="p-3">
                     <div className="mb-2">
                       <Badge variant="outline" className="text-xs">
                         {blog.category}
@@ -724,11 +724,11 @@ const BlogsAdminContent = () => {
                       )}
                     </div>
                     
-                    <h3 className="font-semibold text-lg mb-2 line-clamp-2">{blog.title}</h3>
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{blog.excerpt}</p>
+                    <h3 className="font-semibold text-base mb-1 line-clamp-2">{blog.title}</h3>
+                    <p className="text-gray-600 text-xs mb-2 line-clamp-2">{blog.excerpt}</p>
                     
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                      <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                      <div className="flex items-center gap-3">
                         <span className="flex items-center gap-1">
                           <Eye className="w-3 h-3" />
                           {blog.views}
@@ -745,13 +745,14 @@ const BlogsAdminContent = () => {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         {/* Edit/Delete */}
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => handleEdit(blog)}
                           title="Edit"
+                          className="h-7 px-2"
                         >
                           <Edit className="w-3 h-3" />
                         </Button>
@@ -759,7 +760,7 @@ const BlogsAdminContent = () => {
                           size="sm"
                           variant="outline"
                           onClick={() => handleDelete(blog.id)}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-red-600 hover:text-red-700 h-7 px-2"
                           title="Delete"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -772,7 +773,7 @@ const BlogsAdminContent = () => {
                               size="sm"
                               variant="default"
                               onClick={() => updateBlogStatus(blog.id, 'published')}
-                              className="bg-green-600 hover:bg-green-700 text-white"
+                              className="bg-green-600 hover:bg-green-700 text-white h-7 px-2 text-xs"
                               title="Approve & Publish"
                             >
                               <Check className="w-3 h-3 mr-1" /> Approve
@@ -781,7 +782,7 @@ const BlogsAdminContent = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => updateBlogStatus(blog.id, 'draft')}
-                              className="text-yellow-700 hover:text-yellow-800"
+                              className="text-yellow-700 hover:text-yellow-800 h-7 px-2 text-xs"
                               title="Reject to Draft"
                             >
                               <AlertCircle className="w-3 h-3 mr-1" /> Reject
@@ -795,7 +796,7 @@ const BlogsAdminContent = () => {
                               size="sm"
                               variant="default"
                               onClick={() => updateBlogStatus(blog.id, 'published')}
-                              className="bg-green-600 hover:bg-green-700 text-white"
+                              className="bg-green-600 hover:bg-green-700 text-white h-7 px-2 text-xs"
                               title="Publish"
                             >
                               Publish
@@ -804,6 +805,7 @@ const BlogsAdminContent = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => updateBlogStatus(blog.id, 'pending')}
+                              className="h-7 px-2 text-xs"
                               title="Mark Pending"
                             >
                               Pending
@@ -816,6 +818,7 @@ const BlogsAdminContent = () => {
                             size="sm"
                             variant="outline"
                             onClick={() => updateBlogStatus(blog.id, 'draft')}
+                            className="h-7 px-2 text-xs"
                             title="Unpublish to Draft"
                           >
                             Unpublish

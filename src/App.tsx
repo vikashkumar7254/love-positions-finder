@@ -47,6 +47,7 @@ import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
 import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
 import DefaultImagesAdmin from "./pages/admin/DefaultImagesAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
+import SpinDesiresAdmin from "./pages/admin/SpinDesiresAdmin";
 import SEOManagement from "./pages/admin/SEOManagement";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -130,6 +131,7 @@ const App = () => {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/blogs" element={<BlogsAdmin />} />
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
+              <Route path="/admin/spin-desires" element={<SpinDesiresAdmin />} />
               <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
               <Route path="/admin/default-images" element={<DefaultImagesAdmin />} />
               <Route path="/admin/seo" element={<SEOManagement />} />
