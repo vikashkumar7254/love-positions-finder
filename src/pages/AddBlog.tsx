@@ -5,7 +5,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/enhanced-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import RichTextEditor from "@/components/RichTextEditor";
-import { Calendar, BookOpen, Tag, Type, FileText, Heart } from "lucide-react";
+import { 
+  Calendar, 
+  BookOpen, 
+  Tag, 
+  Type, 
+  FileText, 
+  Heart, 
+  Clock,
+  User,
+  Hash,
+  Target,
+  TrendingUp,
+  BarChart3,
+  Save,
+  Eye,
+  Settings,
+  Sparkles,
+  Zap,
+  Wand2,
+  CheckCircle,
+  AlertCircle,
+  Info,
+  Lightbulb
+} from "lucide-react";
 
 interface UserBlogPost {
   id: string;
@@ -44,11 +67,34 @@ const AddBlog = () => {
   const [content, setContent] = useState("");
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [author, setAuthor] = useState("");
+  const [metaTitle, setMetaTitle] = useState("");
+  const [metaDescription, setMetaDescription] = useState("");
+  const [metaKeywords, setMetaKeywords] = useState("");
+  const [showSeoPanel, setShowSeoPanel] = useState(false);
+  const [isDraft, setIsDraft] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  
   const slug = useMemo(() => makeSlug(title), [title]);
   const readTime = useMemo(() => estimateReadTime(content), [content]);
+  
+  // Auto-generate meta title and description
+  useEffect(() => {
+    if (title && !metaTitle) {
+      setMetaTitle(title);
+    }
+  }, [title, metaTitle]);
+  
+  useEffect(() => {
+    if (excerpt && !metaDescription) {
+      setMetaDescription(excerpt);
+    }
+  }, [excerpt, metaDescription]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (isDraftSave = false) => {
     if (!title || !excerpt || !content) return;
+    
+    setIsPublishing(true);
 
     try {
       const res = await fetch('/api/blogs', {
@@ -63,10 +109,10 @@ const AddBlog = () => {
           featuredImage: '',
           category: String(category || 'General'),
           tags: [],
-          status: 'pending',
-          metaTitle: String(title || ''),
-          metaDescription: String(excerpt || ''),
-          metaKeywords: '',
+          status: isDraftSave ? 'draft' : 'pending',
+          metaTitle: String(metaTitle || title || ''),
+          metaDescription: String(metaDescription || excerpt || ''),
+          metaKeywords: String(metaKeywords || ''),
           featured: false
         })
       })
@@ -124,90 +170,325 @@ const AddBlog = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <section className="pt-24 pb-12">
-        <div className="container max-w-4xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
-              Add New Blog
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Create and submit your article. It will be visible on the blog after admin approval.
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-40">
+        <div className="container max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-pink-600 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">
+                  Create New Blog Post
+                </h1>
+                <p className="text-sm text-gray-600">Share your thoughts with the world</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowPreview(!showPreview)}
+                className="flex items-center gap-2"
+              >
+                <Eye className="w-4 h-4" />
+                {showPreview ? 'Edit' : 'Preview'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowSeoPanel(!showSeoPanel)}
+                className="flex items-center gap-2"
+              >
+                <TrendingUp className="w-4 h-4" />
+                SEO
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onSubmit(true)}
+                disabled={!title || !content || isPublishing}
+                className="flex items-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                Save Draft
+              </Button>
+              <Button
+                variant="hero"
+                onClick={() => onSubmit(false)}
+                disabled={!title || !excerpt || !content || isPublishing}
+                className="flex items-center gap-2"
+              >
+                {isPublishing ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Publishing...
+                  </>
+                ) : (
+                  <>
+                    <Heart className="w-4 h-4" />
+                    Publish
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <Card className="border-0 bg-gradient-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-800">
-                <BookOpen className="w-5 h-5 text-rose-500" />
-                Blog Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                    <Type className="w-4 h-4" /> Title
-                  </label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Amazing ideas for couples" />
-                  <p className="text-xs text-muted-foreground mt-1">Slug: {slug || "(auto)"}</p>
+      <div className="container max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Basic Info Card */}
+            <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <Type className="w-4 h-4 text-white" />
+                  </div>
+                  Blog Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      <Type className="w-4 h-4 text-blue-500" />
+                      Title *
+                    </label>
+                    <Input 
+                      value={title} 
+                      onChange={(e) => setTitle(e.target.value)} 
+                      placeholder="Enter an amazing title for your blog post..."
+                      className="h-12 text-lg font-medium"
+                    />
+                    <p className="text-xs text-gray-500 flex items-center gap-1">
+                      <Hash className="w-3 h-3" />
+                      Slug: {slug || "(auto-generated)"}
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-green-500" />
+                      Category
+                    </label>
+                    <Input 
+                      value={category} 
+                      onChange={(e) => setCategory(e.target.value)} 
+                      placeholder="Romance, Tips & Advice, Lifestyle..."
+                      className="h-12"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-purple-500" />
+                      Publish Date
+                    </label>
+                    <Input 
+                      type="date" 
+                      value={date} 
+                      onChange={(e) => setDate(e.target.value)} 
+                      className="h-12"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      <User className="w-4 h-4 text-orange-500" />
+                      Author Name
+                    </label>
+                    <Input 
+                      value={author} 
+                      onChange={(e) => setAuthor(e.target.value)} 
+                      placeholder="Your name (optional)"
+                      className="h-12"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                    <Tag className="w-4 h-4" /> Category
-                  </label>
-                  <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Romance, Tips & Advice..." />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                    <Calendar className="w-4 h-4" /> Date
-                  </label>
-                  <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                    <Type className="w-4 h-4" /> Author Name
-                  </label>
-                  <Input value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Your name (optional)" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                    <ClockIcon /> Estimated Read Time
-                  </label>
-                  <Input value={readTime} readOnly />
-                </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">Excerpt</label>
-                <Textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} placeholder="Short summary for the card..." rows={3} />
-              </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-indigo-500" />
+                    Excerpt
+                  </label>
+                  <Textarea 
+                    value={excerpt} 
+                    onChange={(e) => setExcerpt(e.target.value)} 
+                    placeholder="Write a compelling summary that will appear on the blog listing page..."
+                    rows={3}
+                    className="resize-none"
+                  />
+                  <p className="text-xs text-gray-500">
+                    {excerpt.length}/200 characters
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div>
-                <label className="block text-sm font-medium mb-2 flex items-center gap-2">
-                  <FileText className="w-4 h-4" /> Content
-                </label>
+            {/* Content Editor Card */}
+            <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-8 h-8 bg-gradient-to-r from-rose-500 to-pink-600 rounded-lg flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-white" />
+                  </div>
+                  Content
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <RichTextEditor
                   value={content}
                   onChange={(content) => setContent(content)}
-                  placeholder="Write your article here... Use the toolbar above for formatting! 😍💕❤️"
+                  placeholder="Start writing your amazing blog post here... Use the toolbar above for formatting! 😍💕❤️"
                 />
-                <p className="text-xs text-muted-foreground mt-2">
-                  💡 <strong>Rich Text Editor:</strong> Use H1, H2, H3 for headers • Bold, Italic, Underline • Lists • Images, Videos, GIFs • Emojis • Links • Quotes • Code blocks
-                </p>
-              </div>
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-start gap-3">
+                    <Lightbulb className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-semibold mb-1">💡 Pro Tips for Better Content:</p>
+                      <ul className="space-y-1 text-xs">
+                        <li>• Use H1, H2, H3 for clear structure and better SEO</li>
+                        <li>• Add images and videos to make your post engaging</li>
+                        <li>• Use bullet points and lists for easy reading</li>
+                        <li>• Include emojis to make it more fun and relatable</li>
+                        <li>• Add quotes and code blocks to highlight important points</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <Button variant="outline" onClick={() => navigate('/blog')}>Cancel</Button>
-                <Button variant="hero" onClick={onSubmit} disabled={!title || !excerpt || !content}>
-                  <Heart className="w-4 h-4" />
-                  Publish
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Stats Card */}
+            <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-3 h-3 text-white" />
+                  </div>
+                  Content Stats
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">{content.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w.length > 0).length}</div>
+                    <div className="text-xs text-gray-600 font-medium">Words</div>
+                  </div>
+                  <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">{content.replace(/<[^>]*>/g, '').length}</div>
+                    <div className="text-xs text-gray-600 font-medium">Characters</div>
+                  </div>
+                  <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-violet-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">{readTime}</div>
+                    <div className="text-xs text-gray-600 font-medium">Read Time</div>
+                  </div>
+                  <div className="text-center p-4 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg">
+                    <div className="text-2xl font-bold text-orange-600">{(content.match(/<img/g) || []).length}</div>
+                    <div className="text-xs text-gray-600 font-medium">Images</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* SEO Panel */}
+            {showSeoPanel && (
+              <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-3 text-lg">
+                    <div className="w-6 h-6 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-3 h-3 text-white" />
+                    </div>
+                    SEO Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700">Meta Title</label>
+                    <Input 
+                      value={metaTitle} 
+                      onChange={(e) => setMetaTitle(e.target.value)} 
+                      placeholder="SEO title (50-60 characters)"
+                      className="h-10"
+                    />
+                    <p className="text-xs text-gray-500">
+                      {metaTitle.length}/60 characters
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700">Meta Description</label>
+                    <Textarea 
+                      value={metaDescription} 
+                      onChange={(e) => setMetaDescription(e.target.value)} 
+                      placeholder="SEO description (150-160 characters)"
+                      rows={3}
+                      className="resize-none"
+                    />
+                    <p className="text-xs text-gray-500">
+                      {metaDescription.length}/160 characters
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-gray-700">Keywords</label>
+                    <Input 
+                      value={metaKeywords} 
+                      onChange={(e) => setMetaKeywords(e.target.value)} 
+                      placeholder="keyword1, keyword2, keyword3"
+                      className="h-10"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Quick Actions */}
+            <Card className="border-0 shadow-xl bg-white/70 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-lg">
+                  <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-rose-600 rounded-lg flex items-center justify-center">
+                    <Zap className="w-3 h-3 text-white" />
+                  </div>
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setShowSeoPanel(!showSeoPanel)}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  {showSeoPanel ? 'Hide SEO' : 'Show SEO'}
                 </Button>
-              </div>
-            </CardContent>
-          </Card>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => setShowPreview(!showPreview)}
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  {showPreview ? 'Hide Preview' : 'Show Preview'}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start"
+                  onClick={() => navigate('/blog')}
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  View All Blogs
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
