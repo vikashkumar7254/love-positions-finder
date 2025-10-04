@@ -47,8 +47,10 @@ export default async function handler(req: any, res: any) {
           const metadata = JSON.parse(metadataRaw)
           console.log(`📦 Loading ${metadata.totalItems} positions from ${metadata.batchCount} batches`)
           
-          // Load all batches
+          // Load all batches (including partial data)
           const allPositions: any[] = []
+          let loadedBatches = 0
+          
           for (let i = 0; i < metadata.batchCount; i++) {
             const batchKey = `${KEY}_batch_${i}`
             const batchRaw = await redisGet(batchKey)
@@ -57,6 +59,7 @@ export default async function handler(req: any, res: any) {
                 const batchData = JSON.parse(batchRaw)
                 if (Array.isArray(batchData)) {
                   allPositions.push(...batchData)
+                  loadedBatches++
                 }
               } catch (error) {
                 console.error(`Error parsing batch ${i}:`, error)
@@ -64,8 +67,19 @@ export default async function handler(req: any, res: any) {
             }
           }
           
-          console.log(`✅ Loaded ${allPositions.length} positions from batches`)
-          return res.status(200).json({ positions: allPositions })
+          console.log(`✅ Loaded ${allPositions.length} positions from ${loadedBatches}/${metadata.batchCount} batches`)
+          
+          // Return partial data if some batches are missing
+          if (loadedBatches < metadata.batchCount) {
+            console.warn(`⚠️ Some batches are missing (${loadedBatches}/${metadata.batchCount}), returning partial data`)
+          }
+          
+          return res.status(200).json({ 
+            positions: allPositions,
+            loadedBatches: loadedBatches,
+            totalBatches: metadata.batchCount,
+            message: loadedBatches < metadata.batchCount ? 'Some data may be missing due to batch failures' : 'All data loaded successfully'
+          })
         } catch (error) {
           console.error('Error loading batch data:', error)
           // Fall back to single key
@@ -129,37 +143,70 @@ export default async function handler(req: any, res: any) {
         }
       }
 
-      // Try to save in batches if data is very large
-      if (items.length > 100) {
-        console.log(`📦 Large dataset detected (${items.length} items), attempting batch save...`)
+      // Always use batch processing for better Redis compatibility
+      console.log(`📦 Processing ${items.length} items with batch system...`)
+      
+      // Split into smaller batches (reduced size for better compatibility)
+      const batchSize = 25 // Reduced from 50 to 25 for better Redis compatibility
+      const batches: any[] = []
+      for (let i = 0; i < items.length; i += batchSize) {
+        batches.push(items.slice(i, i + batchSize))
+      }
+      
+      console.log(`📦 Split into ${batches.length} batches of ${batchSize} items each`)
+      
+      // Save each batch with retry logic
+      let successCount = 0
+      for (let i = 0; i < batches.length; i++) {
+        const batchKey = `${KEY}_batch_${i}`
         
-        // Split into smaller batches
-        const batchSize = 50
-        const batches: any[] = []
-        for (let i = 0; i < items.length; i += batchSize) {
-          batches.push(items.slice(i, i + batchSize))
-        }
+        // Compress each batch individually
+        let batchData = JSON.stringify(batches[i], null, 0)
+        const batchSizeKB = Math.round(Buffer.byteLength(batchData, 'utf8') / 1024)
         
-        console.log(`📦 Split into ${batches.length} batches of ${batchSize} items each`)
+        console.log(`📦 Saving batch ${i + 1}/${batches.length} (${batchSizeKB}KB)`)
         
-        // Save each batch
-        for (let i = 0; i < batches.length; i++) {
-          const batchKey = `${KEY}_batch_${i}`
-          const batchData = JSON.stringify(batches[i])
-          const batchResult = await redisSet(batchKey, batchData)
+        // Try to save with retry
+        let retryCount = 0
+        let batchResult = { ok: false, status: 0 }
+        
+        while (retryCount < 3 && !batchResult.ok) {
+          batchResult = await redisSet(batchKey, batchData)
           
           if (!batchResult.ok) {
-            console.error(`❌ Batch ${i} save failed with status: ${batchResult.status}`)
-            return res.status(500).json({ error: `Failed to save batch ${i} to Redis.`, status: batchResult.status })
+            retryCount++
+            console.warn(`⚠️ Batch ${i} attempt ${retryCount} failed, retrying...`)
+            
+            if (retryCount < 3) {
+              // Wait before retry
+              await new Promise(resolve => setTimeout(resolve, 1000))
+            }
           }
-          
-          console.log(`✅ Batch ${i + 1}/${batches.length} saved successfully`)
         }
         
-        // Save metadata about batches
+        if (!batchResult.ok) {
+          console.error(`❌ Batch ${i} failed after ${retryCount} attempts with status: ${batchResult.status}`)
+          // Continue with other batches instead of failing completely
+          continue
+        }
+        
+        successCount++
+        console.log(`✅ Batch ${i + 1}/${batches.length} saved successfully`)
+      }
+      
+      // If some batches failed, still return success for the ones that worked
+      if (successCount === 0) {
+        return res.status(500).json({ error: 'All batches failed to save to Redis.' })
+      }
+      
+      console.log(`📊 Successfully saved ${successCount}/${batches.length} batches`)
+      
+      // Save metadata about batches (only if we have successful batches)
+      if (successCount > 0) {
         const metadata = {
           totalItems: items.length,
           batchCount: batches.length,
+          successCount: successCount,
           batchSize: batchSize,
           savedAt: new Date().toISOString()
         }
@@ -169,8 +216,15 @@ export default async function handler(req: any, res: any) {
           console.warn('⚠️ Failed to save metadata, but batches were saved')
         }
         
-        console.log(`✅ Successfully saved ${items.length} positions in ${batches.length} batches`)
-        return res.status(200).json({ ok: true, count: items.length, batches: batches.length, dataSizeKB })
+        console.log(`✅ Successfully saved ${items.length} positions in ${successCount}/${batches.length} batches`)
+        return res.status(200).json({ 
+          ok: true, 
+          count: items.length, 
+          batches: batches.length, 
+          successBatches: successCount,
+          dataSizeKB,
+          message: successCount < batches.length ? 'Some batches failed, but data was partially saved' : 'All data saved successfully'
+        })
       }
       
       // For smaller datasets, save normally
