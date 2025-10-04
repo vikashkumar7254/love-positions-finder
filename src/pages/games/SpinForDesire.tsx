@@ -390,40 +390,6 @@ const SpinForDesire = () => {
             </Card>
           )}
 
-          {/* All Options Preview - Show only wheel items */}
-          <Card variant="elegant" className="bg-black/20 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white text-xl text-center">Random Positions (12 from 500+ available)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {allItems.map((item, index) => {
-                  const IconComponent = getCategoryIcon(item.category)
-                  return (
-                    <div
-                      key={item.id}
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                        selectedItem?.id === item.id
-                          ? 'border-yellow-400 bg-yellow-400/20 scale-105 shadow-yellow-400/50'
-                          : 'border-white/10 bg-white/5 hover:border-white/20 hover:scale-105'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3 relative" style={{ backgroundColor: item.color }}>
-                          <IconComponent className="w-6 h-6 text-white" />
-                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 text-black text-xs font-bold rounded-full flex items-center justify-center">
-                            {index + 1}
-                          </div>
-                        </div>
-                        <h4 className="text-white font-medium text-sm mb-1">{item.title}</h4>
-                        <p className="text-white/60 text-xs capitalize">{item.category}</p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </main>
 
