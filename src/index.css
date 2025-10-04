@@ -1,4 +1,7 @@
-@tailwind base;
+/* Import critical CSS first */
+@import './styles/critical.css';
+
+/* Import Tailwind utilities */
 @tailwind components;
 @tailwind utilities;
 

@@ -170,11 +170,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   }
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <div className={`relative ${className}`}>
       {/* Toolbar */}
-      <Card>
-        <CardContent className="p-3">
-          <div className="rich-text-toolbar">
+      <div className="rich-text-toolbar mb-4">
             {/* Text Formatting */}
             <div className="flex gap-1 border-r pr-2 mr-2">
               <Button
@@ -347,8 +345,6 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
               </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
 
       {/* Editor */}
       <div className="relative">
@@ -399,59 +395,67 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </div>
         </div>
       )}
+      
+      {/* Backdrop for modals */}
+      {(showEmojiPicker || showImageUpload || showVideoUpload) && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
+          onClick={() => {
+            setShowEmojiPicker(false)
+            setShowImageUpload(false)
+            setShowVideoUpload(false)
+          }}
+        />
+      )}
 
       {/* Image Upload Modal */}
       {showImageUpload && (
-        <Card className="absolute z-50 mt-2">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold">Upload Image</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowImageUpload(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="w-full p-2 border rounded"
-            />
-            <p className="text-xs text-gray-500 mt-2">
-              Max 5MB • JPG, PNG, GIF supported
-            </p>
-          </CardContent>
-        </Card>
+        <div className="media-upload-modal">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold">Upload Image</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowImageUpload(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="w-full p-2 border rounded"
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            Max 5MB • JPG, PNG, GIF supported
+          </p>
+        </div>
       )}
 
       {/* Video Upload Modal */}
       {showVideoUpload && (
-        <Card className="absolute z-50 mt-2">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold">Upload Video</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowVideoUpload(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={handleVideoUpload}
-              className="w-full p-2 border rounded"
-            />
-            <p className="text-xs text-gray-500 mt-2">
-              Max 10MB • MP4, WebM supported
-            </p>
-          </CardContent>
-        </Card>
+        <div className="media-upload-modal">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold">Upload Video</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowVideoUpload(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleVideoUpload}
+            className="w-full p-2 border rounded"
+          />
+          <p className="text-xs text-gray-500 mt-2">
+            Max 10MB • MP4, WebM supported
+          </p>
+        </div>
       )}
 
       {/* Character Count */}

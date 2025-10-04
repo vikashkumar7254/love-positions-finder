@@ -5,6 +5,7 @@ import { Calendar, Clock, Heart, ArrowLeft, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/enhanced-button"
 import { Card, CardContent } from "@/components/ui/card"
 import { getCategoryImage } from "@/utils/imageManager"
+import { getCachedBlogs } from "@/utils/blogCache"
 import MediaDisplay from "@/components/MediaDisplay"
 import LazyImage from "@/components/LazyImage"
 import { formatBlogContent, getFormattedContentStyles } from "@/utils/contentFormatter"
@@ -22,7 +23,30 @@ const BlogPost = () => {
       try {
         setLoading(true)
         setContentLoading(true)
-        console.log('🔍 Fetching blog with slug:', slug)
+        console.log('🔍 Loading blog with slug:', slug)
+        
+        // Check cache first for instant loading
+        const cachedBlogs = getCachedBlogs()
+        const cachedBlog = cachedBlogs.find(blog => blog.slug === slug)
+        
+        if (cachedBlog) {
+          console.log('📦 Loading blog from cache')
+          setSelected({
+            title: cachedBlog.title,
+            date: cachedBlog.publishedAt || cachedBlog.createdAt || new Date().toISOString(),
+            readTime: `${cachedBlog.readTime || 5} min read`,
+            category: cachedBlog.category || 'General',
+            content: cachedBlog.content || '',
+            excerpt: cachedBlog.excerpt || '',
+            featuredImage: cachedBlog.featuredImage || '',
+          })
+          setLoading(false)
+          setTimeout(() => setContentLoading(false), 50)
+          return
+        }
+        
+        // No cache, fetch from API
+        console.log('🌐 Fetching blog from API...')
         const res = await fetch(`/api/blogs?slug=${encodeURIComponent(slug)}`)
         console.log('📡 Blog fetch response status:', res.status)
         

@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
 import { getCategoryImage } from "@/utils/imageManager"
+import { getBlogsOptimized } from "@/utils/blogCache"
 import MediaDisplay from "@/components/MediaDisplay"
 import LazyImage from "@/components/LazyImage"
 
@@ -40,29 +41,28 @@ const Blog = () => {
   }, [])
 
   useEffect(() => {
-    // Load published blogs from API
+    // Load blogs with instant cache + background refresh
     (async () => {
       try {
         setLoading(true)
-        const res = await fetch('/api/blogs?status=published')
-        if (res.ok) {
-          const data = await res.json()
-          console.log('📊 Blog posts data:', data)
-          console.log('📊 First post:', data[0])
-          
+        console.log('🚀 Loading blogs with cache optimization...')
+        
+        // Get blogs with instant cache
+        const blogs = await getBlogsOptimized()
+        
+        if (blogs.length > 0) {
           // Transform data to match expected structure
-          const transformedData = data.map((post: any) => ({
+          const transformedData = blogs.map((post: any) => ({
             ...post,
             date: post.publishedAt || post.createdAt || new Date().toISOString(),
             readTime: post.readTime ? `${post.readTime} min read` : '5 min read',
             featuredImage: post.featuredImage
           }))
           
-          console.log('📊 Transformed data:', transformedData)
+          console.log('📊 Loaded blogs:', transformedData.length)
           setPosts(transformedData)
         } else {
-          console.error('❌ Failed to fetch blogs:', res.status)
-          // Fallback to sample data if API fails
+          // Fallback to sample data if no blogs available
           console.log('🔄 Loading fallback sample data...')
           const { sampleBlogs } = await import('@/utils/sampleBlogData')
           setPosts(sampleBlogs)

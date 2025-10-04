@@ -14,11 +14,6 @@ type PositionItem = {
   id: string
   title: string
   image: string
-  description?: string
-  category?: string
-  difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Expert'
-  duration?: string
-  tags?: string[]
   mediaType?: 'image' | 'gif' | 'video'
   isDefault?: boolean
 }
@@ -32,13 +27,7 @@ type UploadedFile = {
 const ScratchPositionsAdminContent = () => {
   const [title, setTitle] = useState("")
   const [image, setImage] = useState("")
-  const [description, setDescription] = useState("")
-  const [category, setCategory] = useState("Romantic")
-  const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard" | "Expert">("Easy")
-  const [duration, setDuration] = useState("")
-  const [tags, setTags] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
   const [items, setItems] = useState<PositionItem[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
@@ -48,23 +37,6 @@ const ScratchPositionsAdminContent = () => {
 
   // No default positions - admin will add manually
 
-  const categories = [
-    { id: "all", label: "All Categories" },
-    { id: "Romantic", label: "Romantic" },
-    { id: "Passionate", label: "Passionate" },
-    { id: "Adventurous", label: "Adventurous" },
-    { id: "Intimate", label: "Intimate" },
-    { id: "Playful", label: "Playful" },
-    { id: "Sensual", label: "Sensual" },
-    { id: "Erotic", label: "Erotic" }
-  ]
-
-  const difficulties = [
-    { id: "Easy", label: "Easy", color: "bg-green-100 text-green-800" },
-    { id: "Medium", label: "Medium", color: "bg-yellow-100 text-yellow-800" },
-    { id: "Hard", label: "Hard", color: "bg-orange-100 text-orange-800" },
-    { id: "Expert", label: "Expert", color: "bg-red-100 text-red-800" }
-  ]
 
   useEffect(() => {
     // Initial fetch from API
@@ -239,8 +211,6 @@ const ScratchPositionsAdminContent = () => {
   const addOrUpdateItem = async () => {
     const t = title.trim()
     const img = image.trim()
-    const desc = description.trim()
-    const tagList = tags.split(',').map(tag => tag.trim()).filter(Boolean)
 
     // Validation
     if (!t) {
@@ -292,13 +262,8 @@ const ScratchPositionsAdminContent = () => {
       id, 
       title: t, 
       image: finalImageUrl,
-      description: desc,
-      category,
-      difficulty,
-      duration: duration || undefined,
-      tags: tagList,
       mediaType: uploadedFile?.type || 'image',
-      isDefault: false 
+      isDefault: false
     }
 
     if (editingId) {
@@ -325,11 +290,6 @@ const ScratchPositionsAdminContent = () => {
     // Reset form
     setTitle("")
     setImage("")
-    setDescription("")
-    setCategory("Romantic")
-    setDifficulty("Easy")
-    setDuration("")
-    setTags("")
     setEditingId(null)
     setUploadedFile(null)
     setIsUploading(false)
@@ -345,11 +305,6 @@ const ScratchPositionsAdminContent = () => {
   const editItem = (item: PositionItem) => {
     setTitle(item.title)
     setImage(item.image)
-    setDescription(item.description || "")
-    setCategory(item.category || "Romantic")
-    setDifficulty(item.difficulty || "Easy")
-    setDuration(item.duration || "")
-    setTags(item.tags?.join(", ") || "")
     setEditingId(item.id)
     setUploadedFile(null) // Clear uploaded file when editing
   }
@@ -405,15 +360,8 @@ const ScratchPositionsAdminContent = () => {
       )
     }
 
-    // Apply category filter
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(item =>
-        selectedCategory === 'default' ? item.isDefault : !item.isDefault
-      )
-    }
-
     return filtered
-  }, [items, searchQuery, selectedCategory])
+  }, [items, searchQuery])
 
   const stats = useMemo(() => {
     const defaults = items.filter(item => item.isDefault).length
@@ -468,18 +416,6 @@ const ScratchPositionsAdminContent = () => {
                     className="pl-10"
                   />
                 </div>
-                <div className="flex gap-2">
-                  {categories.map(cat => (
-                    <Button
-                      key={cat.id}
-                      variant={selectedCategory === cat.id ? "romantic" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedCategory(cat.id)}
-                    >
-                      {cat.label}
-                    </Button>
-                  ))}
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -505,81 +441,16 @@ const ScratchPositionsAdminContent = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Basic Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium flex items-center gap-2 mb-1">
-                    <Type className="w-4 h-4"/> Title *
-                  </label>
-                  <Input
-                    value={title}
-                    onChange={e=>setTitle(e.target.value)}
-                    placeholder="e.g. Romantic Lift, Passionate Embrace"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">Give your position a descriptive name</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium flex items-center gap-2 mb-1">
-                    <ImageIcon className="w-4 h-4"/> Category
-                  </label>
-                  <select
-                    value={category}
-                    onChange={e => setCategory(e.target.value)}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    {categories.filter(c => c.id !== 'all').map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.label}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Description */}
               <div>
-                <label className="text-sm font-medium mb-1 block">Description</label>
-                <Textarea
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  placeholder="Describe this position in detail..."
-                  rows={3}
-                />
-              </div>
-
-              {/* Difficulty and Duration */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Difficulty Level</label>
-                  <div className="flex gap-2">
-                    {difficulties.map(diff => (
-                      <Button
-                        key={diff.id}
-                        variant={difficulty === diff.id ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setDifficulty(diff.id as any)}
-                        className={difficulty === diff.id ? diff.color : ""}
-                      >
-                        {diff.label}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Duration (optional)</label>
-                  <Input
-                    value={duration}
-                    onChange={e => setDuration(e.target.value)}
-                    placeholder="e.g. 5-10 minutes, 15-30 minutes"
-                  />
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div>
-                <label className="text-sm font-medium mb-1 block">Tags (comma separated)</label>
+                <label className="text-sm font-medium flex items-center gap-2 mb-1">
+                  <Type className="w-4 h-4"/> Title *
+                </label>
                 <Input
-                  value={tags}
-                  onChange={e => setTags(e.target.value)}
-                  placeholder="e.g. romantic, intimate, adventurous, playful"
+                  value={title}
+                  onChange={e=>setTitle(e.target.value)}
+                  placeholder="e.g. Romantic Lift, Passionate Embrace"
                 />
+                <p className="text-xs text-muted-foreground mt-1">Give your position a descriptive name</p>
               </div>
 
               {/* Media Upload */}
@@ -712,11 +583,6 @@ const ScratchPositionsAdminContent = () => {
                   <Button variant="outline" onClick={() => {
                     setTitle("")
                     setImage("")
-                    setDescription("")
-                    setCategory("Romantic")
-                    setDifficulty("Easy")
-                    setDuration("")
-                    setTags("")
                     setEditingId(null)
                     clearUploadedFile()
                   }}>
@@ -799,18 +665,6 @@ const ScratchPositionsAdminContent = () => {
                           }`}>
                             {item.mediaType?.toUpperCase() || 'IMAGE'}
                           </span>
-                          {item.difficulty && (
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              difficulties.find(d => d.id === item.difficulty)?.color || 'bg-gray-500 text-white'
-                            }`}>
-                              {item.difficulty}
-                            </span>
-                          )}
-                        </div>
-                        <div className="absolute top-2 right-2">
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/90 text-gray-800">
-                            {item.category || 'Romantic'}
-                          </span>
                         </div>
                       </div>
                       <div className="p-3 space-y-2">
@@ -829,26 +683,10 @@ const ScratchPositionsAdminContent = () => {
                           </div>
                         </div>
                         
-                        {item.description && (
-                          <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>
-                        )}
                         
-                        <div className="flex flex-wrap gap-1">
-                          {item.tags?.slice(0, 3).map((tag, index) => (
-                            <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                              {tag}
-                            </span>
-                          ))}
-                          {item.tags && item.tags.length > 3 && (
-                            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
-                              +{item.tags.length - 3}
-                            </span>
-                          )}
-                        </div>
                         
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>ID: {item.id}</span>
-                          {item.duration && <span>{item.duration}</span>}
                         </div>
                       </div>
                     </div>
