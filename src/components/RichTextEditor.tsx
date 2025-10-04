@@ -178,6 +178,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   const [smartQuotesEnabled, setSmartQuotesEnabled] = useState(true)
   const [showAutoCapitalization, setShowAutoCapitalization] = useState(false)
   const [autoCapitalizationEnabled, setAutoCapitalizationEnabled] = useState(true)
+  const [isFocused, setIsFocused] = useState(false)
 
   // Emoji picker data
   const emojis = [
@@ -439,6 +440,23 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }
     }
   }, [onChange, saveToHistory, calculateWordCount, calculateCharCount, calculateReadingTime, calculateReadabilityScore, autoSave, generateKeywordSuggestions])
+
+  const handleFocus = useCallback((e: React.FocusEvent) => {
+    setIsFocused(true)
+    if (onFocus) {
+      onFocus(e)
+    }
+  }, [onFocus])
+
+  const handleBlur = useCallback((e: React.FocusEvent) => {
+    // Delay hiding toolbar to allow clicking on it
+    setTimeout(() => {
+      setIsFocused(false)
+    }, 200)
+    if (onBlur) {
+      onBlur()
+    }
+  }, [onBlur])
 
   // Update active format states
   const updateActiveFormats = useCallback(() => {
@@ -857,8 +875,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50 bg-white' : ''} ${className}`}>
-      {/* Enhanced Toolbar */}
-      <div className="rich-text-toolbar mb-4" style={{ display: 'flex', visibility: 'visible', opacity: '1', backgroundColor: '#f0f0f0', border: '2px solid #000', zIndex: 1000 }}>
+      {/* Enhanced Toolbar - Only show when focused */}
+      {isFocused && (
+        <div className="rich-text-toolbar mb-4" style={{ display: 'flex', visibility: 'visible', opacity: '1', backgroundColor: '#f0f0f0', border: '2px solid #000', zIndex: 1000 }}>
         {/* Undo/Redo */}
         <div className="flex gap-1 border-r pr-2 mr-2">
           <Button
@@ -1206,6 +1225,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           </Button>
         </div>
       </div>
+      )}
 
       {/* Color Picker */}
       {showColorPicker && (
@@ -1249,14 +1269,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           contentEditable
           className="rich-text-editor force-ltr"
           onInput={updateContent}
-          onFocus={onFocus}
-          onBlur={onBlur}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           dangerouslySetInnerHTML={{ __html: value }}
           data-placeholder={placeholder}
           style={{
             direction: 'ltr',
             textAlign: 'left',
-            unicodeBidi: 'normal',
             writingMode: 'horizontal-tb',
             textOrientation: 'mixed'
           }}
