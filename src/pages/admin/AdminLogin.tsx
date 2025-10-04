@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/enhanced-card'
-import { Button } from '@/components/ui/enhanced-button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Lock, User, Eye, EyeOff } from 'lucide-react'
 import { useAdminAuth } from '@/components/AdminAuth'
@@ -50,7 +50,7 @@ const AdminLogin = () => {
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Admin Login
               </CardTitle>
-              <p className="text-gray-600 mt-2">
+              <p className="text-slate-600 mt-2">
                 Access the admin dashboard
               </p>
             </CardHeader>
@@ -58,11 +58,11 @@ const AdminLogin = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
                     Username
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <Input
                       type="text"
                       value={username}
@@ -75,11 +75,11 @@ const AdminLogin = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
                     Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <Input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -91,7 +91,7 @@ const AdminLogin = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -123,8 +123,8 @@ const AdminLogin = () => {
                 </Button>
               </form>
               
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-xs text-gray-500 text-center">
+              <div className="mt-6 pt-6 border-t border-slate-200">
+                <p className="text-xs text-slate-500 text-center">
                   Demo credentials: admin / admin123
                 </p>
               </div>

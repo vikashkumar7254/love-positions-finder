@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/enhanced-button"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Save, X, Upload, Image as ImageIcon, Video, FileText } from "lucide-react"
 import { toast } from "@/hooks/use-toast"
+import Navigation from "@/components/Navigation"
+import { AdminProtectedRoute } from "@/components/AdminAuth"
 
 interface JourneyPosition {
   id: string
@@ -25,7 +27,7 @@ interface JourneyPosition {
   featured: boolean
 }
 
-const JourneyPositionsAdmin = () => {
+const JourneyPositionsAdminContent = () => {
   const [positions, setPositions] = useState<JourneyPosition[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [isAdding, setIsAdding] = useState(false)
@@ -199,27 +201,29 @@ const JourneyPositionsAdmin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-romantic via-passionate to-romantic bg-clip-text text-transparent mb-4">
-            Journey Positions Admin
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Manage journey positions with images, GIFs, and videos
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/30">
+      <Navigation />
+      <main className="pt-20 pb-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-clip-text text-transparent mb-4">
+              Journey Positions Admin
+            </h1>
+            <p className="text-lg text-slate-600">
+              Manage journey positions with images, GIFs, and videos
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Add/Edit Form */}
-          <div className="lg:col-span-1">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  {editingId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
-                  {editingId ? 'Edit Position' : 'Add New Position'}
-                </CardTitle>
-              </CardHeader>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Add/Edit Form */}
+            <div className="lg:col-span-1">
+              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    {editingId ? <Edit className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                    {editingId ? 'Edit Position' : 'Add New Position'}
+                  </CardTitle>
+                </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Name *</label>
@@ -313,9 +317,8 @@ const JourneyPositionsAdmin = () => {
 
                 <div className="flex gap-4">
                   <Button
-                    variant="hero"
                     onClick={addOrUpdatePosition}
-                    className="flex-1"
+                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                   >
                     <Save className="w-4 h-4 mr-2" />
                     {editingId ? 'Update' : 'Add'} Position
@@ -332,12 +335,12 @@ const JourneyPositionsAdmin = () => {
             </Card>
           </div>
 
-          {/* Positions List */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Journey Positions ({positions.length})</CardTitle>
-              </CardHeader>
+            {/* Positions List */}
+            <div className="lg:col-span-2">
+              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle>Journey Positions ({positions.length})</CardTitle>
+                </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {positions.map((position) => (
@@ -401,7 +404,7 @@ const JourneyPositionsAdmin = () => {
                   ))}
                   
                   {positions.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="text-center py-8 text-slate-500">
                       <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>No journey positions yet</p>
                       <p className="text-sm">Add your first position to get started</p>
@@ -412,8 +415,17 @@ const JourneyPositionsAdmin = () => {
             </Card>
           </div>
         </div>
-      </div>
+        </div>
+      </main>
     </div>
+  )
+}
+
+const JourneyPositionsAdmin = () => {
+  return (
+    <AdminProtectedRoute>
+      <JourneyPositionsAdminContent />
+    </AdminProtectedRoute>
   )
 }
 

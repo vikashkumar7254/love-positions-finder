@@ -347,42 +347,42 @@ const SpinForDesire = () => {
             </div>
           </div>
 
-          {/* Selected Result - Enhanced Display */}
+          {/* Selected Result - Mobile Friendly Display */}
           {selectedItem && !isSpinning && (
-            <Card variant="elegant" className="bg-gradient-to-br from-black/40 to-black/60 border-yellow-400/40 shadow-2xl rounded-2xl backdrop-blur-sm animate-pulse">
-              <CardContent className="p-8 text-center">
+            <Card variant="elegant" className="bg-gradient-to-br from-black/40 to-black/60 border-yellow-400/40 shadow-2xl rounded-2xl backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-6 lg:p-8 text-center">
                 {/* Selected Item Image */}
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   <LazyImage
                     src={selectedItem.image}
                     alt={selectedItem.title}
-                    className="w-32 h-32 mx-auto rounded-full object-cover border-4 border-yellow-400 shadow-2xl"
+                    className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full object-cover border-4 border-yellow-400 shadow-2xl"
                   />
                 </div>
                 
-                <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                   {(() => {
                     const IconComponent = getCategoryIcon(selectedItem.category)
-                    return <IconComponent className="w-8 h-8 text-yellow-300" />
+                    return <IconComponent className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300" />
                   })()}
-                  <span className="px-4 py-2 bg-yellow-400/20 text-yellow-300 rounded-full text-lg font-medium capitalize border border-yellow-400/30">
+                  <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-400/20 text-yellow-300 rounded-full text-sm sm:text-lg font-medium capitalize border border-yellow-400/30">
                     {selectedItem.category}
                   </span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
+                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
                   {selectedItem.title}
                 </h2>
-                <p className="text-xl text-white/90 max-w-2xl mx-auto mb-6">
+                <p className="text-sm sm:text-base lg:text-xl text-white/90 max-w-2xl mx-auto mb-4 sm:mb-6">
                   {selectedItem.description}
                 </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  <div className="px-4 py-2 bg-pink-500/20 text-pink-300 rounded-full text-sm border border-pink-500/30">
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+                  <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-pink-500/20 text-pink-300 rounded-full text-xs sm:text-sm border border-pink-500/30">
                     ✨ Perfect for Tonight
                   </div>
-                  <div className="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full text-sm border border-purple-500/30">
+                  <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-purple-500/20 text-purple-300 rounded-full text-xs sm:text-sm border border-purple-500/30">
                     💕 Romantic
                   </div>
-                  <div className="px-4 py-2 bg-red-500/20 text-red-300 rounded-full text-sm border border-red-500/30">
+                  <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-500/20 text-red-300 rounded-full text-xs sm:text-sm border border-red-500/30">
                     🔥 Passionate
                   </div>
                 </div>

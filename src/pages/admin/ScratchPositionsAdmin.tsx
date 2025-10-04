@@ -39,18 +39,15 @@ const ScratchPositionsAdminContent = () => {
 
 
   useEffect(() => {
-    // Initial fetch from API
     const init = async () => {
       try {
         const storedItems = await apiGetPositions()
-        console.log('📂 Admin: Loading positions from API:', storedItems.length)
-        console.log('📝 Position titles:', storedItems.map(p => p.title))
         setItems(storedItems)
       } catch (error) {
         console.error('Error loading items from API:', error)
         setItems([])
       }
-      document.title = "Scratch Positions Admin | ScratchSexPositions"
+      document.title = "Scratch Positions Admin | Love Positions Finder"
     }
     init()
   }, [])
@@ -59,7 +56,6 @@ const ScratchPositionsAdminContent = () => {
     const seen = new Set<string>()
     return items.filter(item => {
       if (seen.has(item.id)) {
-        console.log('🧹 Admin: Removing duplicate position:', item.id)
         return false
       }
       seen.add(item.id)
@@ -72,10 +68,8 @@ const ScratchPositionsAdminContent = () => {
       const storedItems = await apiGetPositions()
       const cleanedItems = cleanDuplicates(storedItems)
       if (cleanedItems.length !== storedItems.length) {
-        console.log('🧹 Admin: Found and removed', storedItems.length - cleanedItems.length, 'duplicate positions')
         await apiSavePositions(cleanedItems)
       }
-      console.log('📂 Admin: Loading positions from API:', cleanedItems.length)
       setItems(cleanedItems)
     } catch (error) {
       console.error('Error loading items from API:', error)
@@ -85,42 +79,30 @@ const ScratchPositionsAdminContent = () => {
 
   const saveItems = async (itemsToSave: PositionItem[]) => {
     try {
-      console.log('💾 Admin: Saving', itemsToSave.length, 'positions to API')
-      console.log('📝 Titles:', itemsToSave.map(p => p.title))
-
-      // Persist to API
       const ok = await apiSavePositions(itemsToSave)
       if (!ok) {
-        console.error('❌ Error saving via API')
         setMessage({ type: 'error', text: 'Failed to save positions to server.' })
         setTimeout(() => setMessage(null), 3000)
         return
       }
 
-      // Update UI state
       setItems(itemsToSave)
 
-      // Notify clients (same-tab + cross-tab)
       const dataWithTimestamp = {
         positions: itemsToSave,
         timestamp: Date.now(),
         version: Math.random().toString(36).slice(2)
       }
 
-      // Custom event
       window.dispatchEvent(new CustomEvent('scratchPositionsUpdated', { detail: dataWithTimestamp }))
 
-      // BroadcastChannel
       if (typeof BroadcastChannel !== 'undefined') {
         const channel = new BroadcastChannel('scratch-positions-sync')
         channel.postMessage(dataWithTimestamp)
         channel.close()
       }
-
-      console.log('📡 Admin: Triggered sync events after API save')
-      console.log('✅ Admin: Saved to API successfully')
     } catch (error) {
-      console.error('❌ Error saving items:', error)
+      console.error('Error saving items:', error)
     }
   }
 
@@ -267,13 +249,10 @@ const ScratchPositionsAdminContent = () => {
     }
 
     if (editingId) {
-      // Update existing - replace the item with matching ID
       const updated = items.map(item => item.id === editingId ? newItem : item)
-      console.log('✏️ Admin: Updating position', id)
       saveItems(updated)
       setMessage({type: 'success', text: 'Position updated successfully!'})
     } else {
-      // Add new - check if ID already exists to prevent duplicates
       const existingItem = items.find(item => item.id === id)
       if (existingItem) {
         setMessage({type: 'error', text: 'A position with this title already exists. Please choose a different title.'})
@@ -282,7 +261,6 @@ const ScratchPositionsAdminContent = () => {
       }
 
       const updated = [...items, newItem]
-      console.log('➕ Admin: Adding new position', id)
       saveItems(updated)
       setMessage({type: 'success', text: 'Position added successfully!'})
     }
@@ -321,9 +299,6 @@ const ScratchPositionsAdminContent = () => {
 
   const removeItem = (id: string) => {
     const next = items.filter(i => i.id !== id)
-    console.log('🗑️ Admin: Removing position', id, '- remaining:', next.length)
-
-    // Use the enhanced saveItems function for consistent sync
     saveItems(next)
 
     setMessage({
@@ -337,7 +312,6 @@ const ScratchPositionsAdminContent = () => {
 
   const permanentReset = () => {
     if (confirm('⚠️ PERMANENT RESET: This will clear all positions on server and start fresh. This action cannot be undone. Proceed?')) {
-      console.log('🔥 Admin: PERMANENT RESET - clearing all data via API')
       setItems([])
       saveItems([])
       setMessage({type: 'success', text: 'System permanently reset on server! Starting with empty state.'})

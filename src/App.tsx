@@ -45,7 +45,6 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
-import SpinDesiresAdmin from "./pages/admin/SpinDesiresAdmin";
 import SEOAdmin from "./pages/admin/SEOAdmin";
 import JourneyPositionsAdmin from "./pages/admin/JourneyPositionsAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -156,7 +155,6 @@ const App = () => {
               <Route path="/admin/blogs" element={<BlogsAdmin />} />
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
               <Route path="/admin/journey-positions" element={<JourneyPositionsAdmin />} />
-              <Route path="/admin/spin-desires" element={<SpinDesiresAdmin />} />
               <Route path="/admin/seo" element={<SEOAdmin />} />
               
               {/* Other Routes */}

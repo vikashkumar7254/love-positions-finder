@@ -6,28 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/enhanced-button"
 import { 
   BookOpen, 
-  Heart, 
   Image, 
   Gamepad2, 
-  Users, 
   TrendingUp, 
   Settings,
-  Database,
-  Eye,
   Plus,
   Edit3,
   BarChart3,
   Gift,
-  Sparkles,
-  Tag,
-  Search,
-  FileText,
-  Globe,
-  Zap,
-  Target,
   MapPin,
   Palette,
-  Compass
+  Compass,
+  Zap,
+  Target
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
@@ -41,32 +32,23 @@ const AdminDashboardContent = () => {
   })
 
   useEffect(() => {
-    // Load real stats from localStorage and API
     const loadStats = async () => {
       try {
-        // Load blogs from API
         const blogsResponse = await fetch('/api/blogs')
         const blogs = blogsResponse.ok ? await blogsResponse.json() : []
         
-        // Load scratch cards from localStorage
         const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
-        
-        // Load spin desires
         const spinDesires = JSON.parse(localStorage.getItem('spinDesires') || '[]')
-        
-        // Load default images
-        const defaultImages = JSON.parse(localStorage.getItem('default_images_custom') || '[]')
         
         setStats({
           totalBlogs: blogs.length,
           pendingBlogs: blogs.filter((b: any) => b.status === 'pending').length,
           totalPositions: scratchCards.length,
           totalScratchCards: scratchCards.length,
-          totalUsers: 0 // Will be updated when user system is implemented
+          totalUsers: 0
         })
       } catch (error) {
         console.error('Error loading stats:', error)
-        // Fallback to localStorage only
         try {
           const blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
           const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')

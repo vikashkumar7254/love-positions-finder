@@ -88,23 +88,16 @@ const BlogsAdminContent = () => {
   const fetchBlogs = async () => {
     try {
       setLoading(true)
-      console.log('🔄 Fetching blogs...')
       const response = await fetch('/api/blogs')
-      console.log('📡 Response status:', response.status)
       
       if (response.ok) {
         const data = await response.json()
-        console.log('📊 Blogs data:', data)
-        console.log('📊 Data type:', typeof data, 'Is array:', Array.isArray(data))
-        console.log('📊 First blog:', data[0])
         setBlogs(data)
       } else {
-        console.error('❌ Failed to fetch blogs:', response.status)
-        const errorText = await response.text()
-        console.error('❌ Error details:', errorText)
+        console.error('Failed to fetch blogs:', response.status)
       }
     } catch (error) {
-      console.error('❌ Error fetching blogs:', error)
+      console.error('Error fetching blogs:', error)
     } finally {
       setLoading(false)
     }
@@ -118,14 +111,10 @@ const BlogsAdminContent = () => {
     e.preventDefault()
     
     try {
-      console.log('📝 Form data before processing:', formData)
-      
-      // Ensure tags is always a string before splitting
       const tagsString = typeof formData.tags === 'string' ? formData.tags : 
                         Array.isArray(formData.tags) ? (formData.tags as string[]).join(', ') : 
                         (formData.tags ? String(formData.tags) : '')
       
-      // Clean all form data to ensure JSON serialization
       const blogData = {
         title: String(formData.title || ''),
         excerpt: String(formData.excerpt || ''),
@@ -140,8 +129,6 @@ const BlogsAdminContent = () => {
         metaKeywords: String(formData.metaKeywords || ''),
         featured: Boolean(formData.featured)
       }
-      
-      console.log('📊 Processed blog data:', blogData)
 
       const url = editingBlog ? `/api/blogs?id=${editingBlog.id}` : '/api/blogs'
       const method = editingBlog ? 'PUT' : 'POST'
@@ -157,17 +144,17 @@ const BlogsAdminContent = () => {
         setShowEditor(false)
         setEditingBlog(null)
         resetForm()
-        alert(`✅ Blog ${editingBlog ? 'updated' : 'created'} successfully!`)
+        alert(`Blog ${editingBlog ? 'updated' : 'created'} successfully!`)
       } else {
         let errorMsg = 'Failed to save blog.'
         try {
           const err = await response.json()
           if (err?.error) errorMsg = err.error
         } catch {}
-        alert(`❌ ${errorMsg} (status ${response.status})`)
+        alert(`${errorMsg} (status ${response.status})`)
       }
     } catch (error) {
-      alert('❌ Network or server error while saving blog. Please try again.')
+      alert('Network or server error while saving blog. Please try again.')
     }
   }
 
@@ -193,23 +180,18 @@ const BlogsAdminContent = () => {
 
   const updateBlogStatus = async (id: string, status: 'draft' | 'pending' | 'published') => {
     try {
-      console.log(`🔄 Updating blog ${id} status to ${status}`)
       const response = await fetch(`/api/blogs?id=${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
       })
       
-      console.log('📡 Update response status:', response.status)
-      
       if (response.ok) {
-        const updatedBlog = await response.json()
-        console.log('✅ Blog updated:', updatedBlog)
         await fetchBlogs()
         const statusMessages = {
-          'published': '✅ Blog approved and published successfully!',
-          'draft': '✅ Blog moved to draft successfully!',
-          'pending': '✅ Blog marked as pending review!'
+          'published': 'Blog approved and published successfully!',
+          'draft': 'Blog moved to draft successfully!',
+          'pending': 'Blog marked as pending review!'
         }
         alert(statusMessages[status])
       } else {
@@ -218,12 +200,10 @@ const BlogsAdminContent = () => {
           const err = await response.json()
           if (err?.error) errorMsg = err.error
         } catch {}
-        console.error('❌ Update failed:', errorMsg)
-        alert(`❌ ${errorMsg} (status ${response.status})`)
+        alert(`${errorMsg} (status ${response.status})`)
       }
     } catch (error) {
-      console.error('❌ Network error:', error)
-      alert('❌ Network or server error while updating status. Please try again.')
+      alert('Network or server error while updating status. Please try again.')
     }
   }
 
@@ -264,24 +244,12 @@ const BlogsAdminContent = () => {
   }
 
   const filteredBlogs = blogs.filter(blog => {
-    console.log('🔍 Filtering blog:', { 
-      title: blog.title, 
-      status: blog.status, 
-      category: blog.category,
-      searchTerm,
-      statusFilter,
-      categoryFilter
-    })
-    
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          blog.content.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || blog.status === statusFilter
     const matchesCategory = categoryFilter === 'all' || blog.category === categoryFilter
     
-    const result = matchesSearch && matchesStatus && matchesCategory
-    console.log('🔍 Filter result:', { matchesSearch, matchesStatus, matchesCategory, result })
-    
-    return result
+    return matchesSearch && matchesStatus && matchesCategory
   })
 
   const getStatusColor = (status: string) => {
