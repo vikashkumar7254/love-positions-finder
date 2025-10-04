@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Heart, MapPin, Clock, Star, Shuffle, Play, ArrowRight, Settings, Users, Sparkles } from "lucide-react"
@@ -27,6 +27,14 @@ const JourneyPlanner = () => {
   const [duration, setDuration] = useState<'quick' | 'medium' | 'extended'>('medium')
   const [journey, setJourney] = useState<Position[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const [adminPositions, setAdminPositions] = useState<Position[]>([])
+
+  // Load admin positions on component mount
+  useEffect(() => {
+    const positions = loadJourneyPositions()
+    setAdminPositions(positions)
+    console.log('🔄 Admin positions loaded on mount:', positions.length)
+  }, [])
   const [currentStep, setCurrentStep] = useState(0)
   const [isJourneyActive, setIsJourneyActive] = useState(false)
 
@@ -73,25 +81,29 @@ const JourneyPlanner = () => {
     setIsGenerating(true)
     
     setTimeout(() => {
-      // First try to load admin-managed journey positions
-      const adminPositions = loadJourneyPositions()
+      // Use admin positions from state
+      console.log('🔍 Admin positions from state:', adminPositions.length)
       
       let availablePositions: Position[] = []
       
       if (adminPositions.length > 0) {
+        console.log('✅ Using admin positions:', adminPositions.length)
         // Use admin positions
         availablePositions = adminPositions
         
         // Filter by style
         if (selectedStyle !== 'mixed') {
           availablePositions = adminPositions.filter(p => p.style === selectedStyle)
+          console.log('🎨 Filtered by style:', availablePositions.length)
         }
         
         // Filter by difficulty
         if (difficulty !== 'mixed') {
           availablePositions = availablePositions.filter(p => p.difficulty === difficulty)
+          console.log('⚡ Filtered by difficulty:', availablePositions.length)
         }
       } else {
+        console.log('❌ No admin positions found, using fallback')
         // Fallback to default positions
         const getUserPositions = (): Position[] => {
           try {

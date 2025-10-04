@@ -55,7 +55,6 @@ import { AdminAuthProvider } from "./components/AdminAuth";
 import { initializeDefaultImages } from "./utils/initializeDefaultImages";
 import { addSampleBlogs } from "./utils/sampleBlogData";
 import { getPositionsOptimized } from "./utils/positionsCache";
-import "./utils/performanceOptimizer";
 
 const queryClient = new QueryClient();
 
