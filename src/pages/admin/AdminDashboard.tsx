@@ -47,51 +47,18 @@ const AdminDashboardContent = () => {
           blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
         }
         
-        // Load scratch positions from localStorage
-        let scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
-        
-        // If no scratch positions exist, initialize with default ones
-        if (scratchCards.length === 0) {
-          const defaultPositions = [
-            {
-              id: 'default-1',
-              title: 'Romantic Candlelight',
-              description: 'A gentle, intimate position perfect for romantic evenings',
-              image: '/placeholder.svg',
-              category: 'Romantic',
-              difficulty: 'Easy',
-              duration: '15-20 minutes',
-              tags: ['romantic', 'gentle', 'candlelight'],
-              mediaType: 'image',
-              isDefault: true
-            },
-            {
-              id: 'default-2',
-              title: 'Passionate Embrace',
-              description: 'An intense position that ignites passion between partners',
-              image: '/placeholder.svg',
-              category: 'Passionate',
-              difficulty: 'Medium',
-              duration: '10-15 minutes',
-              tags: ['passionate', 'intense', 'embrace'],
-              mediaType: 'image',
-              isDefault: true
-            },
-            {
-              id: 'default-3',
-              title: 'Adventurous Discovery',
-              description: 'A creative position for couples seeking new experiences',
-              image: '/placeholder.svg',
-              category: 'Adventurous',
-              difficulty: 'Hard',
-              duration: '20-30 minutes',
-              tags: ['adventurous', 'creative', 'discovery'],
-              mediaType: 'image',
-              isDefault: true
-            }
-          ]
-          localStorage.setItem('scratch_positions_all', JSON.stringify(defaultPositions))
-          scratchCards = defaultPositions
+        // Load scratch positions from API (same as admin panel)
+        let scratchCards = []
+        try {
+          const positionsResponse = await fetch('/api/positions')
+          if (positionsResponse.ok) {
+            const data = await positionsResponse.json()
+            scratchCards = data.positions || []
+          }
+        } catch (error) {
+          console.error('Error loading scratch positions from API:', error)
+          // Fallback to localStorage
+          scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
         }
         
         // Load journey positions from localStorage
