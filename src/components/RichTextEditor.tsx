@@ -104,13 +104,17 @@ interface RichTextEditorProps {
   onChange: (value: string) => void
   placeholder?: string
   className?: string
+  onFocus?: (event: React.FocusEvent) => void
+  onBlur?: () => void
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
   value,
   onChange,
   placeholder = "Start writing your blog post...",
-  className = ""
+  className = "",
+  onFocus,
+  onBlur
 }) => {
   const editorRef = useRef<HTMLDivElement>(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -1245,6 +1249,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             contentEditable
             className="rich-text-editor"
             onInput={updateContent}
+            onFocus={onFocus}
+            onBlur={onBlur}
             dangerouslySetInnerHTML={{ __html: value }}
             data-placeholder={placeholder}
             style={{ 
