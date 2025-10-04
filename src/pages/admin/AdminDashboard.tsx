@@ -28,6 +28,7 @@ const AdminDashboardContent = () => {
     pendingBlogs: 0,
     totalPositions: 0,
     totalScratchCards: 0,
+    totalJourneyPositions: 0,
     totalUsers: 0
   })
 
@@ -104,6 +105,7 @@ const AdminDashboardContent = () => {
           pendingBlogs: blogs.filter((b: any) => !b.approved || b.status === 'pending').length,
           totalPositions: scratchCards.length,
           totalScratchCards: scratchCards.length,
+          totalJourneyPositions: scratchCards.length, // Same as scratch positions
           totalUsers: 0
         })
       } catch (error) {
@@ -114,6 +116,7 @@ const AdminDashboardContent = () => {
           pendingBlogs: 0,
           totalPositions: 0,
           totalScratchCards: 0,
+          totalJourneyPositions: 0, // Same as scratch positions
           totalUsers: 0
         })
       }
@@ -234,11 +237,13 @@ const AdminDashboardContent = () => {
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <MapPin className="w-6 h-6 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">500+</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.totalScratchCards}</div>
                 <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Journey Positions</div>
-                <div className="text-xs text-green-600 font-medium mt-1">
-                  Available
-                </div>
+                {stats.totalScratchCards === 0 && (
+                  <div className="text-xs text-orange-600 font-medium mt-1">
+                    No positions yet
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -353,7 +358,7 @@ const AdminDashboardContent = () => {
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">500+ journey positions</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{stats.totalScratchCards} journey positions</span>
                       <span className="text-green-600 dark:text-green-400 font-medium group-hover:translate-x-1 transition-transform">Manage →</span>
                     </div>
                   </Link>
