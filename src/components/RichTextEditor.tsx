@@ -858,7 +858,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50 bg-white' : ''} ${className}`}>
       {/* Enhanced Toolbar */}
-      <div className="rich-text-toolbar mb-4">
+      <div className="rich-text-toolbar mb-4" style={{ display: 'flex', visibility: 'visible', opacity: '1', backgroundColor: '#f0f0f0', border: '2px solid #000', zIndex: 1000 }}>
         {/* Undo/Redo */}
         <div className="flex gap-1 border-r pr-2 mr-2">
           <Button
