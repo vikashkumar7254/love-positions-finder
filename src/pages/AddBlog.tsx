@@ -103,10 +103,20 @@ const AddBlog = () => {
     setActiveField(fieldName);
     const rect = event.currentTarget.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    setToolbarPosition({
-      top: rect.bottom + scrollTop + 10,
-      left: rect.left
-    });
+    
+    // For content field, position toolbar below the textarea
+    if (fieldName === 'content') {
+      setToolbarPosition({
+        top: rect.bottom + scrollTop + 15,
+        left: rect.left
+      });
+    } else {
+      // For other fields, position normally
+      setToolbarPosition({
+        top: rect.bottom + scrollTop + 10,
+        left: rect.left
+      });
+    }
   };
 
   const handleFieldBlur = () => {
@@ -486,19 +496,20 @@ const AddBlog = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Textarea 
-                  value={content} 
-                  onChange={(e) => setContent(e.target.value)} 
+                <div
+                  contentEditable
+                  onInput={(e) => setContent(e.currentTarget.innerHTML)}
                   onFocus={(e) => handleFieldFocus('content', e)}
                   onBlur={handleFieldBlur}
-                  placeholder="Start writing your amazing blog post here... Use the floating toolbar for formatting! 😍💕❤️"
-                  rows={10}
-                  className="resize-none min-h-[300px]"
+                  className="resize-none min-h-[300px] p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 content-editable-placeholder"
                   style={{
                     direction: 'ltr',
                     textAlign: 'left',
-                    unicodeBidi: 'normal'
+                    backgroundColor: '#ffffff',
+                    color: '#000000'
                   }}
+                  data-placeholder="Start writing your amazing blog post here... Use the floating toolbar for formatting! 😍💕❤️"
+                  dangerouslySetInnerHTML={{ __html: content || '' }}
                 />
                 <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-start gap-3">

@@ -1438,6 +1438,14 @@
   }
 }
 
+/* Content Editable Placeholder */
+.content-editable-placeholder:empty:before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+  position: absolute;
+}
+
 @media (max-width: 768px) {
   .templates-panel,
   .snippets-panel,
