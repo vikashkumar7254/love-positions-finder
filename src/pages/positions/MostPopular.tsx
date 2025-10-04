@@ -204,19 +204,6 @@ const MostPopular = () => {
                     <span>⏱️ {position.duration}</span>
                   </div>
                   
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1">
-                    {position.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="px-2 py-1 bg-muted/50 text-xs rounded">
-                        {tag}
-                      </span>
-                    ))}
-                    {position.tags.length > 3 && (
-                      <span className="px-2 py-1 bg-muted/50 text-xs rounded">
-                        +{position.tags.length - 3} more
-                      </span>
-                    )}
-                  </div>
                   
                   {/* Benefits Preview */}
                   <div className="text-xs text-muted-foreground">

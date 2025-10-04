@@ -520,14 +520,6 @@ const CustomPoster = () => {
                       ))}
                     </div>
 
-                    {/* Tags */}
-                    <div className="mt-6 flex flex-wrap gap-2 justify-center">
-                      {['Passionate', 'Intimate', 'Adventurous', 'Romantic', 'Playful', 'Sensual'].map((tag) => (
-                        <span key={tag} className="px-2 py-1 bg-white/10 text-white/70 rounded-full text-xs">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
                   </div>
 
                   {/* Action Buttons */}

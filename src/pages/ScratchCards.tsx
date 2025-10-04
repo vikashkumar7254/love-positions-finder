@@ -371,15 +371,6 @@ const ScratchCards = () => {
                         <Eye className="w-4 h-4 text-green-600" />
                         <span className="text-sm font-medium text-green-600">Revealed!</span>
                       </div>
-                      
-                      {/* Position Tags */}
-                      <div className="flex flex-wrap gap-1 justify-center">
-                        {card.position.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="px-2 py-1 bg-muted/50 text-xs rounded">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
                     </div>
                   )}
                 </CardContent>
