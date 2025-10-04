@@ -100,7 +100,10 @@ export class PerformanceOptimizer {
       link.rel = 'preload';
       link.href = resource;
       link.as = resource.endsWith('.css') ? 'style' : resource.endsWith('.tsx') ? 'script' : 'image';
-      link.crossOrigin = 'anonymous';
+      // Remove crossorigin for same-origin resources
+      if (resource.startsWith('http')) {
+        link.crossOrigin = 'anonymous';
+      }
       document.head.appendChild(link);
     });
 

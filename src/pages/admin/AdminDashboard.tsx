@@ -25,7 +25,8 @@ import {
   Globe,
   Zap,
   Target,
-  MapPin
+  MapPin,
+  Palette
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
