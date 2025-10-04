@@ -48,7 +48,7 @@ export default async function handler(req: any, res: any) {
           console.log(`📦 Loading ${metadata.totalItems} positions from ${metadata.batchCount} batches`)
           
           // Load all batches
-          const allPositions = []
+          const allPositions: any[] = []
           for (let i = 0; i < metadata.batchCount; i++) {
             const batchKey = `${KEY}_batch_${i}`
             const batchRaw = await redisGet(batchKey)
@@ -135,7 +135,7 @@ export default async function handler(req: any, res: any) {
         
         // Split into smaller batches
         const batchSize = 50
-        const batches = []
+        const batches: any[] = []
         for (let i = 0; i < items.length; i += batchSize) {
           batches.push(items.slice(i, i + batchSize))
         }

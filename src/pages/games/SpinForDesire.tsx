@@ -57,11 +57,11 @@ const SpinForDesire = () => {
           const random12 = shuffled.slice(0, 12)
           
           // Shuffle categories for more variety
-          const categories = ['romantic', 'passionate', 'playful', 'sensual', 'luxurious']
+          const categories: ('romantic' | 'passionate' | 'playful' | 'sensual' | 'luxurious')[] = ['romantic', 'passionate', 'playful', 'sensual', 'luxurious']
           const shuffledCategories = [...categories].sort(() => Math.random() - 0.5)
           
           const mapped: DesireItem[] = random12.map((pos, index) => {
-            const randomCategory = shuffledCategories[index % shuffledCategories.length]
+            const randomCategory = shuffledCategories[index % shuffledCategories.length] as 'romantic' | 'passionate' | 'playful' | 'sensual' | 'luxurious'
             return {
               id: pos.id || `spin-${Date.now()}-${index}`, // Unique ID with timestamp
               title: pos.title || 'Romantic Position',
