@@ -46,7 +46,8 @@ import {
   Save,
   Eye,
   EyeOff,
-  X
+  X,
+  Sparkles
 } from 'lucide-react'
 
 interface RichTextEditorProps {
@@ -522,45 +523,18 @@ export default function RichTextEditor({
 
   return (
     <div className={`rich-text-editor relative ${className}`}>
-      {/* Professional Toolbar - Exactly like your image */}
-      <div className="bg-gray-800 rounded-lg p-2 mb-4 shadow-lg">
-        {/* Top Row */}
-        <div className="flex items-center gap-1 mb-2">
-          {/* Undo/Redo */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={undo}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Undo (Ctrl+Z)"
-          >
-            <Undo className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={redo}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Redo (Ctrl+Y)"
-          >
-            <Redo className="w-4 h-4" />
-          </Button>
-          
-          {/* Separator */}
-          <div className="w-px h-6 bg-gray-600 mx-1" />
-          
-          {/* Text Style Dropdown */}
+      {/* Toolbar - Exactly like your image */}
+      <div className="bg-gray-200 rounded-lg p-3 mb-4 shadow-sm border border-gray-300">
+        <div className="flex items-center gap-2">
+          {/* Sparkles Dropdown */}
           <div className="relative dropdown-container">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => setShowTextStyleDropdown(!showTextStyleDropdown)}
-              className="h-8 px-3 text-white hover:bg-gray-700 flex items-center gap-1"
+              className="flex items-center gap-1 px-3 py-2 text-gray-700 hover:bg-gray-300 rounded-md text-sm"
             >
-              <Type className="w-4 h-4" />
-              <span className="text-sm">Paragraph</span>
-              <span className="text-xs">▼</span>
-            </Button>
+              <Sparkles className="w-4 h-4" />
+              <span>▼</span>
+            </button>
             
             {showTextStyleDropdown && (
               <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 min-w-32">
@@ -580,72 +554,59 @@ export default function RichTextEditor({
             )}
           </div>
           
-          {/* Separator */}
-          <div className="w-px h-6 bg-gray-600 mx-1" />
+          {/* Paragraph Dropdown */}
+          <div className="relative dropdown-container">
+            <button
+              onClick={() => setShowTextStyleDropdown(!showTextStyleDropdown)}
+              className="flex items-center gap-1 px-3 py-2 text-gray-700 hover:bg-gray-300 rounded-md text-sm"
+            >
+              <Type className="w-4 h-4" />
+              <span>Paragraph</span>
+              <span>▼</span>
+            </button>
+          </div>
           
-          {/* Formatting Buttons */}
-          <Button
-            variant="ghost"
-            size="sm"
+          {/* Bold Button */}
+          <button
             onClick={() => wrapText('**', '**')}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700 font-bold"
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md font-bold"
             title="Bold (Ctrl+B)"
           >
             B
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
+          </button>
+          
+          {/* Italic Button */}
+          <button
             onClick={() => wrapText('*', '*')}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700 italic"
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md italic"
             title="Italic (Ctrl+I)"
           >
             I
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
+          </button>
+          
+          {/* Underline Button */}
+          <button
             onClick={() => wrapText('<u>', '</u>')}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700 underline"
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md underline"
             title="Underline (Ctrl+U)"
           >
             U
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertStrikethrough}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700 line-through"
-            title="Strikethrough"
-          >
-            S
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {}}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Special Characters"
-          >
-            &
-          </Button>
+          </button>
           
           {/* Color Picker Dropdown */}
           <div className="relative dropdown-container">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => setShowColorDropdown(!showColorDropdown)}
-              className="h-8 w-8 p-0 text-white hover:bg-gray-700 flex items-center gap-1"
+              className="flex items-center gap-1 px-2 py-2 text-gray-700 hover:bg-gray-300 rounded-md"
               title="Text Color"
             >
-              <span className="text-sm font-bold">A</span>
+              <span className="text-sm font-bold underline">A</span>
               <span className="text-xs">▼</span>
-            </Button>
+            </button>
             
             {showColorDropdown && (
-              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 p-2">
-                <div className="grid grid-cols-3 gap-1">
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 p-3">
+                <div className="grid grid-cols-3 gap-2 mb-2">
                   {colors.map((color, index) => (
                     <button
                       key={index}
@@ -653,14 +614,17 @@ export default function RichTextEditor({
                         color.onClick()
                         setShowColorDropdown(false)
                       }}
-                      className="w-6 h-6 rounded-full border-2 border-gray-200 hover:border-gray-400"
+                      className="w-6 h-6 rounded-full border-2 border-gray-200 hover:border-gray-400 hover:scale-110 transition-transform"
                       style={{ backgroundColor: color.color }}
                       title={color.name}
                     />
                   ))}
                 </div>
-                <div className="mt-2 pt-2 border-t">
-                  <button className="w-full h-6 bg-gray-100 rounded flex items-center justify-center text-xs hover:bg-gray-200">
+                <div className="flex justify-center">
+                  <button 
+                    className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs hover:bg-gray-300 border border-gray-300"
+                    title="Add custom color"
+                  >
                     +
                   </button>
                 </div>
@@ -668,190 +632,72 @@ export default function RichTextEditor({
             )}
           </div>
           
-          {/* Separator */}
-          <div className="w-px h-6 bg-gray-600 mx-1" />
+          {/* Alignment Dropdown */}
+          <div className="relative dropdown-container">
+            <button
+              onClick={() => setShowAlignmentDropdown(!showAlignmentDropdown)}
+              className="flex items-center gap-1 px-2 py-2 text-gray-700 hover:bg-gray-300 rounded-md"
+              title="Alignment"
+            >
+              <List className="w-4 h-4" />
+              <span>▼</span>
+            </button>
+            
+            {showAlignmentDropdown && (
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 min-w-32">
+                {alignmentOptions.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      option.onClick()
+                      setShowAlignmentDropdown(false)
+                    }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    {option.icon}
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           
-          {/* Lists and Structure */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => insertList(false)}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Bullet List"
-          >
-            <List className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => insertList(true)}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Numbered List"
-          >
-            <ListOrdered className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => wrapText('> ')}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Quote"
-          >
-            <Quote className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertCodeBlock}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Code Block"
-          >
-            <Code className="w-4 h-4" />
-          </Button>
-        </div>
-        
-        {/* Bottom Row */}
-        <div className="flex items-center gap-1">
-          {/* Media and Links */}
-          <Button
-            variant="ghost"
-            size="sm"
+          {/* Link Button */}
+          <button
             onClick={insertLink}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md"
             title="Insert Link"
           >
             <Link className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
+          </button>
+          
+          {/* Image Button */}
+          <button
             onClick={insertImage}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md"
             title="Insert Image"
           >
             <ImageIcon className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
+          </button>
+          
+          {/* Video Button */}
+          <button
             onClick={insertVideo}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md"
             title="Insert Video"
           >
             <Video className="w-4 h-4" />
-          </Button>
-          
-          {/* Social Features */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertMention}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Mention (@username)"
-          >
-            <AtSign className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertHashtag}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Hashtag (#tag)"
-          >
-            <Hash className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertDateTime}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Insert Date/Time"
-          >
-            <Calendar className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertLocation}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Insert Location"
-          >
-            <MapPin className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertPhone}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Insert Phone"
-          >
-            <Phone className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertEmail}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Insert Email"
-          >
-            <Mail className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={insertWebsite}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Insert Website"
-          >
-            <Globe className="w-4 h-4" />
-          </Button>
-          
-          {/* Separator */}
-          <div className="w-px h-6 bg-gray-600 mx-1" />
-          
-          {/* Font Controls */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={increaseFontSize}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Increase Font Size"
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={decreaseFontSize}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Decrease Font Size"
-          >
-            <Minus className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={copyText}
-            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
-            title="Copy Text"
-          >
-            <Copy className="w-4 h-4" />
-          </Button>
-          
-          {/* Separator */}
-          <div className="w-px h-6 bg-gray-600 mx-1" />
+          </button>
           
           {/* More Options Dropdown */}
           <div className="relative dropdown-container">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => setShowMoreDropdown(!showMoreDropdown)}
-              className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+              className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md"
               title="More Options"
             >
               <MoreHorizontal className="w-4 h-4" />
-            </Button>
+            </button>
             
             {showMoreDropdown && (
               <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 min-w-40">
@@ -872,16 +718,14 @@ export default function RichTextEditor({
             )}
           </div>
           
-          {/* Emoji Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowEmojiToolbar(!showEmojiToolbar)}
-            className={`h-8 w-8 p-0 text-white hover:bg-gray-700 ${showEmojiToolbar ? 'bg-gray-700' : ''}`}
-            title="Insert Emoji"
+          {/* Code Button */}
+          <button
+            onClick={insertCodeBlock}
+            className="w-8 h-8 flex items-center justify-center text-gray-700 hover:bg-gray-300 rounded-md"
+            title="Code Block"
           >
-            <Smile className="w-4 h-4" />
-          </Button>
+            <Code className="w-4 h-4" />
+          </button>
         </div>
       </div>
 

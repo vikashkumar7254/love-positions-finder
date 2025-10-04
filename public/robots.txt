@@ -1,33 +1,39 @@
 User-agent: *
 Allow: /
 
+# Sitemap
 Sitemap: https://scratchsexpositions.com/sitemap.xml
 
-# Crawl-delay for respectful crawling
+# Crawl-delay for better server performance
 Crawl-delay: 1
 
-# Disallow admin areas
+# Allow all search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Block admin areas from indexing
 Disallow: /admin/
 Disallow: /api/
 
 # Allow important pages
-Allow: /positions/
-Allow: /blog/
 Allow: /games/
+Allow: /blog/
+Allow: /static/
 
-# Block sensitive files
-Disallow: /*.json$
-Disallow: /*.log$
-Disallow: /src/
-Disallow: /node_modules/
-
-# Allow search engines to access CSS and JS
-Allow: /assets/
-Allow: /*.css$
-Allow: /*.js$
-Allow: /*.png$
-Allow: /*.jpg$
-Allow: /*.jpeg$
-Allow: /*.gif$
-Allow: /*.svg$
-Allow: /*.webp$
+# Host
+Host: https://scratchsexpositions.com

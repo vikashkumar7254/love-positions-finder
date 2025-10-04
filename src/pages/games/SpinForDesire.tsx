@@ -396,17 +396,17 @@ const SpinForDesire = () => {
       {/* Image Popup Modal */}
       {showImagePopup && selectedItem && (
         <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
           onClick={() => setShowImagePopup(false)}
         >
           <div 
-            className="relative max-w-4xl max-h-[90vh] bg-gradient-to-br from-black/90 to-black/70 rounded-3xl overflow-hidden border-4 border-yellow-400 shadow-2xl"
+            className="relative w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] bg-gradient-to-br from-black/90 to-black/70 rounded-2xl sm:rounded-3xl overflow-hidden border-2 sm:border-4 border-yellow-400 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
             <button
               onClick={() => setShowImagePopup(false)}
-              className="absolute top-4 right-4 z-10 w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white hover:text-yellow-300 transition-all duration-300"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 w-10 h-10 sm:w-12 sm:h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white hover:text-yellow-300 transition-all duration-300 text-lg sm:text-xl"
             >
               ✕
             </button>
@@ -416,51 +416,88 @@ const SpinForDesire = () => {
               <LazyImage
                 src={selectedItem.image}
                 alt={selectedItem.title}
-                className="w-full h-auto max-h-[70vh] object-cover"
+                className="w-full h-auto max-h-[50vh] sm:max-h-[60vh] object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              
-              {/* Image Overlay Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <div className="flex items-center gap-3 mb-4">
-                  {(() => {
-                    const IconComponent = getCategoryIcon(selectedItem.category)
-                    return <IconComponent className="w-10 h-10 text-yellow-300" />
-                  })()}
-                  <span className="px-6 py-3 bg-white/20 text-white rounded-full text-xl font-bold capitalize">
-                    {selectedItem.category}
-                  </span>
-                </div>
-                <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
-                  {selectedItem.title}
-                </h2>
-                <p className="text-2xl text-white/90 max-w-3xl leading-relaxed">
-                  {selectedItem.description}
-                </p>
+            </div>
+
+            {/* Content Below Image */}
+            <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-black/90 to-black/70">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                {(() => {
+                  const IconComponent = getCategoryIcon(selectedItem.category)
+                  return <IconComponent className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-yellow-300" />
+                })()}
+                <span className="px-4 py-2 sm:px-6 sm:py-3 bg-yellow-400/20 text-yellow-300 rounded-full text-sm sm:text-lg lg:text-xl font-bold capitalize border border-yellow-400/30">
+                  {selectedItem.category}
+                </span>
               </div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 text-center">
+                {selectedItem.title}
+              </h2>
+              <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-4xl mx-auto leading-relaxed text-center mb-6">
+                {selectedItem.description}
+              </p>
             </div>
 
             {/* Bottom Action Area */}
-            <div className="p-8 bg-gradient-to-r from-yellow-400/10 to-orange-500/10">
-              <div className="flex flex-wrap justify-center gap-4 mb-6">
-                <div className="px-6 py-3 bg-pink-500/20 text-pink-300 rounded-full text-lg font-medium">
-                  ✨ Perfect for Tonight
-                </div>
-                <div className="px-6 py-3 bg-purple-500/20 text-purple-300 rounded-full text-lg font-medium">
-                  💕 Romantic
-                </div>
-                <div className="px-6 py-3 bg-red-500/20 text-red-300 rounded-full text-lg font-medium">
-                  🔥 Passionate
+            <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-yellow-400/10 to-orange-500/10">
+              {/* Tips and Instructions */}
+              <div className="mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 text-center">💡 How to Try This Position</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="bg-white/10 rounded-xl p-4 border border-yellow-400/30">
+                    <h4 className="text-yellow-300 font-bold mb-2">🎯 Getting Started</h4>
+                    <p className="text-white/90 text-sm">Start slowly and communicate with your partner. Make sure both of you are comfortable.</p>
+                  </div>
+                  <div className="bg-white/10 rounded-xl p-4 border border-pink-400/30">
+                    <h4 className="text-pink-300 font-bold mb-2">💕 Communication</h4>
+                    <p className="text-white/90 text-sm">Talk about what feels good and adjust as needed. Remember, consent is key!</p>
+                  </div>
                 </div>
               </div>
-              
-              <div className="text-center">
+
+              {/* Tags */}
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6">
+                <div className="px-3 py-2 sm:px-4 sm:py-2 bg-pink-500/20 text-pink-300 rounded-full text-sm sm:text-base font-medium border border-pink-500/30">
+                  ✨ Perfect for Tonight
+                </div>
+                <div className="px-3 py-2 sm:px-4 sm:py-2 bg-purple-500/20 text-purple-300 rounded-full text-sm sm:text-base font-medium border border-purple-500/30">
+                  💕 Romantic
+                </div>
+                <div className="px-3 py-2 sm:px-4 sm:py-2 bg-red-500/20 text-red-300 rounded-full text-sm sm:text-base font-medium border border-red-500/30">
+                  🔥 Passionate
+                </div>
+                <div className="px-3 py-2 sm:px-4 sm:py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm sm:text-base font-medium border border-blue-500/30">
+                  🌟 Intimate
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => setShowImagePopup(false)}
-                  className="px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold text-xl rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg"
+                  className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold text-lg sm:text-xl rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg"
                 >
-                  Start This Adventure
+                  🚀 Start This Adventure
                 </button>
+                <button
+                  onClick={() => {
+                    // Copy position details to clipboard
+                    const text = `${selectedItem.title}\n${selectedItem.description}\n\nTry this position tonight! 💕`
+                    navigator.clipboard.writeText(text)
+                    alert('Position details copied to clipboard! 📋')
+                  }}
+                  className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-lg sm:text-xl rounded-2xl hover:scale-105 transition-all duration-300 shadow-lg"
+                >
+                  📋 Copy Details
+                </button>
+              </div>
+
+              {/* Additional Info */}
+              <div className="mt-6 text-center">
+                <p className="text-white/70 text-sm">
+                  💝 Remember: Every couple is different. Adjust this position to what works best for you both!
+                </p>
               </div>
             </div>
           </div>

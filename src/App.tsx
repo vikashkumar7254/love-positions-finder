@@ -70,10 +70,10 @@ const App = () => {
         // Preload positions cache in background for instant loading
         await getPositionsOptimized();
         
-        // Wait for CSS to load
+        // Minimal loading time for instant feel
         setTimeout(() => {
           setIsLoading(false);
-        }, 100);
+        }, 50);
       } catch (error) {
         console.error('Error initializing app:', error);
         setIsLoading(false);
