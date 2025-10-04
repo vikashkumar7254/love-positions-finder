@@ -327,11 +327,8 @@ const BlogsAdminContent = () => {
                         <RichTextEditor
                           value={formData.content}
                           onChange={(content) => setFormData({...formData, content})}
-                          placeholder="Write your blog content here... Use the toolbar above for formatting! 😍💕❤️"
+                          placeholder="Start writing your blog post... Use the toolbar above to format text, add emojis, images, and more!"
                         />
-                        <p className="text-xs text-gray-500 mt-2">
-                          💡 <strong>Rich Text Editor:</strong> Use H1, H2, H3 for headers • Bold, Italic, Underline • Lists • Images, Videos, GIFs • Emojis • Links • Quotes • Code blocks
-                        </p>
                       </div>
                     </CardContent>
                   </Card>
