@@ -1267,7 +1267,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         <div
           ref={editorRef}
           contentEditable
-          className="rich-text-editor force-ltr"
+          className="rich-text-editor"
           onInput={updateContent}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -1276,8 +1276,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           style={{
             direction: 'ltr',
             textAlign: 'left',
-            writingMode: 'horizontal-tb',
-            textOrientation: 'mixed'
+            backgroundColor: '#ffffff',
+            color: '#000000',
+            minHeight: '200px',
+            padding: '16px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            outline: 'none'
           }}
           dir="ltr"
         />

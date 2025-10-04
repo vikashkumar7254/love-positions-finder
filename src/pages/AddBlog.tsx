@@ -27,7 +27,12 @@ import {
   CheckCircle,
   AlertCircle,
   Info,
-  Lightbulb
+  Lightbulb,
+  X,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  List
 } from "lucide-react";
 
 interface UserBlogPost {
@@ -74,6 +79,8 @@ const AddBlog = () => {
   const [isDraft, setIsDraft] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [activeField, setActiveField] = useState<string | null>(null);
+  const [toolbarPosition, setToolbarPosition] = useState({ top: 0, left: 0 });
   
   const slug = useMemo(() => makeSlug(title), [title]);
   const readTime = useMemo(() => estimateReadTime(content), [content]);
@@ -91,7 +98,130 @@ const AddBlog = () => {
     }
   }, [excerpt, metaDescription]);
 
+  // Handle field focus for floating toolbar
+  const handleFieldFocus = (fieldName: string, event: React.FocusEvent) => {
+    setActiveField(fieldName);
+    const rect = event.currentTarget.getBoundingClientRect();
+    setToolbarPosition({
+      top: rect.bottom + 10,
+      left: rect.left
+    });
+  };
 
+  const handleFieldBlur = () => {
+    // Delay hiding toolbar to allow clicking on it
+    setTimeout(() => {
+      setActiveField(null);
+    }, 200);
+  };
+
+  // Floating Toolbar Component
+  const FloatingToolbar = () => {
+    if (!activeField) return null;
+
+    const applyFormat = (command: string, value?: string) => {
+      const activeElement = document.activeElement as HTMLElement;
+      if (activeElement) {
+        document.execCommand(command, false, value);
+        activeElement.focus();
+      }
+    };
+
+    return (
+      <div
+        className="fixed z-50 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-2xl p-3"
+        style={{
+          top: toolbarPosition.top,
+          left: toolbarPosition.left,
+          transform: 'translateY(0px)',
+          minWidth: '300px'
+        }}
+      >
+        <div className="flex items-center gap-2">
+          {/* Text Formatting */}
+          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+            <button
+              onClick={() => applyFormat('bold')}
+              className="p-2 hover:bg-blue-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Bold (Ctrl+B)"
+            >
+              <Type className="w-4 h-4 group-hover:scale-110" />
+            </button>
+            <button
+              onClick={() => applyFormat('italic')}
+              className="p-2 hover:bg-blue-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Italic (Ctrl+I)"
+            >
+              <Type className="w-4 h-4 group-hover:scale-110" />
+            </button>
+            <button
+              onClick={() => applyFormat('underline')}
+              className="p-2 hover:bg-blue-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Underline (Ctrl+U)"
+            >
+              <Type className="w-4 h-4 group-hover:scale-110" />
+            </button>
+          </div>
+
+          <div className="w-px h-8 bg-gray-300" />
+
+          {/* Lists */}
+          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+            <button
+              onClick={() => applyFormat('insertOrderedList')}
+              className="p-2 hover:bg-green-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Numbered List"
+            >
+              <List className="w-4 h-4 group-hover:scale-110" />
+            </button>
+            <button
+              onClick={() => applyFormat('insertUnorderedList')}
+              className="p-2 hover:bg-green-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Bullet List"
+            >
+              <List className="w-4 h-4 group-hover:scale-110" />
+            </button>
+          </div>
+
+          <div className="w-px h-8 bg-gray-300" />
+
+          {/* Alignment */}
+          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+            <button
+              onClick={() => applyFormat('justifyLeft')}
+              className="p-2 hover:bg-purple-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Align Left"
+            >
+              <AlignLeft className="w-4 h-4 group-hover:scale-110" />
+            </button>
+            <button
+              onClick={() => applyFormat('justifyCenter')}
+              className="p-2 hover:bg-purple-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Align Center"
+            >
+              <AlignCenter className="w-4 h-4 group-hover:scale-110" />
+            </button>
+            <button
+              onClick={() => applyFormat('justifyRight')}
+              className="p-2 hover:bg-purple-500 hover:text-white rounded-lg transition-all duration-200 group"
+              title="Align Right"
+            >
+              <AlignRight className="w-4 h-4 group-hover:scale-110" />
+            </button>
+          </div>
+
+          {/* Close Button */}
+          <button
+            onClick={() => setActiveField(null)}
+            className="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all duration-200 group ml-auto"
+            title="Close Toolbar"
+          >
+            <X className="w-4 h-4 group-hover:scale-110" />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   const onSubmit = async (isDraftSave = false) => {
     if (!title || !excerpt || !content) return;
@@ -262,6 +392,8 @@ const AddBlog = () => {
                     <Input 
                       value={title} 
                       onChange={(e) => setTitle(e.target.value)} 
+                      onFocus={(e) => handleFieldFocus('title', e)}
+                      onBlur={handleFieldBlur}
                       placeholder="Enter an amazing title for your blog post..."
                       className="h-12 text-lg font-medium"
                     />
@@ -319,6 +451,8 @@ const AddBlog = () => {
                   <Textarea 
                     value={excerpt} 
                     onChange={(e) => setExcerpt(e.target.value)} 
+                    onFocus={(e) => handleFieldFocus('excerpt', e)}
+                    onBlur={handleFieldBlur}
                     placeholder="Write a compelling summary that will appear on the blog listing page..."
                     rows={3}
                     className="resize-none"
@@ -341,10 +475,14 @@ const AddBlog = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <RichTextEditor
-                  value={content}
-                  onChange={(content) => setContent(content)}
-                  placeholder="Start writing your amazing blog post here... Use the toolbar above for formatting! 😍💕❤️"
+                <Textarea 
+                  value={content} 
+                  onChange={(e) => setContent(e.target.value)} 
+                  onFocus={(e) => handleFieldFocus('content', e)}
+                  onBlur={handleFieldBlur}
+                  placeholder="Start writing your amazing blog post here... Use the floating toolbar for formatting! 😍💕❤️"
+                  rows={10}
+                  className="resize-none min-h-[300px]"
                 />
                 <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-start gap-3">
@@ -491,6 +629,9 @@ const AddBlog = () => {
           </div>
         </div>
       </div>
+      
+      {/* Floating Toolbar */}
+      <FloatingToolbar />
     </div>
   );
 };
