@@ -1247,6 +1247,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             onInput={updateContent}
             dangerouslySetInnerHTML={{ __html: value }}
             data-placeholder={placeholder}
+            style={{ 
+              direction: 'ltr',
+              textAlign: 'left',
+              unicodeBidi: 'normal'
+            }}
           />
         )}
       </div>
