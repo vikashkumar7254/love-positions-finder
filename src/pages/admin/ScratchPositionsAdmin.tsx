@@ -34,6 +34,8 @@ const ScratchPositionsAdminContent = () => {
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   
   // Tags system
@@ -86,11 +88,19 @@ const ScratchPositionsAdminContent = () => {
   useEffect(() => {
     const init = async () => {
       try {
+        setIsLoading(true)
+        setError(null)
+        console.log('🔄 Loading positions from API...')
+        
         const storedItems = await apiGetPositions()
+        console.log(`✅ Loaded ${storedItems.length} positions`)
         setItems(storedItems)
       } catch (error) {
-        console.error('Error loading items from API:', error)
+        console.error('❌ Error loading items from API:', error)
+        setError('Failed to load positions. Please refresh the page.')
         setItems([])
+      } finally {
+        setIsLoading(false)
       }
       document.title = "Scratch Positions Admin | Love Positions Finder"
     }
@@ -403,6 +413,57 @@ const ScratchPositionsAdminContent = () => {
     const customs = items.filter(item => !item.isDefault).length
     return { defaults, customs, total: defaults + customs }
   }, [items])
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
+        <Navigation />
+        <main className="pt-20 pb-12">
+          <div className="max-w-7xl mx-auto px-6 space-y-8">
+            <div className="text-center">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-romantic to-passionate bg-clip-text text-transparent">
+                Comprehensive Scratch Positions Admin
+              </h1>
+              <div className="flex items-center justify-center space-x-2 mt-4">
+                <RefreshCw className="w-6 h-6 animate-spin text-purple-600" />
+                <p className="text-muted-foreground">Loading positions...</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/50">
+        <Navigation />
+        <main className="pt-20 pb-12">
+          <div className="max-w-7xl mx-auto px-6 space-y-8">
+            <div className="text-center">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-romantic to-passionate bg-clip-text text-transparent">
+                Comprehensive Scratch Positions Admin
+              </h1>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 mt-4">
+                <AlertCircle className="w-8 h-8 text-red-600 mx-auto mb-4" />
+                <p className="text-red-800 text-lg mb-4">{error}</p>
+                <Button 
+                  onClick={() => window.location.reload()} 
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Retry
+                </Button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50">

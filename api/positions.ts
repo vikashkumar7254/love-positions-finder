@@ -18,11 +18,11 @@ async function redisSet(key: string, value: string): Promise<{ ok: boolean; stat
   if (!REDIS_URL || !REDIS_TOKEN) return { ok: false, status: 0 }
   
   try {
-    const res = await fetch(`${REDIS_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
-      headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
-      cache: 'no-store',
-    })
-    return { ok: res.ok, status: res.status }
+  const res = await fetch(`${REDIS_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
+    headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
+    cache: 'no-store',
+  })
+  return { ok: res.ok, status: res.status }
   } catch (error) {
     console.error('Redis SET error:', error)
     return { ok: false, status: 500 }
