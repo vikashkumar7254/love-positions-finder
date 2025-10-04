@@ -200,11 +200,11 @@ const SpinForDesire = () => {
                           <LazyImage
                             src={item.image}
                             alt={item.title}
-                            className="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-90 transition-opacity duration-300"
+                            className="absolute inset-0 w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-300 rounded-lg"
                           />
                           
                           {/* Gradient Overlay - Lighter for better visibility */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-transparent to-black/30"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-black/20"></div>
                           
                           {/* Content - Rotated to fit the section */}
                           <div 
@@ -214,10 +214,10 @@ const SpinForDesire = () => {
                               transformOrigin: 'center'
                             }}
                           >
-                            <div className="text-white font-bold text-xs sm:text-sm drop-shadow-2xl text-center leading-tight bg-black/40 px-2 py-1 rounded">
+                            <div className="text-white font-bold text-xs sm:text-sm drop-shadow-2xl text-center leading-tight bg-black/60 px-2 py-1 rounded backdrop-blur-sm">
                               {item.title.split(' ')[0]}
                             </div>
-                            <div className="text-white/90 text-xs drop-shadow-2xl font-medium bg-black/30 px-1 py-0.5 rounded mt-1">
+                            <div className="text-white/90 text-xs drop-shadow-2xl font-medium bg-black/50 px-1 py-0.5 rounded mt-1 backdrop-blur-sm">
                               {item.category}
                             </div>
                           </div>
