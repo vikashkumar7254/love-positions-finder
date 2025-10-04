@@ -45,7 +45,8 @@ import {
   Scissors,
   Save,
   Eye,
-  EyeOff
+  EyeOff,
+  X
 } from 'lucide-react'
 
 interface RichTextEditorProps {
@@ -310,11 +311,11 @@ export default function RichTextEditor({
   }
 
   const increaseFontSize = () => {
-    insertText('<span style="font-size: larger;">', '</span>')
+    wrapText('<span style="font-size: larger;">', '</span>')
   }
 
   const decreaseFontSize = () => {
-    insertText('<span style="font-size: smaller;">', '</span>')
+    wrapText('<span style="font-size: smaller;">', '</span>')
   }
 
   const handleEmojiSelect = (emoji: string) => {
@@ -382,231 +383,432 @@ export default function RichTextEditor({
     }
   }
 
-  const toolbarButtons = [
-    // Undo/Redo
-    {
-      icon: <Undo className="w-4 h-4" />,
-      onClick: undo,
-      title: 'Undo',
-      shortcut: 'Ctrl+Z'
-    },
-    {
-      icon: <Redo className="w-4 h-4" />,
-      onClick: redo,
-      title: 'Redo',
-      shortcut: 'Ctrl+Y'
-    },
-    { separator: true },
-    // Headers
-    {
-      icon: <Type className="w-4 h-4" />,
-      onClick: () => insertHeading(1),
-      title: 'Heading 1',
-      shortcut: 'Ctrl+1'
-    },
-    {
-      icon: <Type className="w-4 h-4" />,
-      onClick: () => insertHeading(2),
-      title: 'Heading 2',
-      shortcut: 'Ctrl+2'
-    },
-    {
-      icon: <Type className="w-4 h-4" />,
-      onClick: () => insertHeading(3),
-      title: 'Heading 3',
-      shortcut: 'Ctrl+3'
-    },
-    { separator: true },
-    // Text Formatting
-    {
-      icon: <Bold className="w-4 h-4" />,
-      onClick: () => wrapText('**', '**'),
-      title: 'Bold',
-      shortcut: 'Ctrl+B'
-    },
-    {
-      icon: <Italic className="w-4 h-4" />,
-      onClick: () => wrapText('*', '*'),
-      title: 'Italic',
-      shortcut: 'Ctrl+I'
-    },
-    {
-      icon: <Underline className="w-4 h-4" />,
-      onClick: () => wrapText('<u>', '</u>'),
-      title: 'Underline',
-      shortcut: 'Ctrl+U'
-    },
-    {
-      icon: <Strikethrough className="w-4 h-4" />,
-      onClick: insertStrikethrough,
-      title: 'Strikethrough'
-    },
-    {
-      icon: <Highlighter className="w-4 h-4" />,
-      onClick: insertHighlight,
-      title: 'Highlight'
-    },
-    { separator: true },
-    // Lists and Structure
-    {
-      icon: <List className="w-4 h-4" />,
-      onClick: () => insertList(false),
-      title: 'Bullet List'
-    },
-    {
-      icon: <ListOrdered className="w-4 h-4" />,
-      onClick: () => insertList(true),
-      title: 'Numbered List'
-    },
-    {
-      icon: <Quote className="w-4 h-4" />,
-      onClick: () => wrapText('> '),
-      title: 'Quote'
-    },
-    {
-      icon: <Code className="w-4 h-4" />,
-      onClick: () => wrapText('`', '`'),
-      title: 'Inline Code'
-    },
-    {
-      icon: <FileText className="w-4 h-4" />,
-      onClick: insertCodeBlock,
-      title: 'Code Block'
-    },
-    {
-      icon: <Table className="w-4 h-4" />,
-      onClick: insertTable,
-      title: 'Insert Table'
-    },
-    {
-      icon: <Minus className="w-4 h-4" />,
-      onClick: insertHorizontalRule,
-      title: 'Horizontal Rule'
-    },
-    { separator: true },
-    // Media and Links
-    {
-      icon: <Link className="w-4 h-4" />,
-      onClick: insertLink,
-      title: 'Insert Link'
-    },
-    {
-      icon: <ImageIcon className="w-4 h-4" />,
-      onClick: insertImage,
-      title: 'Insert Image'
-    },
-    {
-      icon: <Video className="w-4 h-4" />,
-      onClick: insertVideo,
-      title: 'Insert Video'
-    },
-    { separator: true },
-    // Social and Special
-    {
-      icon: <AtSign className="w-4 h-4" />,
-      onClick: insertMention,
-      title: 'Mention (@username)'
-    },
-    {
-      icon: <Hash className="w-4 h-4" />,
-      onClick: insertHashtag,
-      title: 'Hashtag (#tag)'
-    },
-    {
-      icon: <Smile className="w-4 h-4" />,
-      onClick: () => setShowEmojiToolbar(!showEmojiToolbar),
-      title: 'Insert Emoji',
-      active: showEmojiToolbar
-    },
-    { separator: true },
-    // Contact Info
-    {
-      icon: <Calendar className="w-4 h-4" />,
-      onClick: insertDateTime,
-      title: 'Insert Date/Time'
-    },
-    {
-      icon: <MapPin className="w-4 h-4" />,
-      onClick: insertLocation,
-      title: 'Insert Location'
-    },
-    {
-      icon: <Phone className="w-4 h-4" />,
-      onClick: insertPhone,
-      title: 'Insert Phone'
-    },
-    {
-      icon: <Mail className="w-4 h-4" />,
-      onClick: insertEmail,
-      title: 'Insert Email'
-    },
-    {
-      icon: <Globe className="w-4 h-4" />,
-      onClick: insertWebsite,
-      title: 'Insert Website'
-    },
-    { separator: true },
-    // Font Size
-    {
-      icon: <Plus className="w-4 h-4" />,
-      onClick: increaseFontSize,
-      title: 'Increase Font Size'
-    },
-    {
-      icon: <Minus className="w-4 h-4" />,
-      onClick: decreaseFontSize,
-      title: 'Decrease Font Size'
-    },
-    { separator: true },
-    // Edit Actions
-    {
-      icon: <Copy className="w-4 h-4" />,
-      onClick: copyText,
-      title: 'Copy Text',
-      shortcut: 'Ctrl+C'
-    },
-    {
-      icon: <Scissors className="w-4 h-4" />,
-      onClick: cutText,
-      title: 'Cut Text',
-      shortcut: 'Ctrl+X'
-    },
-    {
-      icon: <Save className="w-4 h-4" />,
-      onClick: () => navigator.clipboard.writeText(value),
-      title: 'Save to Clipboard'
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (!target.closest('.dropdown-container')) {
+        setShowTextStyleDropdown(false)
+        setShowColorDropdown(false)
+        setShowAlignmentDropdown(false)
+        setShowMoreDropdown(false)
+      }
     }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  const [showTextStyleDropdown, setShowTextStyleDropdown] = useState(false)
+  const [showColorDropdown, setShowColorDropdown] = useState(false)
+  const [showAlignmentDropdown, setShowAlignmentDropdown] = useState(false)
+  const [showMoreDropdown, setShowMoreDropdown] = useState(false)
+
+  const textStyles = [
+    { label: 'Normal', value: 'normal', onClick: () => {} },
+    { label: 'Heading 1', value: 'h1', onClick: () => insertHeading(1) },
+    { label: 'Heading 2', value: 'h2', onClick: () => insertHeading(2) },
+    { label: 'Heading 3', value: 'h3', onClick: () => insertHeading(3) },
+    { label: 'Heading 4', value: 'h4', onClick: () => insertHeading(4) },
+    { label: 'Heading 5', value: 'h5', onClick: () => insertHeading(5) },
+    { label: 'Heading 6', value: 'h6', onClick: () => insertHeading(6) }
+  ]
+
+  const colors = [
+    { name: 'Default', color: '#000000', onClick: () => {} },
+    { name: 'Red', color: '#ef4444', onClick: () => wrapText('<span style="color: #ef4444;">', '</span>') },
+    { name: 'Orange', color: '#f97316', onClick: () => wrapText('<span style="color: #f97316;">', '</span>') },
+    { name: 'Yellow', color: '#eab308', onClick: () => wrapText('<span style="color: #eab308;">', '</span>') },
+    { name: 'Green', color: '#22c55e', onClick: () => wrapText('<span style="color: #22c55e;">', '</span>') },
+    { name: 'Blue', color: '#3b82f6', onClick: () => wrapText('<span style="color: #3b82f6;">', '</span>') },
+    { name: 'Purple', color: '#a855f7', onClick: () => wrapText('<span style="color: #a855f7;">', '</span>') },
+    { name: 'Pink', color: '#ec4899', onClick: () => wrapText('<span style="color: #ec4899;">', '</span>') },
+    { name: 'Gray', color: '#6b7280', onClick: () => wrapText('<span style="color: #6b7280;">', '</span>') }
+  ]
+
+  const alignmentOptions = [
+    { icon: <List className="w-4 h-4" />, label: 'Bullet List', onClick: () => insertList(false) },
+    { icon: <ListOrdered className="w-4 h-4" />, label: 'Numbered List', onClick: () => insertList(true) },
+    { icon: <AlignLeft className="w-4 h-4" />, label: 'Align Left', onClick: () => wrapText('<div style="text-align: left;">', '</div>') },
+    { icon: <AlignRight className="w-4 h-4" />, label: 'Align Right', onClick: () => wrapText('<div style="text-align: right;">', '</div>') }
+  ]
+
+  const moreOptions = [
+    { icon: <List className="w-4 h-4" />, label: 'Bullet List', onClick: () => insertList(false) },
+    { icon: <ListOrdered className="w-4 h-4" />, label: 'Numbered List', onClick: () => insertList(true) },
+    { icon: <AlignLeft className="w-4 h-4" />, label: 'Align Left', onClick: () => wrapText('<div style="text-align: left;">', '</div>') },
+    { icon: <AlignCenter className="w-4 h-4" />, label: 'Align Center', onClick: () => wrapText('<div style="text-align: center;">', '</div>') },
+    { icon: <AlignRight className="w-4 h-4" />, label: 'Align Right', onClick: () => wrapText('<div style="text-align: right;">', '</div>') },
+    { icon: <Strikethrough className="w-4 h-4" />, label: 'Strikethrough', onClick: insertStrikethrough },
+    { icon: <X className="w-4 h-4" />, label: 'Clear Format', onClick: () => {} }
   ]
 
   return (
     <div className={`rich-text-editor relative ${className}`}>
-      {/* Toolbar */}
-      <Card className="rich-text-toolbar mb-2">
-        <div className="flex flex-wrap items-center gap-1">
-          {toolbarButtons.map((button, index) => {
-            if (button.separator) {
-              return <div key={index} className="toolbar-separator" />
-            }
+      {/* Professional Toolbar - Exactly like your image */}
+      <div className="bg-gray-800 rounded-lg p-2 mb-4 shadow-lg">
+        {/* Top Row */}
+        <div className="flex items-center gap-1 mb-2">
+          {/* Undo/Redo */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={undo}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Undo (Ctrl+Z)"
+          >
+            <Undo className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={redo}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Redo (Ctrl+Y)"
+          >
+            <Redo className="w-4 h-4" />
+          </Button>
+          
+          {/* Separator */}
+          <div className="w-px h-6 bg-gray-600 mx-1" />
+          
+          {/* Text Style Dropdown */}
+          <div className="relative dropdown-container">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowTextStyleDropdown(!showTextStyleDropdown)}
+              className="h-8 px-3 text-white hover:bg-gray-700 flex items-center gap-1"
+            >
+              <Type className="w-4 h-4" />
+              <span className="text-sm">Paragraph</span>
+              <span className="text-xs">▼</span>
+            </Button>
             
-            return (
-              <Button
-                key={index}
-                variant={button.active ? "default" : "ghost"}
-                size="sm"
-                onClick={button.onClick}
-                className={`toolbar-button h-8 px-2 ${
-                  button.active 
-                    ? 'bg-purple-600 text-white' 
-                    : 'hover:bg-purple-100 text-purple-600'
-                }`}
-                title={`${button.title} ${button.shortcut ? `(${button.shortcut})` : ''}`}
-              >
-                {button.icon}
-              </Button>
-            )
-          })}
+            {showTextStyleDropdown && (
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 min-w-32">
+                {textStyles.map((style, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      style.onClick()
+                      setShowTextStyleDropdown(false)
+                    }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    {style.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Separator */}
+          <div className="w-px h-6 bg-gray-600 mx-1" />
+          
+          {/* Formatting Buttons */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => wrapText('**', '**')}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700 font-bold"
+            title="Bold (Ctrl+B)"
+          >
+            B
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => wrapText('*', '*')}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700 italic"
+            title="Italic (Ctrl+I)"
+          >
+            I
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => wrapText('<u>', '</u>')}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700 underline"
+            title="Underline (Ctrl+U)"
+          >
+            U
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertStrikethrough}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700 line-through"
+            title="Strikethrough"
+          >
+            S
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {}}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Special Characters"
+          >
+            &
+          </Button>
+          
+          {/* Color Picker Dropdown */}
+          <div className="relative dropdown-container">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowColorDropdown(!showColorDropdown)}
+              className="h-8 w-8 p-0 text-white hover:bg-gray-700 flex items-center gap-1"
+              title="Text Color"
+            >
+              <span className="text-sm font-bold">A</span>
+              <span className="text-xs">▼</span>
+            </Button>
+            
+            {showColorDropdown && (
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 p-2">
+                <div className="grid grid-cols-3 gap-1">
+                  {colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        color.onClick()
+                        setShowColorDropdown(false)
+                      }}
+                      className="w-6 h-6 rounded-full border-2 border-gray-200 hover:border-gray-400"
+                      style={{ backgroundColor: color.color }}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+                <div className="mt-2 pt-2 border-t">
+                  <button className="w-full h-6 bg-gray-100 rounded flex items-center justify-center text-xs hover:bg-gray-200">
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Separator */}
+          <div className="w-px h-6 bg-gray-600 mx-1" />
+          
+          {/* Lists and Structure */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => insertList(false)}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Bullet List"
+          >
+            <List className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => insertList(true)}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Numbered List"
+          >
+            <ListOrdered className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => wrapText('> ')}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Quote"
+          >
+            <Quote className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertCodeBlock}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Code Block"
+          >
+            <Code className="w-4 h-4" />
+          </Button>
         </div>
-      </Card>
+        
+        {/* Bottom Row */}
+        <div className="flex items-center gap-1">
+          {/* Media and Links */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertLink}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Link"
+          >
+            <Link className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertImage}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Image"
+          >
+            <ImageIcon className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertVideo}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Video"
+          >
+            <Video className="w-4 h-4" />
+          </Button>
+          
+          {/* Social Features */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertMention}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Mention (@username)"
+          >
+            <AtSign className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertHashtag}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Hashtag (#tag)"
+          >
+            <Hash className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertDateTime}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Date/Time"
+          >
+            <Calendar className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertLocation}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Location"
+          >
+            <MapPin className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertPhone}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Phone"
+          >
+            <Phone className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertEmail}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Email"
+          >
+            <Mail className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={insertWebsite}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Insert Website"
+          >
+            <Globe className="w-4 h-4" />
+          </Button>
+          
+          {/* Separator */}
+          <div className="w-px h-6 bg-gray-600 mx-1" />
+          
+          {/* Font Controls */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={increaseFontSize}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Increase Font Size"
+          >
+            <Plus className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={decreaseFontSize}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Decrease Font Size"
+          >
+            <Minus className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={copyText}
+            className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+            title="Copy Text"
+          >
+            <Copy className="w-4 h-4" />
+          </Button>
+          
+          {/* Separator */}
+          <div className="w-px h-6 bg-gray-600 mx-1" />
+          
+          {/* More Options Dropdown */}
+          <div className="relative dropdown-container">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMoreDropdown(!showMoreDropdown)}
+              className="h-8 w-8 p-0 text-white hover:bg-gray-700"
+              title="More Options"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </Button>
+            
+            {showMoreDropdown && (
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-lg border z-50 min-w-40">
+                {moreOptions.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      option.onClick()
+                      setShowMoreDropdown(false)
+                    }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    {option.icon}
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Emoji Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowEmojiToolbar(!showEmojiToolbar)}
+            className={`h-8 w-8 p-0 text-white hover:bg-gray-700 ${showEmojiToolbar ? 'bg-gray-700' : ''}`}
+            title="Insert Emoji"
+          >
+            <Smile className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
 
       {/* Emoji Toolbar */}
       <EmojiToolbar
