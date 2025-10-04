@@ -16,6 +16,7 @@ type PositionItem = {
   image: string
   mediaType?: 'image' | 'gif' | 'video'
   isDefault?: boolean
+  tags?: string[]
 }
 
 type UploadedFile = {
@@ -34,9 +35,53 @@ const ScratchPositionsAdminContent = () => {
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  // Tags system
+  const [tags, setTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState("")
+  const [allTags, setAllTags] = useState<string[]>([])
+  const [tagCounts, setTagCounts] = useState<Record<string, number>>({})
+  const [filteredByTag, setFilteredByTag] = useState<string | null>(null)
 
   // No default positions - admin will add manually
 
+  // Tags functions
+  const addTag = (tag: string) => {
+    const trimmedTag = tag.trim().toLowerCase()
+    if (trimmedTag && !tags.includes(trimmedTag)) {
+      setTags([...tags, trimmedTag])
+      setTagInput("")
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove))
+  }
+
+  const handleTagInputKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault()
+      addTag(tagInput)
+    }
+  }
+
+  // Calculate tag counts
+  useEffect(() => {
+    const counts: Record<string, number> = {}
+    const uniqueTags = new Set<string>()
+    
+    items.forEach(item => {
+      if (item.tags) {
+        item.tags.forEach(tag => {
+          counts[tag] = (counts[tag] || 0) + 1
+          uniqueTags.add(tag)
+        })
+      }
+    })
+    
+    setTagCounts(counts)
+    setAllTags(Array.from(uniqueTags).sort())
+  }, [items])
 
   useEffect(() => {
     const init = async () => {
@@ -245,7 +290,8 @@ const ScratchPositionsAdminContent = () => {
       title: t, 
       image: finalImageUrl,
       mediaType: uploadedFile?.type || 'image',
-      isDefault: false
+      isDefault: false,
+      tags: tags.length > 0 ? tags : undefined
     }
 
     if (editingId) {
@@ -285,6 +331,8 @@ const ScratchPositionsAdminContent = () => {
     setImage(item.image)
     setEditingId(item.id)
     setUploadedFile(null) // Clear uploaded file when editing
+    setTags(item.tags || [])
+    setTagInput("")
   }
 
   const clearUploadedFile = () => {
@@ -323,6 +371,16 @@ const ScratchPositionsAdminContent = () => {
     window.open(imageUrl, '_blank')
   }
 
+  const resetForm = () => {
+    setTitle("")
+    setImage("")
+    setEditingId(null)
+    setUploadedFile(null)
+    setMessage(null)
+    setTags([])
+    setTagInput("")
+  }
+
   const filteredItems = useMemo(() => {
     let filtered = items
 
@@ -330,12 +388,22 @@ const ScratchPositionsAdminContent = () => {
     if (searchQuery.trim()) {
       filtered = filtered.filter(item =>
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.id.toLowerCase().includes(searchQuery.toLowerCase())
+        item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.tags && item.tags.some(tag => 
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        ))
+      )
+    }
+
+    // Filter by tag
+    if (filteredByTag) {
+      filtered = filtered.filter(item => 
+        item.tags && item.tags.includes(filteredByTag)
       )
     }
 
     return filtered
-  }, [items, searchQuery])
+  }, [items, searchQuery, filteredByTag])
 
   const stats = useMemo(() => {
     const defaults = items.filter(item => item.isDefault).length
@@ -380,16 +448,53 @@ const ScratchPositionsAdminContent = () => {
           {/* Search and Filter */}
           <Card>
             <CardContent className="p-4">
-              <div className="flex flex-col sm:flex-row gap-4 items-center">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Search positions by title or ID..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search positions by title, ID, or tags..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
                 </div>
+                
+                {/* Tags Filter */}
+                {allTags.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">Filter by Tags:</span>
+                      {filteredByTag && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setFilteredByTag(null)}
+                          className="text-xs"
+                        >
+                          Clear Filter
+                        </Button>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {allTags.map(tag => (
+                        <button
+                          key={tag}
+                          onClick={() => setFilteredByTag(filteredByTag === tag ? null : tag)}
+                          className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                            filteredByTag === tag
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {tag} ({tagCounts[tag] || 0})
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -533,6 +638,40 @@ const ScratchPositionsAdminContent = () => {
               )}
               </div>
 
+              {/* Tags Input */}
+              <div>
+                <label className="text-sm font-medium block mb-2">Tags (Optional)</label>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <Input
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyPress={handleTagInputKeyPress}
+                    placeholder="Type tag and press Enter or comma..."
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Add tags like "sleep", "romantic", "passionate" to help with search and filtering
+                  </p>
+                </div>
+              </div>
+
               {/* Action Buttons */}
               <div className="flex gap-2 pt-4 border-t">
                 <Button 
@@ -657,7 +796,24 @@ const ScratchPositionsAdminContent = () => {
                           </div>
                         </div>
                         
-                        
+                        {/* Tags Display */}
+                        {item.tags && item.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {item.tags.slice(0, 3).map((tag, index) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            {item.tags.length > 3 && (
+                              <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                                +{item.tags.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        )}
                         
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>ID: {item.id}</span>
