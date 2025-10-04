@@ -32,7 +32,14 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  List
+  List,
+  Link,
+  ImageIcon,
+  Video,
+  Code,
+  ChevronDown,
+  MoreHorizontal,
+  Grid
 } from "lucide-react";
 
 interface UserBlogPost {
@@ -130,6 +137,22 @@ const AddBlog = () => {
   const FloatingToolbar = () => {
     if (!activeField) return null;
 
+    const [showColorPicker, setShowColorPicker] = useState(false);
+    const [showListMenu, setShowListMenu] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
+
+    // Close dropdowns when clicking outside
+    useEffect(() => {
+      const handleClickOutside = () => {
+        setShowColorPicker(false);
+        setShowListMenu(false);
+        setShowMoreMenu(false);
+      };
+
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
     const applyFormat = (command: string, value?: string) => {
       const activeElement = document.activeElement as HTMLElement;
       if (activeElement) {
@@ -138,96 +161,284 @@ const AddBlog = () => {
       }
     };
 
+    const colors = [
+      '#000000', '#374151', '#6b7280', '#9ca3af', '#d1d5db',
+      '#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981',
+      '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899', '#ffffff'
+    ];
+
     return (
       <div
-        className="fixed z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-3"
+        className="fixed z-50 bg-white border border-gray-200 rounded-xl shadow-2xl"
         style={{
           top: `${toolbarPosition.top}px`,
           left: `${toolbarPosition.left}px`,
-          minWidth: '300px',
-          maxWidth: '500px'
+          minWidth: '400px',
+          maxWidth: '600px'
         }}
       >
-        <div className="flex items-center gap-2">
+        {/* Main Toolbar */}
+        <div className="flex items-center gap-1 p-2">
+          {/* AI Features */}
+          <button
+            className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+            title="AI Assistant"
+          >
+            <Sparkles className="w-4 h-4 text-purple-600" />
+          </button>
+
+          {/* Paragraph Dropdown */}
+          <div className="relative">
+            <button
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 flex items-center gap-1"
+              title="Text Style"
+            >
+              Paragraph <ChevronDown className="w-3 h-3" />
+            </button>
+          </div>
+
           {/* Text Formatting */}
-          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => applyFormat('bold')}
-              className="p-2 hover:bg-blue-500 hover:text-white rounded-lg transition-all duration-200 group"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group font-bold"
               title="Bold (Ctrl+B)"
             >
-              <Type className="w-4 h-4 group-hover:scale-110" />
+              B
             </button>
             <button
               onClick={() => applyFormat('italic')}
-              className="p-2 hover:bg-blue-500 hover:text-white rounded-lg transition-all duration-200 group"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group italic"
               title="Italic (Ctrl+I)"
             >
-              <Type className="w-4 h-4 group-hover:scale-110" />
+              I
             </button>
             <button
               onClick={() => applyFormat('underline')}
-              className="p-2 hover:bg-blue-500 hover:text-white rounded-lg transition-all duration-200 group"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group underline"
               title="Underline (Ctrl+U)"
             >
-              <Type className="w-4 h-4 group-hover:scale-110" />
+              U
             </button>
           </div>
 
-          <div className="w-px h-8 bg-gray-300" />
-
-          {/* Lists */}
-          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+          {/* Text Color Dropdown */}
+          <div className="relative">
             <button
-              onClick={() => applyFormat('insertOrderedList')}
-              className="p-2 hover:bg-green-500 hover:text-white rounded-lg transition-all duration-200 group"
-              title="Numbered List"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowColorPicker(!showColorPicker);
+              }}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group flex items-center gap-1"
+              title="Text Color"
             >
-              <List className="w-4 h-4 group-hover:scale-110" />
+              A <ChevronDown className="w-3 h-3" />
             </button>
-            <button
-              onClick={() => applyFormat('insertUnorderedList')}
-              className="p-2 hover:bg-green-500 hover:text-white rounded-lg transition-all duration-200 group"
-              title="Bullet List"
-            >
-              <List className="w-4 h-4 group-hover:scale-110" />
-            </button>
+            {showColorPicker && (
+              <div 
+                className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="grid grid-cols-5 gap-2">
+                  {colors.map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => {
+                        applyFormat('foreColor', color);
+                        setShowColorPicker(false);
+                      }}
+                      className="w-6 h-6 rounded-full border-2 border-gray-300 hover:border-gray-500 transition-all duration-200"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </div>
+                <button className="mt-2 text-xs text-gray-500 hover:text-gray-700">
+                  + Custom
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className="w-px h-8 bg-gray-300" />
-
-          {/* Alignment */}
-          <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-1">
+          {/* List Dropdown */}
+          <div className="relative">
             <button
-              onClick={() => applyFormat('justifyLeft')}
-              className="p-2 hover:bg-purple-500 hover:text-white rounded-lg transition-all duration-200 group"
-              title="Align Left"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowListMenu(!showListMenu);
+              }}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group flex items-center gap-1"
+              title="Lists"
             >
-              <AlignLeft className="w-4 h-4 group-hover:scale-110" />
+              <List className="w-4 h-4" />
+              <ChevronDown className="w-3 h-3" />
             </button>
-            <button
-              onClick={() => applyFormat('justifyCenter')}
-              className="p-2 hover:bg-purple-500 hover:text-white rounded-lg transition-all duration-200 group"
-              title="Align Center"
-            >
-              <AlignCenter className="w-4 h-4 group-hover:scale-110" />
-            </button>
-            <button
-              onClick={() => applyFormat('justifyRight')}
-              className="p-2 hover:bg-purple-500 hover:text-white rounded-lg transition-all duration-200 group"
-              title="Align Right"
-            >
-              <AlignRight className="w-4 h-4 group-hover:scale-110" />
-            </button>
+            {showListMenu && (
+              <div 
+                className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => {
+                    applyFormat('insertUnorderedList');
+                    setShowListMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <div className="w-4 h-4 flex flex-col justify-center">
+                    <div className="w-1 h-1 bg-gray-600 rounded-full mb-1"></div>
+                    <div className="w-1 h-1 bg-gray-600 rounded-full mb-1"></div>
+                    <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                  </div>
+                  Bullet List
+                </button>
+                <button
+                  onClick={() => {
+                    applyFormat('insertOrderedList');
+                    setShowListMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <div className="w-4 h-4 flex flex-col justify-center">
+                    <div className="text-xs">1.</div>
+                    <div className="text-xs">2.</div>
+                    <div className="text-xs">3.</div>
+                  </div>
+                  Numbered List
+                </button>
+                <button
+                  onClick={() => {
+                    applyFormat('indent');
+                    setShowListMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <div className="w-4 h-4 flex items-center">
+                    <div className="w-2 h-0.5 bg-gray-600"></div>
+                    <div className="w-1 h-0.5 bg-gray-600 ml-1"></div>
+                  </div>
+                  Indent
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Close Button */}
+          {/* Link */}
           <button
-            onClick={() => setActiveField(null)}
-            className="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all duration-200 group ml-auto"
-            title="Close Toolbar"
+            onClick={() => {
+              const url = prompt('Enter URL:');
+              if (url) applyFormat('createLink', url);
+            }}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+            title="Insert Link"
           >
-            <X className="w-4 h-4 group-hover:scale-110" />
+            <Link className="w-4 h-4" />
+          </button>
+
+          {/* Image */}
+          <button
+            onClick={() => {
+              const url = prompt('Enter image URL:');
+              if (url) applyFormat('insertImage', url);
+            }}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+            title="Insert Image"
+          >
+            <ImageIcon className="w-4 h-4" />
+          </button>
+
+          {/* Video */}
+          <button
+            onClick={() => {
+              const url = prompt('Enter video URL:');
+              if (url) {
+                const videoHtml = `<video controls><source src="${url}" type="video/mp4"></video>`;
+                applyFormat('insertHTML', videoHtml);
+              }
+            }}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+            title="Insert Video"
+          >
+            <Video className="w-4 h-4" />
+          </button>
+
+          {/* More Options Dropdown */}
+          <div className="relative">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMoreMenu(!showMoreMenu);
+              }}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+              title="More Options"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+            {showMoreMenu && (
+              <div 
+                className="absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => {
+                    applyFormat('justifyLeft');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <AlignLeft className="w-4 h-4" />
+                  Align Left
+                </button>
+                <button
+                  onClick={() => {
+                    applyFormat('justifyCenter');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <AlignCenter className="w-4 h-4" />
+                  Align Center
+                </button>
+                <button
+                  onClick={() => {
+                    applyFormat('justifyRight');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <AlignRight className="w-4 h-4" />
+                  Align Right
+                </button>
+                <button
+                  onClick={() => {
+                    applyFormat('insertTable');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <Grid className="w-4 h-4" />
+                  Insert Table
+                </button>
+                <button
+                  onClick={() => {
+                    applyFormat('removeFormat');
+                    setShowMoreMenu(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 rounded-lg flex items-center gap-2"
+                >
+                  <X className="w-4 h-4" />
+                  Clear Formatting
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Code */}
+          <button
+            onClick={() => applyFormat('insertHTML', '<code></code>')}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 group"
+            title="Insert Code"
+          >
+            <Code className="w-4 h-4" />
           </button>
         </div>
       </div>
