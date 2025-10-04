@@ -1250,8 +1250,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             style={{ 
               direction: 'ltr',
               textAlign: 'left',
-              unicodeBidi: 'normal'
+              unicodeBidi: 'normal',
+              writingMode: 'horizontal-tb',
+              textOrientation: 'mixed'
             }}
+            dir="ltr"
           />
         )}
       </div>

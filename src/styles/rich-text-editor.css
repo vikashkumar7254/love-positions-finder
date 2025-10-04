@@ -1,3 +1,8 @@
+/* Global Text Direction Fix */
+* {
+  unicode-bidi: normal !important;
+}
+
 /* Rich Text Editor Styles */
 .rich-text-editor {
   min-height: 400px;
@@ -11,6 +16,8 @@
   direction: ltr !important;
   text-align: left !important;
   unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
 }
 
 /* Force LTR for all content */
@@ -18,6 +25,34 @@
   direction: ltr !important;
   text-align: left !important;
   unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+/* Specific fix for contentEditable */
+.rich-text-editor[contenteditable="true"] {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+/* Fix for any nested elements */
+.rich-text-editor p,
+.rich-text-editor div,
+.rich-text-editor span,
+.rich-text-editor h1,
+.rich-text-editor h2,
+.rich-text-editor h3,
+.rich-text-editor h4,
+.rich-text-editor h5,
+.rich-text-editor h6 {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
 }
 
 .rich-text-editor:focus {
@@ -29,6 +64,27 @@
   content: attr(data-placeholder);
   color: #9ca3af;
   pointer-events: none;
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+}
+
+/* Additional fix for contentEditable text direction */
+.rich-text-editor[contenteditable="true"]:focus {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+/* Fix for any text input in editor */
+.rich-text-editor[contenteditable="true"] * {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
 }
 
 /* Enhanced Toolbar Styles */
