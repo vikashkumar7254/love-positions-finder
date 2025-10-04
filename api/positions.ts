@@ -16,11 +16,17 @@ async function redisGet(key: string): Promise<string | null> {
 
 async function redisSet(key: string, value: string): Promise<{ ok: boolean; status: number }> {
   if (!REDIS_URL || !REDIS_TOKEN) return { ok: false, status: 0 }
-  const res = await fetch(`${REDIS_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
-    headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
-    cache: 'no-store',
-  })
-  return { ok: res.ok, status: res.status }
+  
+  try {
+    const res = await fetch(`${REDIS_URL}/set/${encodeURIComponent(key)}/${encodeURIComponent(value)}`, {
+      headers: { Authorization: `Bearer ${REDIS_TOKEN}` },
+      cache: 'no-store',
+    })
+    return { ok: res.ok, status: res.status }
+  } catch (error) {
+    console.error('Redis SET error:', error)
+    return { ok: false, status: 500 }
+  }
 }
 
 export default async function handler(req: any, res: any) {
@@ -67,14 +73,31 @@ export default async function handler(req: any, res: any) {
         return res.status(400).json({ error: 'Each position must have id, title, and image (strings).' })
       }
 
-      const result = await redisSet(KEY, JSON.stringify(items))
+      // Check data size before saving
+      const dataString = JSON.stringify(items)
+      const dataSizeKB = Math.round(Buffer.byteLength(dataString, 'utf8') / 1024)
+      
+      console.log(`📊 Saving ${items.length} positions, data size: ${dataSizeKB}KB`)
+      
+      // Upstash Redis has a 512MB limit per key, warn if approaching limit
+      if (dataSizeKB > 100000) { // 100MB warning
+        console.warn(`⚠️ Large data size: ${dataSizeKB}KB`)
+      }
+
+      const result = await redisSet(KEY, dataString)
       if (!result.ok) {
+        console.error(`❌ Redis save failed with status: ${result.status}`)
         if (result.status === 401 || result.status === 403) {
           return res.status(401).json({ error: 'Unauthorized to write to Upstash. Ensure you are using the FULL (writable) REST token, not the READONLY token.' })
         }
+        if (result.status === 431) {
+          return res.status(413).json({ error: 'Data too large for Redis. Please reduce the number of positions or image sizes.', status: result.status })
+        }
         return res.status(500).json({ error: 'Failed to save positions to Upstash Redis.', status: result.status })
       }
-      return res.status(200).json({ ok: true, count: items.length })
+      
+      console.log(`✅ Successfully saved ${items.length} positions to Redis`)
+      return res.status(200).json({ ok: true, count: items.length, dataSizeKB })
     }
 
     return res.status(405).json({ error: 'Method Not Allowed' })

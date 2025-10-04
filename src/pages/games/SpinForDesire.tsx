@@ -47,22 +47,34 @@ const SpinForDesire = () => {
       try {
         const scratchPositions = await getPositionsOptimized()
         if (mounted && Array.isArray(scratchPositions) && scratchPositions.length > 0) {
-          // Shuffle and take 12 random positions
-          const shuffled = [...scratchPositions].sort(() => 0.5 - Math.random())
+          // Shuffle and take 12 random positions - Better randomization
+          const shuffled = [...scratchPositions]
+          // Fisher-Yates shuffle algorithm for better randomness
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
           const random12 = shuffled.slice(0, 12)
           
-          const mapped: DesireItem[] = random12.map((pos, index) => ({
-            id: pos.id || `spin-${index}`,
-            title: pos.title || 'Romantic Position',
-            description: pos.description || 'A beautiful intimate moment',
-            image: pos.image || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&h=300&fit=crop&crop=center',
-            category: getRandomCategory(),
-            color: categoryColor(getRandomCategory()),
-            mediaType: (pos.mediaType as 'image' | 'gif' | 'video') || 'image'
-          }))
+          // Shuffle categories for more variety
+          const categories = ['romantic', 'passionate', 'playful', 'sensual', 'luxurious']
+          const shuffledCategories = [...categories].sort(() => Math.random() - 0.5)
+          
+          const mapped: DesireItem[] = random12.map((pos, index) => {
+            const randomCategory = shuffledCategories[index % shuffledCategories.length]
+            return {
+              id: pos.id || `spin-${Date.now()}-${index}`, // Unique ID with timestamp
+              title: pos.title || 'Romantic Position',
+              description: pos.description || 'A beautiful intimate moment',
+              image: pos.image || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&h=300&fit=crop&crop=center',
+              category: randomCategory,
+              color: categoryColor(randomCategory),
+              mediaType: (pos.mediaType as 'image' | 'gif' | 'video') || 'image'
+            }
+          })
           
           setAllItems(mapped)
-          console.log('🎯 Spin for Desire: Loaded 12 random scratch positions')
+          console.log('🎯 Spin for Desire: Loaded 12 random scratch positions at', new Date().toLocaleTimeString())
         }
       } catch (error) {
         console.error('Error loading scratch positions for spin wheel:', error)
@@ -412,11 +424,11 @@ const SpinForDesire = () => {
             </button>
 
             {/* Large Image */}
-            <div className="relative">
+            <div className="relative flex items-center justify-center bg-gray-100 min-h-[50vh] sm:min-h-[60vh]">
               <LazyImage
                 src={selectedItem.image}
                 alt={selectedItem.title}
-                className="w-full h-auto max-h-[50vh] sm:max-h-[60vh] object-cover"
+                className="max-w-full max-h-[50vh] sm:max-h-[60vh] object-contain"
               />
             </div>
 
