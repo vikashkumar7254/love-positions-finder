@@ -156,10 +156,36 @@ export default function RichTextEditor({
   }
 
   const insertImage = () => {
-    const url = prompt('Enter image URL:')
-    if (url) {
-      const alt = prompt('Enter alt text (optional):') || 'Image'
-      insertText(`![${alt}](${url})`)
+    setShowImageUpload(true)
+    setImageUploadStep(1)
+    setSelectedFile(null)
+    setImagePreview(null)
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
+      setImageUploadStep(2)
+      
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string)
+        setImageUploadStep(3)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const insertImageToEditor = () => {
+    if (imagePreview) {
+      const alt = prompt('Enter alt text for image (optional):') || 'Image'
+      insertText(`![${alt}](${imagePreview})`)
+      setShowImageUpload(false)
+      setImageUploadStep(1)
+      setSelectedFile(null)
+      setImagePreview(null)
     }
   }
 
@@ -405,9 +431,28 @@ export default function RichTextEditor({
   const [showColorDropdown, setShowColorDropdown] = useState(false)
   const [showAlignmentDropdown, setShowAlignmentDropdown] = useState(false)
   const [showMoreDropdown, setShowMoreDropdown] = useState(false)
+  const [showImageUpload, setShowImageUpload] = useState(false)
+  const [imageUploadStep, setImageUploadStep] = useState(1)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   const textStyles = [
-    { label: 'Normal', value: 'normal', onClick: () => {} },
+    { label: 'Normal', value: 'normal', onClick: () => {
+      const textarea = textareaRef.current
+      if (!textarea) return
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      const selectedText = value.substring(start, end)
+      if (selectedText) {
+        // Remove any existing formatting
+        const cleanText = selectedText.replace(/\*\*(.*?)\*\*/g, '$1')
+          .replace(/\*(.*?)\*/g, '$1')
+          .replace(/<u>(.*?)<\/u>/g, '$1')
+          .replace(/~~(.*?)~~/g, '$1')
+        const newValue = value.substring(0, start) + cleanText + value.substring(end)
+        onChange(newValue)
+      }
+    }},
     { label: 'Heading 1', value: 'h1', onClick: () => insertHeading(1) },
     { label: 'Heading 2', value: 'h2', onClick: () => insertHeading(2) },
     { label: 'Heading 3', value: 'h3', onClick: () => insertHeading(3) },
@@ -417,7 +462,19 @@ export default function RichTextEditor({
   ]
 
   const colors = [
-    { name: 'Default', color: '#000000', onClick: () => {} },
+    { name: 'Default', color: '#000000', onClick: () => {
+      const textarea = textareaRef.current
+      if (!textarea) return
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      const selectedText = value.substring(start, end)
+      if (selectedText) {
+        // Remove color formatting
+        const cleanText = selectedText.replace(/<span style="color: [^"]*;">(.*?)<\/span>/g, '$1')
+        const newValue = value.substring(0, start) + cleanText + value.substring(end)
+        onChange(newValue)
+      }
+    }},
     { name: 'Red', color: '#ef4444', onClick: () => wrapText('<span style="color: #ef4444;">', '</span>') },
     { name: 'Orange', color: '#f97316', onClick: () => wrapText('<span style="color: #f97316;">', '</span>') },
     { name: 'Yellow', color: '#eab308', onClick: () => wrapText('<span style="color: #eab308;">', '</span>') },
@@ -442,7 +499,25 @@ export default function RichTextEditor({
     { icon: <AlignCenter className="w-4 h-4" />, label: 'Align Center', onClick: () => wrapText('<div style="text-align: center;">', '</div>') },
     { icon: <AlignRight className="w-4 h-4" />, label: 'Align Right', onClick: () => wrapText('<div style="text-align: right;">', '</div>') },
     { icon: <Strikethrough className="w-4 h-4" />, label: 'Strikethrough', onClick: insertStrikethrough },
-    { icon: <X className="w-4 h-4" />, label: 'Clear Format', onClick: () => {} }
+    { icon: <X className="w-4 h-4" />, label: 'Clear Format', onClick: () => {
+      const textarea = textareaRef.current
+      if (!textarea) return
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      const selectedText = value.substring(start, end)
+      if (selectedText) {
+        // Remove all formatting
+        const cleanText = selectedText
+          .replace(/\*\*(.*?)\*\*/g, '$1')
+          .replace(/\*(.*?)\*/g, '$1')
+          .replace(/<u>(.*?)<\/u>/g, '$1')
+          .replace(/~~(.*?)~~/g, '$1')
+          .replace(/<span style="color: [^"]*;">(.*?)<\/span>/g, '$1')
+          .replace(/<div style="text-align: [^"]*;">(.*?)<\/div>/g, '$1')
+        const newValue = value.substring(0, start) + cleanText + value.substring(end)
+        onChange(newValue)
+      }
+    }}
   ]
 
   return (
@@ -817,6 +892,96 @@ export default function RichTextEditor({
         onEmojiSelect={handleEmojiSelect}
       />
 
+      {/* Image Upload Modal */}
+      {showImageUpload && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Upload Image</h3>
+            
+            {/* Step 1: File Selection */}
+            {imageUploadStep === 1 && (
+              <div className="text-center">
+                <div className="mb-4">
+                  <div className="w-16 h-16 bg-gray-100 rounded-lg mx-auto flex items-center justify-center mb-2">
+                    <ImageIcon className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-sm text-gray-600">Step 1: Select an image file</p>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700"
+                >
+                  Choose File
+                </label>
+                <button
+                  onClick={() => setShowImageUpload(false)}
+                  className="ml-2 px-4 py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+
+            {/* Step 2: Processing */}
+            {imageUploadStep === 2 && (
+              <div className="text-center">
+                <div className="mb-4">
+                  <div className="w-16 h-16 bg-blue-100 rounded-lg mx-auto flex items-center justify-center mb-2">
+                    <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full"></div>
+                  </div>
+                  <p className="text-sm text-gray-600">Step 2: Processing image...</p>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Preview & Insert */}
+            {imageUploadStep === 3 && imagePreview && (
+              <div>
+                <div className="mb-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-lg mx-auto flex items-center justify-center mb-2">
+                    <ImageIcon className="w-8 h-8 text-green-600" />
+                  </div>
+                  <p className="text-sm text-gray-600">Step 3: Preview and insert</p>
+                </div>
+                
+                <div className="mb-4">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-32 object-cover rounded-lg border"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    File: {selectedFile?.name} ({(selectedFile?.size || 0 / 1024).toFixed(1)} KB)
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={insertImageToEditor}
+                    className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  >
+                    Insert Image
+                  </button>
+                  <button
+                    onClick={() => setShowImageUpload(false)}
+                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Text Editor */}
       <Textarea
         ref={textareaRef}
@@ -829,7 +994,11 @@ export default function RichTextEditor({
         onKeyDown={handleKeyDown}
         onClick={handleTextareaClick}
         placeholder={placeholder}
-        className="rich-text-textarea min-h-[300px] resize-none text-sm leading-relaxed"
+        className="min-h-[300px] resize-none text-sm leading-relaxed bg-white border-2 border-gray-200 rounded-lg p-4 font-mono"
+        style={{
+          backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, #e5e7eb 31px, #e5e7eb 32px)',
+          lineHeight: '32px'
+        }}
       />
 
       {/* Character Count */}
