@@ -47,7 +47,6 @@ import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
 import SpinDesiresAdmin from "./pages/admin/SpinDesiresAdmin";
 import SEOAdmin from "./pages/admin/SEOAdmin";
-import SpinForDesireAdmin from "./pages/admin/SpinForDesireAdmin";
 import JourneyPositionsAdmin from "./pages/admin/JourneyPositionsAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
@@ -158,7 +157,6 @@ const App = () => {
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
               <Route path="/admin/journey-positions" element={<JourneyPositionsAdmin />} />
               <Route path="/admin/spin-desires" element={<SpinDesiresAdmin />} />
-              <Route path="/admin/spin-for-desire" element={<SpinForDesireAdmin />} />
               <Route path="/admin/seo" element={<SEOAdmin />} />
               
               {/* Other Routes */}

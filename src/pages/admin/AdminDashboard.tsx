@@ -113,13 +113,11 @@ const AdminDashboardContent = () => {
     },
     {
       title: "Spin for Desire",
-      description: "Manage wheel desires, images and categories",
+      description: "Uses random scratch positions (500+ available)",
       icon: Gift,
       color: "from-pink-500 to-rose-600",
-      stats: "Romantic wheel desires",
+      stats: "12 random positions per visit",
       actions: [
-        { label: "Manage Desires", href: "/admin/spin-desires", icon: Edit3 },
-        { label: "Manage Images", href: "/admin/spin-for-desire", icon: Image },
         { label: "View Game", href: "/games/spin-for-desire", icon: Gamepad2 }
       ]
     },
@@ -308,19 +306,19 @@ const AdminDashboardContent = () => {
                     </div>
                   </Link>
                   
-                  <Link to="/admin/spin-desires" className="block p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-all duration-300 hover:shadow-lg group">
+                  <Link to="/games/spin-for-desire" className="block p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 hover:from-pink-100 hover:to-purple-100 dark:hover:from-pink-900/30 dark:hover:to-purple-900/30 rounded-xl border border-pink-200 dark:border-pink-800 transition-all duration-300 hover:shadow-lg group">
                     <div className="flex items-center gap-4 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Gift className="w-6 h-6 text-white" />
                       </div>
                       <div>
                         <h3 className="font-bold text-lg text-slate-800 dark:text-white">Spin for Desire</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Manage wheel desires</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">Random positions from scratch cards</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">Click to change images</span>
-                      <span className="text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">Configure →</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">12 random from 500+ positions</span>
+                      <span className="text-pink-600 dark:text-pink-400 font-medium group-hover:translate-x-1 transition-transform">Play Game →</span>
                     </div>
                   </Link>
                 </div>

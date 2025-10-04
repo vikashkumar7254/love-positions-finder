@@ -2,9 +2,7 @@ import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { RotateCcw, Play, Heart, Star, Sparkles, Zap, Gift, Crown, RefreshCw } from "lucide-react"
-import { desireItems } from "@/data/desireItems"
-import { getSpinDesires, type SpinDesireItem } from "@/lib/spinDesiresApi"
-import { getCategoryImage } from "@/utils/imageManager"
+import { getPositionsOptimized } from "@/utils/positionsCache"
 import LazyImage from "@/components/LazyImage"
 import { Helmet } from "react-helmet-async"
 
@@ -15,6 +13,7 @@ interface DesireItem {
   image: string
   category: 'romantic' | 'passionate' | 'playful' | 'sensual' | 'luxurious'
   color: string
+  mediaType?: 'image' | 'gif' | 'video'
 }
 
 const SpinForDesire = () => {
@@ -36,41 +35,48 @@ const SpinForDesire = () => {
     }
   }
 
-  // Load items: prefer server (admin-managed), fallback to defaults
-  // Always limit to 12 items for the wheel
+  const getRandomCategory = (): DesireItem["category"] => {
+    const categories: DesireItem["category"][] = ['romantic', 'passionate', 'playful', 'sensual', 'luxurious']
+    return categories[Math.floor(Math.random() * categories.length)]
+  }
+
+  // Load 12 random scratch positions for the wheel
   useEffect(() => {
     let mounted = true
     ;(async () => {
       try {
-        const apiItems = await getSpinDesires()
-        if (mounted && Array.isArray(apiItems) && apiItems.length > 0) {
-          const mapped: DesireItem[] = apiItems.map((it: SpinDesireItem) => ({
-            id: it.id,
-            title: it.title,
-            description: it.description || '',
-            image: it.image,
-            category: (it.category as DesireItem["category"]) || 'romantic',
-            color: categoryColor((it.category as DesireItem["category"]) || 'romantic'),
+        const scratchPositions = await getPositionsOptimized()
+        if (mounted && Array.isArray(scratchPositions) && scratchPositions.length > 0) {
+          // Shuffle and take 12 random positions
+          const shuffled = [...scratchPositions].sort(() => 0.5 - Math.random())
+          const random12 = shuffled.slice(0, 12)
+          
+          const mapped: DesireItem[] = random12.map((pos, index) => ({
+            id: pos.id || `spin-${index}`,
+            title: pos.title || 'Romantic Position',
+            description: pos.description || 'A beautiful intimate moment',
+            image: pos.image || 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&h=300&fit=crop&crop=center',
+            category: getRandomCategory(),
+            color: categoryColor(getRandomCategory()),
+            mediaType: (pos.mediaType as 'image' | 'gif' | 'video') || 'image'
           }))
-          // Limit to 12 items for the wheel
-          setAllItems(mapped.slice(0, 12))
-          return
+          
+          setAllItems(mapped)
+          console.log('🎯 Spin for Desire: Loaded 12 random scratch positions')
         }
-      } catch {}
-      if (mounted) {
-        // Fallback: local defaults - limit to 12 items
-        setAllItems(desireItems.slice(0, 12))
+      } catch (error) {
+        console.error('Error loading scratch positions for spin wheel:', error)
+        // Fallback to empty array
+        setAllItems([])
       }
     })()
     return () => { mounted = false }
   }, [])
 
-  // If needed, future: subscribe to server updates (skipped for now)
-
+  // Refresh wheel with new random positions
   const refreshItems = () => {
-    const customItems = loadCustomItems()
-    const merged = [...desireItems, ...customItems]
-    setAllItems(merged)
+    // Reload random positions
+    window.location.reload()
   }
 
   const spinWheel = () => {
@@ -146,7 +152,7 @@ const SpinForDesire = () => {
               </h1>
             </div>
             <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed px-2">
-              Spin the wheel of passion and discover your next romantic adventure. Let fate decide your intimate moment!
+              Spin the wheel of passion and discover your next romantic adventure! 12 random positions from our collection of 500+ intimate moments. Each visit shows different positions!
             </p>
           </div>
 
@@ -195,13 +201,6 @@ const SpinForDesire = () => {
                             src={item.image}
                             alt={item.title}
                             className="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-90 transition-opacity duration-300"
-                            width={200}
-                            height={200}
-                            onError={(e) => {
-                              // Fallback to solid color if image fails to load
-                              const target = e.target as HTMLImageElement;
-                              target.style.display = 'none';
-                            }}
                           />
                           
                           {/* Gradient Overlay - Lighter for better visibility */}
@@ -259,10 +258,7 @@ const SpinForDesire = () => {
                       <LazyImage
                         src={selectedItem.image}
                         alt={selectedItem.title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        onClick={() => setShowImagePopup(true)}
-                        width={128}
-                        height={128}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300 cursor-pointer"
                       />
                       {/* Overlay with title */}
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -307,30 +303,42 @@ const SpinForDesire = () => {
                     </button>
                   </div>
 
-                  {/* Reset Button */}
-                  {(selectedItem || rotation > 0) && !isSpinning && (
-                    <div className="text-center">
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    {(selectedItem || rotation > 0) && !isSpinning && (
                       <button
                         onClick={resetWheel}
-                        className="px-8 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-300"
+                        className="px-6 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all duration-300"
                       >
                         <div className="flex items-center gap-2">
                           <RotateCcw className="w-5 h-5" />
                           Reset Wheel
                         </div>
                       </button>
-                    </div>
-                  )}
+                    )}
+                    
+                    <button
+                      onClick={refreshItems}
+                      className="px-6 py-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white rounded-xl hover:from-purple-500/30 hover:to-pink-500/30 transition-all duration-300 border border-purple-500/30"
+                    >
+                      <div className="flex items-center gap-2">
+                        <RefreshCw className="w-5 h-5" />
+                        New Random Set
+                      </div>
+                    </button>
+                  </div>
 
                   {/* Instructions */}
                   {!selectedItem && !isSpinning && (
                     <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
                       <h4 className="text-blue-300 font-bold mb-2">How to Play:</h4>
                       <div className="space-y-1 text-blue-200/80 text-sm">
+                        <div>• 12 random positions from 500+ available</div>
                         <div>• Click "Spin the Wheel" to start</div>
                         <div>• Watch as the wheel spins and stops</div>
                         <div>• Discover your romantic adventure</div>
-                        <div>• Enjoy the moment with your partner!</div>
+                        <div>• Click center image for full view</div>
+                        <div>• Get new random set anytime!</div>
                       </div>
                     </div>
                   )}
@@ -349,8 +357,6 @@ const SpinForDesire = () => {
                     src={selectedItem.image}
                     alt={selectedItem.title}
                     className="w-32 h-32 mx-auto rounded-full object-cover border-4 border-yellow-400 shadow-2xl"
-                    width={128}
-                    height={128}
                   />
                 </div>
                 
@@ -387,7 +393,7 @@ const SpinForDesire = () => {
           {/* All Options Preview - Show only wheel items */}
           <Card variant="elegant" className="bg-black/20 border-pink-500/20 shadow-2xl rounded-2xl backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-white text-xl text-center">Wheel Options (12 Items)</CardTitle>
+              <CardTitle className="text-white text-xl text-center">Random Positions (12 from 500+ available)</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -445,8 +451,6 @@ const SpinForDesire = () => {
                 src={selectedItem.image}
                 alt={selectedItem.title}
                 className="w-full h-auto max-h-[70vh] object-cover"
-                width={800}
-                height={600}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
               

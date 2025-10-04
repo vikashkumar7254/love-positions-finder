@@ -5,6 +5,8 @@ const CACHE_TIMESTAMP_KEY = 'positions_cache_timestamp_v2'
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
 export type CachedPosition = {
+  description: string
+  mediaType: string
   id: string
   title: string
   image: string
@@ -85,7 +87,12 @@ async function fetchAndCachePositions(): Promise<CachedPosition[]> {
     
     if (positions.length > 0) {
       savePositionsToCache(positions)
-      return positions.map(pos => ({ ...pos, cachedAt: Date.now() }))
+      return positions.map(pos => ({ 
+        ...pos, 
+        cachedAt: Date.now(),
+        description: '',
+        mediaType: 'image'
+      }))
     }
     
     return []
