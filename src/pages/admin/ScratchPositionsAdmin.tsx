@@ -316,6 +316,8 @@ const ScratchPositionsAdminContent = () => {
     setImage("")
     setEditingId(null)
     setUploadedFile(null)
+    setTags([])
+    setTagInput("")
     setIsUploading(false)
 
     // Clear file input
@@ -697,6 +699,8 @@ const ScratchPositionsAdminContent = () => {
                     setTitle("")
                     setImage("")
                     setEditingId(null)
+                    setTags([])
+                    setTagInput("")
                     clearUploadedFile()
                   }}>
                     Cancel Edit

@@ -2,7 +2,9 @@ export type PositionItem = {
   id: string
   title: string
   image: string
+  mediaType?: 'image' | 'gif' | 'video'
   isDefault?: boolean
+  tags?: string[]
 }
 
 const API_BASE = '/api/positions'
