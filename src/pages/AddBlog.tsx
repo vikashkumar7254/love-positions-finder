@@ -102,8 +102,9 @@ const AddBlog = () => {
   const handleFieldFocus = (fieldName: string, event: React.FocusEvent) => {
     setActiveField(fieldName);
     const rect = event.currentTarget.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     setToolbarPosition({
-      top: rect.bottom + 10,
+      top: rect.bottom + scrollTop + 10,
       left: rect.left
     });
   };
@@ -129,12 +130,12 @@ const AddBlog = () => {
 
     return (
       <div
-        className="fixed z-50 bg-white/95 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-2xl p-3"
+        className="fixed z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-3"
         style={{
-          top: toolbarPosition.top,
-          left: toolbarPosition.left,
-          transform: 'translateY(0px)',
-          minWidth: '300px'
+          top: `${toolbarPosition.top}px`,
+          left: `${toolbarPosition.left}px`,
+          minWidth: '300px',
+          maxWidth: '500px'
         }}
       >
         <div className="flex items-center gap-2">
@@ -396,6 +397,11 @@ const AddBlog = () => {
                       onBlur={handleFieldBlur}
                       placeholder="Enter an amazing title for your blog post..."
                       className="h-12 text-lg font-medium"
+                      style={{
+                        direction: 'ltr',
+                        textAlign: 'left',
+                        unicodeBidi: 'normal'
+                      }}
                     />
                     <p className="text-xs text-gray-500 flex items-center gap-1">
                       <Hash className="w-3 h-3" />
@@ -456,6 +462,11 @@ const AddBlog = () => {
                     placeholder="Write a compelling summary that will appear on the blog listing page..."
                     rows={3}
                     className="resize-none"
+                    style={{
+                      direction: 'ltr',
+                      textAlign: 'left',
+                      unicodeBidi: 'normal'
+                    }}
                   />
                   <p className="text-xs text-gray-500">
                     {excerpt.length}/200 characters
@@ -483,6 +494,11 @@ const AddBlog = () => {
                   placeholder="Start writing your amazing blog post here... Use the floating toolbar for formatting! 😍💕❤️"
                   rows={10}
                   className="resize-none min-h-[300px]"
+                  style={{
+                    direction: 'ltr',
+                    textAlign: 'left',
+                    unicodeBidi: 'normal'
+                  }}
                 />
                 <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-start gap-3">
