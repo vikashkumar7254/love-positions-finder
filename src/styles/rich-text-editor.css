@@ -3,6 +3,15 @@
   unicode-bidi: normal !important;
 }
 
+/* Force LTR for all elements */
+.force-ltr {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
 /* Rich Text Editor Styles */
 .rich-text-editor {
   min-height: 400px;
@@ -31,6 +40,15 @@
 
 /* Specific fix for contentEditable */
 .rich-text-editor[contenteditable="true"] {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+/* Force text direction for contentEditable when focused */
+.rich-text-editor[contenteditable="true"]:focus {
   direction: ltr !important;
   text-align: left !important;
   unicode-bidi: normal !important;
@@ -80,6 +98,24 @@
 
 /* Fix for any text input in editor */
 .rich-text-editor[contenteditable="true"] * {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+/* Additional fix for contentEditable text direction */
+.rich-text-editor[contenteditable="true"] *:focus {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+/* Force LTR for any text content */
+.rich-text-editor[contenteditable="true"] *[contenteditable] {
   direction: ltr !important;
   text-align: left !important;
   unicode-bidi: normal !important;

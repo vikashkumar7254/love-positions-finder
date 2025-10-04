@@ -98,14 +98,17 @@ const AddBlog = () => {
     }
   }, [excerpt, metaDescription]);
 
-  // Handle field focus for floating toolbar
+  // Handle field focus for floating toolbar - only for content area
   const handleFieldFocus = (fieldName: string, event: React.FocusEvent) => {
-    setActiveField(fieldName);
-    const rect = event.currentTarget.getBoundingClientRect();
-    setToolbarPosition({
-      top: rect.bottom + 10,
-      left: rect.left
-    });
+    // Only show toolbar for content area
+    if (fieldName === 'content') {
+      setActiveField(fieldName);
+      const rect = event.currentTarget.getBoundingClientRect();
+      setToolbarPosition({
+        top: rect.bottom + 10,
+        left: rect.left
+      });
+    }
   };
 
   const handleFieldBlur = () => {
@@ -392,8 +395,6 @@ const AddBlog = () => {
                     <Input 
                       value={title} 
                       onChange={(e) => setTitle(e.target.value)} 
-                      onFocus={(e) => handleFieldFocus('title', e)}
-                      onBlur={handleFieldBlur}
                       placeholder="Enter an amazing title for your blog post..."
                       className="h-12 text-lg font-medium"
                     />
@@ -451,8 +452,6 @@ const AddBlog = () => {
                   <Textarea 
                     value={excerpt} 
                     onChange={(e) => setExcerpt(e.target.value)} 
-                    onFocus={(e) => handleFieldFocus('excerpt', e)}
-                    onBlur={handleFieldBlur}
                     placeholder="Write a compelling summary that will appear on the blog listing page..."
                     rows={3}
                     className="resize-none"

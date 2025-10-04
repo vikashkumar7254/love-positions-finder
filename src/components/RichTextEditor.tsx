@@ -1244,24 +1244,24 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
             </CardContent>
           </Card>
         ) : (
-          <div
-            ref={editorRef}
-            contentEditable
-            className="rich-text-editor"
-            onInput={updateContent}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            dangerouslySetInnerHTML={{ __html: value }}
-            data-placeholder={placeholder}
-            style={{ 
-              direction: 'ltr',
-              textAlign: 'left',
-              unicodeBidi: 'normal',
-              writingMode: 'horizontal-tb',
-              textOrientation: 'mixed'
-            }}
-            dir="ltr"
-          />
+        <div
+          ref={editorRef}
+          contentEditable
+          className="rich-text-editor force-ltr"
+          onInput={updateContent}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          dangerouslySetInnerHTML={{ __html: value }}
+          data-placeholder={placeholder}
+          style={{
+            direction: 'ltr',
+            textAlign: 'left',
+            unicodeBidi: 'normal',
+            writingMode: 'horizontal-tb',
+            textOrientation: 'mixed'
+          }}
+          dir="ltr"
+        />
         )}
       </div>
 
