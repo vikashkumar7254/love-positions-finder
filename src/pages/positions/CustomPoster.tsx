@@ -487,22 +487,14 @@ const CustomPoster = () => {
                             >
                               <CardContent className="p-3 h-full flex flex-col">
                                 <div className="flex-1 flex items-center justify-center overflow-hidden rounded">
-                                  {slot.scratchPosition?.image ? (
-                                    <img 
-                                      src={slot.scratchPosition.image} 
-                                      alt={slot.scratchPosition.title || `Position ${slot.day}`}
-                                      className="w-full h-full object-contain"
-                                    />
-                                  ) : (
-                                    <ImageIcon className="w-8 h-8 text-white/60" />
-                                  )}
+                                  <Lock className="w-8 h-8 text-white/60" />
                                 </div>
                                 <div className="text-center">
                                   <div className="text-xs font-semibold text-white break-words">
-                                    {slot.scratchPosition?.title || `Position ${slot.day}`}
+                                    Day {slot.day}
                                   </div>
                                   <div className="text-xs text-purple-300 mt-1">
-                                    Day {slot.day}
+                                    Locked
                                   </div>
                                 </div>
                               </CardContent>
