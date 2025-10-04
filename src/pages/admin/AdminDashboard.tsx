@@ -23,10 +23,9 @@ import {
   Search,
   FileText,
   Globe,
-  Palette,
-  Calendar,
   Zap,
-  Target
+  Target,
+  MapPin
 } from "lucide-react"
 
 const AdminDashboardContent = () => {
@@ -120,29 +119,6 @@ const AdminDashboardContent = () => {
         { label: "Manage Desires", href: "/admin/spin-desires", icon: Edit3 },
         { label: "Manage Images", href: "/admin/spin-for-desire", icon: Image },
         { label: "View Game", href: "/games/spin-for-desire", icon: Gamepad2 }
-      ]
-    },
-    {
-      title: "Custom Poster",
-      description: "Manage custom poster positions and journey",
-      icon: Calendar,
-      color: "from-purple-500 to-indigo-600",
-      stats: "7-day journey positions",
-      actions: [
-        { label: "Manage Positions", href: "/admin/custom-poster", icon: Edit3 },
-        { label: "View Game", href: "/positions/custom-poster", icon: Gamepad2 }
-      ]
-    },
-    {
-      title: "Image Management",
-      description: "Upload and manage all site images with categories",
-      icon: Image,
-      color: "from-green-500 to-emerald-600",
-      stats: "Upload & organize images",
-      actions: [
-        { label: "Manage Images", href: "/admin/image-management", icon: Image },
-        { label: "Default Images", href: "/admin/default-images", icon: Palette },
-        { label: "View All Games", href: "/games", icon: Eye }
       ]
     },
     {
@@ -332,6 +308,25 @@ const AdminDashboardContent = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-slate-600 dark:text-slate-400">Click to change images</span>
                       <span className="text-blue-600 dark:text-blue-400 font-medium group-hover:translate-x-1 transition-transform">Configure →</span>
+                    </div>
+                  </Link>
+                </div>
+                
+                {/* Additional Admin Tools */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <Link to="/admin/journey-positions" className="block p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 hover:from-green-100 hover:to-emerald-100 dark:hover:from-green-900/30 dark:hover:to-emerald-900/30 rounded-xl border border-green-200 dark:border-green-800 transition-all duration-300 hover:shadow-lg group">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <MapPin className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-slate-800 dark:text-white">Journey Positions</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">Manage journey images & videos</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">Add images, GIFs, videos</span>
+                      <span className="text-green-600 dark:text-green-400 font-medium group-hover:translate-x-1 transition-transform">Manage →</span>
                     </div>
                   </Link>
                 </div>

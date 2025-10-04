@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanc
 import { Button } from "@/components/ui/enhanced-button"
 import { Heart, Download, Plus, X, Star, Shuffle, Save, Share2, Grid, List, Palette, Image as ImageIcon, Calendar, Clock, Lock, CheckCircle, RefreshCw } from "lucide-react"
 import { posterPositions, getAllPosterPositions } from "@/data/posterPositions"
+import { getPositionsOptimized } from "@/utils/positionsCache"
 
 interface Position {
   id: string
@@ -16,6 +17,7 @@ interface Position {
 interface PosterSlot {
   id: string
   position?: Position
+  scratchPosition?: any
   day: number
   isRevealed: boolean
   revealedDate?: string
@@ -59,12 +61,57 @@ const CustomPoster = () => {
   const [selectedTheme, setSelectedTheme] = useState<'purple' | 'pink' | 'red' | 'blue'>('purple')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [allPositions, setAllPositions] = useState<Position[]>([])
+  const [scratchPositions, setScratchPositions] = useState<any[]>([])
+  const [randomScratchPositions, setRandomScratchPositions] = useState<any[]>([])
+  const [selectedImage, setSelectedImage] = useState<any>(null)
+  const [showImageModal, setShowImageModal] = useState(false)
   const posterRef = useRef<HTMLDivElement>(null)
 
   // Load positions from data file and localStorage
   useEffect(() => {
     const positions = getAllPosterPositions()
     setAllPositions(positions)
+  }, [])
+
+  // Load scratch positions and get random 7
+  useEffect(() => {
+    const loadScratchPositions = async () => {
+      try {
+        const positions = await getPositionsOptimized()
+        setScratchPositions(positions)
+        
+        // Get random 7 positions for this user
+        const shuffled = [...positions].sort(() => 0.5 - Math.random())
+        const random7 = shuffled.slice(0, 7)
+        setRandomScratchPositions(random7)
+        
+        // Initialize poster slots with random scratch positions
+        const saved = localStorage.getItem('intimateJourneySlots')
+        if (!saved) {
+          const newSlots = Array.from({ length: 7 }, (_, i) => ({
+            id: `slot-${i}`,
+            day: i + 1,
+            isRevealed: false,
+            scratchPosition: random7[i] // Store the random scratch position
+          }))
+          setPosterSlots(newSlots)
+        } else {
+          // Load existing slots and update with new random positions
+          const existingSlots = JSON.parse(saved)
+          const updatedSlots = existingSlots.map((slot: any, index: number) => ({
+            ...slot,
+            scratchPosition: random7[index] || slot.scratchPosition
+          }))
+          setPosterSlots(updatedSlots)
+        }
+        
+        console.log('🎲 Loaded random 7 scratch positions for poster:', random7.length)
+      } catch (error) {
+        console.error('❌ Error loading scratch positions:', error)
+      }
+    }
+    
+    loadScratchPositions()
   }, [])
 
   // Listen for localStorage changes
@@ -101,6 +148,19 @@ const CustomPoster = () => {
     setAllPositions(positions)
   }
 
+  // Handle image click to show in modal
+  const handleImageClick = (position: any) => {
+    setSelectedImage(position)
+    setShowImageModal(true)
+  }
+
+  // Close image modal
+  const closeImageModal = () => {
+    setShowImageModal(false)
+    setSelectedImage(null)
+  }
+
+
   // Save to localStorage whenever state changes
   useEffect(() => {
     localStorage.setItem('intimateJourneyProgress', JSON.stringify(journeyProgress))
@@ -120,7 +180,7 @@ const CustomPoster = () => {
   // Check if user can reveal today's position
   const canRevealToday = () => {
     const today = new Date().toISOString().split('T')[0]
-    return journeyProgress.lastRevealDate !== today && journeyProgress.currentDay <= 7
+    return journeyProgress.lastRevealDate !== today
   }
 
   // Reveal today's position
@@ -129,22 +189,40 @@ const CustomPoster = () => {
 
     const today = new Date().toISOString().split('T')[0]
     const currentDay = journeyProgress.currentDay
-    const randomPosition = allPositions[Math.floor(Math.random() * allPositions.length)]
+    
+    // Get the scratch position for current day
+    const currentSlot = posterSlots.find(slot => slot.day === currentDay)
+    const scratchPosition = currentSlot?.scratchPosition
 
-    // Update the slot for current day
-    setPosterSlots(prev => prev.map(slot => 
-      slot.day === currentDay 
-        ? { ...slot, position: randomPosition, isRevealed: true, revealedDate: today }
-        : slot
-    ))
+    if (scratchPosition) {
+      // Convert scratch position to poster position format
+      const position = {
+        id: scratchPosition.id,
+        name: scratchPosition.title,
+        category: 'Intimate',
+        difficulty: 'intermediate' as const,
+        image: scratchPosition.image,
+        description: `Day ${currentDay} position`
+      }
 
-    // Update progress
-    setJourneyProgress(prev => ({
-      ...prev,
-      currentDay: Math.min(currentDay + 1, 8),
-      completedDays: [...prev.completedDays, currentDay],
-      lastRevealDate: today
-    }))
+      // Update the slot for current day
+      setPosterSlots(prev => prev.map(slot => 
+        slot.day === currentDay 
+          ? { ...slot, position: position, isRevealed: true, revealedDate: today }
+          : slot
+      ))
+
+      // Update progress
+      setJourneyProgress(prev => {
+        const newCurrentDay = currentDay >= 7 ? 1 : currentDay + 1 // Reset to day 1 after day 7
+        return {
+          ...prev,
+          currentDay: newCurrentDay,
+          completedDays: [...prev.completedDays, currentDay],
+          lastRevealDate: today
+        }
+      })
+    }
   }
 
   // Reset journey (for testing or restart)
@@ -185,6 +263,9 @@ const CustomPoster = () => {
   const revealedSlots = posterSlots.filter(slot => slot.isRevealed).length
   const completionPercentage = Math.round((revealedSlots / posterSlots.length) * 100)
   const daysSinceStart = getDaysSinceStart()
+  
+  // Calculate current cycle (how many times we've completed 7 days)
+  const currentCycle = Math.floor(daysSinceStart / 7) + 1
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${themes[selectedTheme]}`}>
@@ -273,7 +354,7 @@ const CustomPoster = () => {
                       />
                     </div>
                     <div className="flex justify-between text-xs text-white/50 mt-1">
-                      <span>Day {daysSinceStart} of journey</span>
+                      <span>Day {journeyProgress.currentDay} - Cycle {currentCycle}</span>
                       <span>{completionPercentage}% Complete</span>
                     </div>
                   </div>
@@ -331,8 +412,8 @@ const CustomPoster = () => {
                         <div className="text-xs text-white/60">Completion</div>
                       </div>
                       <div>
-                        <div className="text-sm sm:text-lg font-bold text-red-300">{daysSinceStart}</div>
-                        <div className="text-xs text-white/60">Days Since Start</div>
+                        <div className="text-sm sm:text-lg font-bold text-red-300">{currentCycle}</div>
+                        <div className="text-xs text-white/60">Current Cycle</div>
                       </div>
                     </div>
 
@@ -343,7 +424,8 @@ const CustomPoster = () => {
                           {slot.isRevealed && slot.position ? (
                             <Card 
                               variant="elegant" 
-                              className="h-full bg-gradient-to-br from-green-500/20 to-purple-500/20 border-green-500/30 relative"
+                              className="h-full bg-gradient-to-br from-green-500/20 to-purple-500/20 border-green-500/30 relative cursor-pointer hover:scale-105 transition-transform"
+                              onClick={() => handleImageClick(slot.position)}
                             >
                               <CardContent className="p-3 h-full flex flex-col">
                                 <div className="absolute top-1 right-1">
@@ -354,7 +436,7 @@ const CustomPoster = () => {
                                     <img 
                                       src={slot.position.image} 
                                       alt={slot.position.name}
-                                      className="w-full h-full object-cover"
+                                      className="w-full h-full object-contain hover:scale-110 transition-transform"
                                     />
                                   ) : (
                                     <ImageIcon className="w-8 h-8 text-white/60" />
@@ -401,15 +483,27 @@ const CustomPoster = () => {
                           ) : (
                             <Card 
                               variant="elegant" 
-                              className="h-full bg-black/20 border-white/10 opacity-60"
+                              className="h-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-500/30 relative"
                             >
-                              <CardContent className="p-3 h-full flex flex-col items-center justify-center">
-                                <Lock className="w-6 h-6 text-white/40" />
-                                <div className="text-xs text-white/40 mt-2">
-                                  Day {slot.day}
+                              <CardContent className="p-3 h-full flex flex-col">
+                                <div className="flex-1 flex items-center justify-center overflow-hidden rounded">
+                                  {slot.scratchPosition?.image ? (
+                                    <img 
+                                      src={slot.scratchPosition.image} 
+                                      alt={slot.scratchPosition.title || `Position ${slot.day}`}
+                                      className="w-full h-full object-contain"
+                                    />
+                                  ) : (
+                                    <ImageIcon className="w-8 h-8 text-white/60" />
+                                  )}
                                 </div>
-                                <div className="text-xs text-white/30 mt-1">
-                                  Locked
+                                <div className="text-center">
+                                  <div className="text-xs font-semibold text-white break-words">
+                                    {slot.scratchPosition?.title || `Position ${slot.day}`}
+                                  </div>
+                                  <div className="text-xs text-purple-300 mt-1">
+                                    Day {slot.day}
+                                  </div>
                                 </div>
                               </CardContent>
                             </Card>
@@ -555,6 +649,42 @@ const CustomPoster = () => {
           </div>
         </div>
       </main>
+
+      {/* Image Modal */}
+      {showImageModal && selectedImage && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative max-w-4xl max-h-[90vh] w-full">
+            {/* Close Button */}
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            {/* Image Container */}
+            <div className="bg-white rounded-lg overflow-hidden shadow-2xl">
+              <div className="relative">
+                <img
+                  src={selectedImage.image}
+                  alt={selectedImage.name}
+                  className="w-full h-auto max-h-[70vh] object-contain"
+                />
+                
+                {/* Image Info */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                  <h3 className="text-white text-lg font-semibold mb-1">
+                    {selectedImage.name}
+                  </h3>
+                  <p className="text-white/80 text-sm">
+                    {selectedImage.description || 'Intimate Position'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

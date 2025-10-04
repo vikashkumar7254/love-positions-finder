@@ -133,7 +133,7 @@ const PositionSelector = () => {
                               <LazyImage
                                 src={base}
                                 alt={p.name}
-                                className="w-full h-44 object-cover cursor-zoom-in"
+                                className="w-full h-44 object-contain cursor-zoom-in"
                                 onClick={() => setLightboxUrl(hiRes)}
                                 width={400}
                                 height={300}

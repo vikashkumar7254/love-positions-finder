@@ -41,7 +41,7 @@ const LazyImage = ({ src, alt, className = '', placeholder = 'data:image/svg+xml
         <img
           src={src}
           alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
+          className={`w-full h-full object-contain transition-opacity duration-300 ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } ${className}`}
           onLoad={() => setIsLoaded(true)}

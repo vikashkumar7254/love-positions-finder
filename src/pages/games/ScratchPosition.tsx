@@ -590,7 +590,7 @@ const ScratchPosition = () => {
                           {card.mediaType === 'video' ? (
                             <video 
                               src={card.image} 
-                              className={`w-full h-full object-cover transition-all duration-500 ${
+                              className={`w-full h-full object-contain transition-all duration-500 ${
                                 card.revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                               }`}
                               muted
@@ -604,7 +604,7 @@ const ScratchPosition = () => {
                             <img 
                               src={card.image} 
                               alt={card.title}
-                              className={`w-full h-full object-cover transition-all duration-500 ${
+                              className={`w-full h-full object-contain transition-all duration-500 ${
                                 card.revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                               }`}
                               onError={(e) => {

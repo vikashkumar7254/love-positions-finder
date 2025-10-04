@@ -168,7 +168,7 @@ const ScratchCardModal = ({ item, onClose, onReveal }: ScratchCardModalProps) =>
             <img
               src={item.mediaUrl}
               alt={item.title}
-              className="w-full h-64 object-cover rounded-t-lg"
+              className="w-full h-64 object-contain rounded-t-lg"
             />
           ) : (
             <div className="w-full h-64 bg-gradient-romantic flex items-center justify-center rounded-t-lg">
@@ -279,15 +279,15 @@ const ScratchCards = ({ items = [], heading, subheading }: ScratchCardsProps) =>
   const renderMedia = (mediaUrl?: string | null) => {
     if (!mediaUrl) {
       // Use default journey image when no mediaUrl is provided
-      return <img src={getDefaultImageForCategory('journey')} alt="position" className="w-full h-full object-cover" />
+      return <img src={getDefaultImageForCategory('journey')} alt="position" className="w-full h-full object-contain" />
     }
     const isVideo = /\.(mp4|webm|ogg)$/i.test(mediaUrl)
     if (isVideo) {
       return (
-        <video className="w-full h-full object-cover" src={mediaUrl} autoPlay loop muted playsInline />
+        <video className="w-full h-full object-contain" src={mediaUrl} autoPlay loop muted playsInline />
       )
     }
-    return <img src={mediaUrl} alt="position" className="w-full h-full object-cover" />
+    return <img src={mediaUrl} alt="position" className="w-full h-full object-contain" />
   }
 
   return (

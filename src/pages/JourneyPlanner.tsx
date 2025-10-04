@@ -7,6 +7,19 @@ import { getPositionsByStyle, getRandomPositions } from "@/data/positions"
 import type { Position, StyleType } from "@/types"
 import ScratchCards from "@/components/ScratchCards"
 
+// Load admin-managed journey positions
+const loadJourneyPositions = (): Position[] => {
+  try {
+    const saved = localStorage.getItem('journey_positions')
+    if (saved) {
+      return JSON.parse(saved)
+    }
+  } catch (error) {
+    console.error('Error loading journey positions:', error)
+  }
+  return []
+}
+
 const JourneyPlanner = () => {
   const [selectedStyle, setSelectedStyle] = useState<StyleType>('romantic')
   const [positionCount, setPositionCount] = useState(5)
@@ -60,34 +73,54 @@ const JourneyPlanner = () => {
     setIsGenerating(true)
     
     setTimeout(() => {
-      // Merge base positions with user-added ones
-      const getUserPositions = (): Position[] => {
-        try {
-          const raw = localStorage.getItem('userPositions')
-          const arr = raw ? JSON.parse(raw) : []
-          return Array.isArray(arr) ? arr : []
-        } catch {
-          return []
+      // First try to load admin-managed journey positions
+      const adminPositions = loadJourneyPositions()
+      
+      let availablePositions: Position[] = []
+      
+      if (adminPositions.length > 0) {
+        // Use admin positions
+        availablePositions = adminPositions
+        
+        // Filter by style
+        if (selectedStyle !== 'mixed') {
+          availablePositions = adminPositions.filter(p => p.style === selectedStyle)
         }
-      }
+        
+        // Filter by difficulty
+        if (difficulty !== 'mixed') {
+          availablePositions = availablePositions.filter(p => p.difficulty === difficulty)
+        }
+      } else {
+        // Fallback to default positions
+        const getUserPositions = (): Position[] => {
+          try {
+            const raw = localStorage.getItem('userPositions')
+            const arr = raw ? JSON.parse(raw) : []
+            return Array.isArray(arr) ? arr : []
+          } catch {
+            return []
+          }
+        }
 
-      let availablePositions: Position[] = [
-        ...getPositionsByStyle(selectedStyle),
-        ...getUserPositions().filter(p => p.style === selectedStyle)
-      ]
-      
-      // Filter by difficulty if not mixed
-      if (difficulty !== 'mixed') {
-        availablePositions = availablePositions.filter(p => p.difficulty === difficulty)
-      }
-      
-      // If not enough positions, fall back to random
-      if (availablePositions.length < positionCount) {
-        const mixedPool: Position[] = [
-          ...getRandomPositions(100),
-          ...getUserPositions()
+        availablePositions = [
+          ...getPositionsByStyle(selectedStyle),
+          ...getUserPositions().filter(p => p.style === selectedStyle)
         ]
-        availablePositions = mixedPool
+        
+        // Filter by difficulty if not mixed
+        if (difficulty !== 'mixed') {
+          availablePositions = availablePositions.filter(p => p.difficulty === difficulty)
+        }
+        
+        // If not enough positions, fall back to random
+        if (availablePositions.length < positionCount) {
+          const mixedPool: Position[] = [
+            ...getRandomPositions(100),
+            ...getUserPositions()
+          ]
+          availablePositions = mixedPool
+        }
       }
       
       // Shuffle and select positions
@@ -535,7 +568,7 @@ const JourneyPlanner = () => {
                         items={journey.slice(0, positionCount).map((p, idx) => ({
                           id: p.id || idx,
                           title: p.name,
-                          description: p.description,
+                          description: '', // Empty description as requested
                           mediaUrl: p.imageUrl || undefined,
                         }))}
                         heading="Unlock Your Love Adventure"

@@ -44,13 +44,11 @@ import AddBlog from "./pages/AddBlog";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import ScratchPositionsAdmin from "./pages/admin/ScratchPositionsAdmin";
-import CustomPosterAdmin from "./pages/admin/CustomPosterAdmin";
-import DefaultImagesAdmin from "./pages/admin/DefaultImagesAdmin";
 import BlogsAdmin from "./pages/admin/BlogsAdmin";
 import SpinDesiresAdmin from "./pages/admin/SpinDesiresAdmin";
 import SEOAdmin from "./pages/admin/SEOAdmin";
-import ImageManagementAdmin from "./pages/admin/ImageManagementAdmin";
 import SpinForDesireAdmin from "./pages/admin/SpinForDesireAdmin";
+import JourneyPositionsAdmin from "./pages/admin/JourneyPositionsAdmin";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import { AdminAuthProvider } from "./components/AdminAuth";
@@ -134,11 +132,9 @@ const App = () => {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/blogs" element={<BlogsAdmin />} />
               <Route path="/admin/scratch-positions" element={<ScratchPositionsAdmin />} />
+              <Route path="/admin/journey-positions" element={<JourneyPositionsAdmin />} />
               <Route path="/admin/spin-desires" element={<SpinDesiresAdmin />} />
               <Route path="/admin/spin-for-desire" element={<SpinForDesireAdmin />} />
-              <Route path="/admin/custom-poster" element={<CustomPosterAdmin />} />
-              <Route path="/admin/default-images" element={<DefaultImagesAdmin />} />
-              <Route path="/admin/image-management" element={<ImageManagementAdmin />} />
               <Route path="/admin/seo" element={<SEOAdmin />} />
               
               {/* Other Routes */}

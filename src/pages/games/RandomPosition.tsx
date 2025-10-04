@@ -117,7 +117,7 @@ const RandomPosition = () => {
                       <img
                         src={currentPosition.image}
                         alt={currentPosition.title}
-                        className={`w-full h-full object-cover transition-all duration-300 ${
+                        className={`w-full h-full object-contain transition-all duration-300 ${
                           isRevealing ? 'blur-sm scale-110' : 'blur-0 scale-100'
                         }`}
                         onError={(e) => {
