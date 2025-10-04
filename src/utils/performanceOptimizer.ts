@@ -99,9 +99,25 @@ export class PerformanceOptimizer {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.href = resource;
-      link.as = resource.endsWith('.css') ? 'style' : 'script';
+      link.as = resource.endsWith('.css') ? 'style' : resource.endsWith('.tsx') ? 'script' : 'image';
+      link.crossOrigin = 'anonymous';
       document.head.appendChild(link);
     });
+
+    // Force CSS loading with high priority
+    const cssLink = document.createElement('link');
+    cssLink.rel = 'stylesheet';
+    cssLink.href = '/src/index.css';
+    cssLink.media = 'all';
+    cssLink.onload = () => {
+      console.log('✅ Critical CSS loaded');
+      // Remove loading class if exists
+      document.body.classList.remove('loading');
+    };
+    cssLink.onerror = () => {
+      console.error('❌ Critical CSS failed to load');
+    };
+    document.head.appendChild(cssLink);
   }
 
   // Setup image optimization

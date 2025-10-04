@@ -61,16 +61,29 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [isVerified, setIsVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Initialize default images, sample data, and preload positions cache on app startup
   React.useEffect(() => {
-    initializeDefaultImages();
-    addSampleBlogs(); // Add sample blog data for testing
+    const initializeApp = async () => {
+      try {
+        initializeDefaultImages();
+        addSampleBlogs(); // Add sample blog data for testing
+        
+        // Preload positions cache in background for instant loading
+        await getPositionsOptimized();
+        
+        // Wait for CSS to load
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 100);
+      } catch (error) {
+        console.error('Error initializing app:', error);
+        setIsLoading(false);
+      }
+    };
     
-    // Preload positions cache in background for instant loading
-    getPositionsOptimized().catch(() => {
-      // Silent fail for preload
-    });
+    initializeApp();
   }, []);
 
   if (!isVerified) {
@@ -84,6 +97,18 @@ const App = () => {
           </TooltipProvider>
         </QueryClientProvider>
       </HelmetProvider>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-pink-200 border-t-pink-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-pink-600 mb-2">Loading...</h2>
+          <p className="text-gray-600">Preparing your romantic journey</p>
+        </div>
+      </div>
     )
   }
 

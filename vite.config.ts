@@ -63,11 +63,15 @@ export default defineConfig(({ mode }) => ({
           ]
         },
         
-        // CSS code splitting
+        // CSS code splitting with critical CSS first
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/\.(css)$/.test(assetInfo.name)) {
+            // Critical CSS gets priority naming
+            if (assetInfo.name.includes('index') || assetInfo.name.includes('critical')) {
+              return `assets/css/critical-[hash][extname]`;
+            }
             return `assets/css/[name]-[hash][extname]`;
           }
           return `assets/[name]-[hash][extname]`;
@@ -78,8 +82,8 @@ export default defineConfig(({ mode }) => ({
     // Increase chunk size warning limit
     chunkSizeWarningLimit: 1000,
     
-    // CSS optimization
-    cssCodeSplit: true,
+    // CSS optimization - inline critical CSS
+    cssCodeSplit: false, // Disable CSS splitting for better loading
     
     // Source maps for debugging
     sourcemap: mode === 'development'
