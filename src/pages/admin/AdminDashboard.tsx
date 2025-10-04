@@ -34,35 +34,88 @@ const AdminDashboardContent = () => {
   useEffect(() => {
     const loadStats = async () => {
       try {
-        const blogsResponse = await fetch('/api/blogs')
-        const blogs = blogsResponse.ok ? await blogsResponse.json() : []
+        // Load blogs from API or localStorage
+        let blogs = []
+        try {
+          const blogsResponse = await fetch('/api/blogs')
+          if (blogsResponse.ok) {
+            blogs = await blogsResponse.json()
+          }
+        } catch {
+          // Fallback to localStorage
+          blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
+        }
         
-        const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
-        const spinDesires = JSON.parse(localStorage.getItem('spinDesires') || '[]')
+        // Load scratch positions from localStorage
+        let scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
+        
+        // If no scratch positions exist, initialize with default ones
+        if (scratchCards.length === 0) {
+          const defaultPositions = [
+            {
+              id: 'default-1',
+              title: 'Romantic Candlelight',
+              description: 'A gentle, intimate position perfect for romantic evenings',
+              image: '/placeholder.svg',
+              category: 'Romantic',
+              difficulty: 'Easy',
+              duration: '15-20 minutes',
+              tags: ['romantic', 'gentle', 'candlelight'],
+              mediaType: 'image',
+              isDefault: true
+            },
+            {
+              id: 'default-2',
+              title: 'Passionate Embrace',
+              description: 'An intense position that ignites passion between partners',
+              image: '/placeholder.svg',
+              category: 'Passionate',
+              difficulty: 'Medium',
+              duration: '10-15 minutes',
+              tags: ['passionate', 'intense', 'embrace'],
+              mediaType: 'image',
+              isDefault: true
+            },
+            {
+              id: 'default-3',
+              title: 'Adventurous Discovery',
+              description: 'A creative position for couples seeking new experiences',
+              image: '/placeholder.svg',
+              category: 'Adventurous',
+              difficulty: 'Hard',
+              duration: '20-30 minutes',
+              tags: ['adventurous', 'creative', 'discovery'],
+              mediaType: 'image',
+              isDefault: true
+            }
+          ]
+          localStorage.setItem('scratch_positions_all', JSON.stringify(defaultPositions))
+          scratchCards = defaultPositions
+        }
+        
+        // Load journey positions from localStorage
+        const journeyPositions = JSON.parse(localStorage.getItem('journey_positions') || '[]')
+        
+        // Load custom images count
+        const customImages = JSON.parse(localStorage.getItem('custom_images') || '[]')
         
         setStats({
           totalBlogs: blogs.length,
-          pendingBlogs: blogs.filter((b: any) => b.status === 'pending').length,
+          pendingBlogs: blogs.filter((b: any) => !b.approved || b.status === 'pending').length,
           totalPositions: scratchCards.length,
           totalScratchCards: scratchCards.length,
           totalUsers: 0
         })
       } catch (error) {
         console.error('Error loading stats:', error)
-        try {
-          const blogs = JSON.parse(localStorage.getItem('userBlogs') || '[]')
-          const scratchCards = JSON.parse(localStorage.getItem('scratch_positions_all') || '[]')
-          
-          setStats({
-            totalBlogs: blogs.length,
-            pendingBlogs: blogs.filter((b: any) => !b.approved).length,
-            totalPositions: scratchCards.length,
-            totalScratchCards: scratchCards.length,
-            totalUsers: 0
-          })
-        } catch {
-          // Handle error silently
-        }
+        // Set default values on error
+        setStats({
+          totalBlogs: 0,
+          pendingBlogs: 0,
+          totalPositions: 0,
+          totalScratchCards: 0,
+          totalUsers: 0
+        })
       }
     }
 
@@ -91,16 +144,6 @@ const AdminDashboardContent = () => {
       actions: [
         { label: "Manage Cards", href: "/admin/scratch-positions", icon: Edit3 },
         { label: "View Game", href: "/games/scratch-position", icon: Gamepad2 }
-      ]
-    },
-    {
-      title: "Spin for Desire",
-      description: "Uses random scratch positions (500+ available)",
-      icon: Gift,
-      color: "from-pink-500 to-rose-600",
-      stats: "12 random positions per visit",
-      actions: [
-        { label: "View Game", href: "/games/spin-for-desire", icon: Gamepad2 }
       ]
     },
     {
@@ -178,25 +221,36 @@ const AdminDashboardContent = () => {
                   <Image className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-2xl font-bold text-slate-800 dark:text-white">{stats.totalScratchCards}</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Positions</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Gift className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">6</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Active Games</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Scratch Positions</div>
+                {stats.totalScratchCards === 0 && (
+                  <div className="text-xs text-orange-600 font-medium mt-1">
+                    No positions yet
+                  </div>
+                )}
               </CardContent>
             </Card>
             <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Palette className="w-6 h-6 text-white" />
+                  <MapPin className="w-6 h-6 text-white" />
                 </div>
-                <div className="text-2xl font-bold text-slate-800 dark:text-white">∞</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Custom Images</div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">500+</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Journey Positions</div>
+                <div className="text-xs text-green-600 font-medium mt-1">
+                  Available
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-2xl font-bold text-slate-800 dark:text-white">3</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Active Games</div>
+                <div className="text-xs text-orange-600 font-medium mt-1">
+                  Scratch, Spin, Journey
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -272,9 +326,9 @@ const AdminDashboardContent = () => {
                 )}
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Link to="/admin/scratch-positions" className="block p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 hover:from-pink-100 hover:to-purple-100 dark:hover:from-pink-900/30 dark:hover:to-purple-900/30 rounded-xl border border-pink-200 dark:border-pink-800 transition-all duration-300 hover:shadow-lg group">
+                  <Link to="/admin/scratch-positions" className="block p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 rounded-xl border border-purple-200 dark:border-purple-800 transition-all duration-300 hover:shadow-lg group">
                     <div className="flex items-center gap-4 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Image className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -288,19 +342,19 @@ const AdminDashboardContent = () => {
                     </div>
                   </Link>
                   
-                  <Link to="/games/spin-for-desire" className="block p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 hover:from-pink-100 hover:to-purple-100 dark:hover:from-pink-900/30 dark:hover:to-purple-900/30 rounded-xl border border-pink-200 dark:border-pink-800 transition-all duration-300 hover:shadow-lg group">
+                  <Link to="/admin/journey-positions" className="block p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 hover:from-green-100 hover:to-emerald-100 dark:hover:from-green-900/30 dark:hover:to-emerald-900/30 rounded-xl border border-green-200 dark:border-green-800 transition-all duration-300 hover:shadow-lg group">
                     <div className="flex items-center gap-4 mb-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Gift className="w-6 h-6 text-white" />
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <MapPin className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg text-slate-800 dark:text-white">Spin for Desire</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">Random positions from scratch cards</p>
+                        <h3 className="font-bold text-lg text-slate-800 dark:text-white">Journey Positions</h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">Manage journey images & videos</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">12 random from 500+ positions</span>
-                      <span className="text-pink-600 dark:text-pink-400 font-medium group-hover:translate-x-1 transition-transform">Play Game →</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">500+ journey positions</span>
+                      <span className="text-green-600 dark:text-green-400 font-medium group-hover:translate-x-1 transition-transform">Manage →</span>
                     </div>
                   </Link>
                 </div>
