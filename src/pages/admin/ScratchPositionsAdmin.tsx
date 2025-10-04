@@ -360,15 +360,6 @@ const ScratchPositionsAdminContent = () => {
 
   // Reset to defaults function removed - no default positions
 
-  const permanentReset = () => {
-    if (confirm('⚠️ PERMANENT RESET: This will clear all positions on server and start fresh. This action cannot be undone. Proceed?')) {
-      setItems([])
-      saveItems([])
-      setMessage({type: 'success', text: 'System permanently reset on server! Starting with empty state.'})
-      setTimeout(() => setMessage(null), 5000)
-    }
-  }
-
   const testImage = (imageUrl: string) => {
     window.open(imageUrl, '_blank')
   }
@@ -719,27 +710,6 @@ const ScratchPositionsAdminContent = () => {
                   <Button variant="outline" size="sm" onClick={loadItems}>
                     <RefreshCw className="w-4 h-4 mr-2" />
                     Refresh
-                  </Button>
-                  <Button variant="destructive" size="sm" onClick={() => {
-                    if (confirm('Clear ALL positions on server? This will remove everything and the game will show empty state.')) {
-                      console.log('🗑️ Admin: Clearing all positions via API')
-                      saveItems([])
-                      setMessage({type: 'success', text: 'All positions cleared from server!'})
-                      setTimeout(() => setMessage(null), 3000)
-                    }
-                  }}>
-                    🗑️ Clear All
-                  </Button>
-                  <Button variant="destructive" size="sm" onClick={permanentReset} className="bg-red-600 hover:bg-red-700">
-                    🔥 Permanent Reset
-                  </Button>
-                  <Button variant="destructive" size="sm" onClick={() => {
-                    if (confirm('🚨 FORCE CLEAR: This will clear ALL localStorage data and reload the page. This will completely reset everything. Are you sure?')) {
-                      localStorage.clear()
-                      window.location.reload()
-                    }
-                  }} className="bg-red-800 hover:bg-red-900">
-                    💥 Force Clear All
                   </Button>
                 </div>
               </CardTitle>
