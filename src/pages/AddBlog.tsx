@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/enhanced-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import RichTextEditor from "@/components/RichTextEditor";
 import { Calendar, BookOpen, Tag, Type, FileText, Heart } from "lucide-react";
 
 interface UserBlogPost {
@@ -186,8 +187,14 @@ const AddBlog = () => {
                 <label className="block text-sm font-medium mb-2 flex items-center gap-2">
                   <FileText className="w-4 h-4" /> Content
                 </label>
-                <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder="Write your article here... (plain text supported)" rows={12} />
-                <p className="text-xs text-muted-foreground mt-2">Tip: Line breaks will be preserved.</p>
+                <RichTextEditor
+                  value={content}
+                  onChange={(content) => setContent(content)}
+                  placeholder="Write your article here... Use the toolbar above for formatting! 😍💕❤️"
+                />
+                <p className="text-xs text-muted-foreground mt-2">
+                  💡 <strong>Rich Text Editor:</strong> Use H1, H2, H3 for headers • Bold, Italic, Underline • Lists • Images, Videos, GIFs • Emojis • Links • Quotes • Code blocks
+                </p>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">

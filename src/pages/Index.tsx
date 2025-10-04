@@ -45,6 +45,25 @@ const Index = () => {
     }
     canonical.href = url
 
+    // Favicon
+    let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null
+    if (!favicon) {
+      favicon = document.createElement('link')
+      favicon.rel = 'icon'
+      favicon.type = 'image/svg+xml'
+      document.head.appendChild(favicon)
+    }
+    favicon.href = '/favicon.svg'
+
+    // Theme color
+    let themeColor = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null
+    if (!themeColor) {
+      themeColor = document.createElement('meta')
+      themeColor.name = 'theme-color'
+      document.head.appendChild(themeColor)
+    }
+    themeColor.content = '#E91E63'
+
     // Open Graph tags
     let ogTitle = document.querySelector('meta[property="og:title"]') as HTMLMetaElement | null
     if (!ogTitle) { ogTitle = document.createElement('meta'); ogTitle.setAttribute('property','og:title'); document.head.appendChild(ogTitle) }

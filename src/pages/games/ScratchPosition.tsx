@@ -15,6 +15,12 @@ type ScratchCard = {
   id: string
   title: string
   image: string
+  description?: string
+  category?: string
+  difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Expert'
+  duration?: string
+  tags?: string[]
+  mediaType?: 'image' | 'gif' | 'video'
   revealed: boolean
   isDefault?: boolean
 }
@@ -581,16 +587,31 @@ const ScratchPosition = () => {
                           </span>
                         </div>
                         <div className="w-full aspect-[1/1] bg-gradient-to-br from-purple-500/20 to-pink-500/20 overflow-hidden">
-                          <img 
-                            src={card.image} 
-                            alt={card.title}
-                            className={`w-full h-full object-cover transition-all duration-500 ${
-                              card.revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                            }`}
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center'
-                            }}
-                          />
+                          {card.mediaType === 'video' ? (
+                            <video 
+                              src={card.image} 
+                              className={`w-full h-full object-cover transition-all duration-500 ${
+                                card.revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                              }`}
+                              muted
+                              loop
+                              playsInline
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center'
+                              }}
+                            />
+                          ) : (
+                            <img 
+                              src={card.image} 
+                              alt={card.title}
+                              className={`w-full h-full object-cover transition-all duration-500 ${
+                                card.revealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                              }`}
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=300&fit=crop&crop=center'
+                              }}
+                            />
+                          )}
                         </div>
                         {/* Title overlay at bottom */}
                         <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-1.5 transition-all duration-500 ${
@@ -599,7 +620,25 @@ const ScratchPosition = () => {
                           <div className="text-white font-semibold text-sm drop-shadow-sm">
                             {card.title}
                           </div>
+                          {card.revealed && card.difficulty && (
+                            <div className="text-white/80 text-xs mt-1">
+                              {card.difficulty} • {card.category || 'Romantic'}
+                            </div>
+                          )}
                         </div>
+                        
+                        {/* Media type indicator */}
+                        {card.revealed && card.mediaType && (
+                          <div className="absolute top-1.5 right-1.5 z-30">
+                            <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${
+                              card.mediaType === 'video' ? 'bg-blue-500 text-white' :
+                              card.mediaType === 'gif' ? 'bg-purple-500 text-white' :
+                              'bg-green-500 text-white'
+                            }`}>
+                              {card.mediaType.toUpperCase()}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   </div>

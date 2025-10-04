@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import MediaDisplay from '@/components/MediaDisplay'
+import RichTextEditor from '@/components/RichTextEditor'
 import { 
   Plus, 
   Edit, 
@@ -355,15 +356,13 @@ const BlogsAdminContent = () => {
                       
                       <div>
                         <label className="block text-sm font-medium mb-2">Content *</label>
-                        <Textarea
+                        <RichTextEditor
                           value={formData.content}
-                          onChange={(e) => setFormData({...formData, content: e.target.value})}
-                          placeholder="Write your blog content here... You can use emojis! 😍💕❤️"
-                          rows={15}
-                          required
+                          onChange={(content) => setFormData({...formData, content})}
+                          placeholder="Write your blog content here... Use the toolbar above for formatting! 😍💕❤️"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
-                          Tip: Use emojis to make your content more engaging! 🎉✨💖
+                        <p className="text-xs text-gray-500 mt-2">
+                          💡 <strong>Rich Text Editor:</strong> Use H1, H2, H3 for headers • Bold, Italic, Underline • Lists • Images, Videos, GIFs • Emojis • Links • Quotes • Code blocks
                         </p>
                       </div>
                     </CardContent>

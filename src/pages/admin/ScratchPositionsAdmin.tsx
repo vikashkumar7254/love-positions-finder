@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { getPositions as apiGetPositions, savePositions as apiSavePositions } from "@/lib/positionsApi"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/enhanced-card"
 import { Button } from "@/components/ui/enhanced-button"
 import { Input } from "@/components/ui/input"
-import { Trash2, Plus, Image as ImageIcon, Type, Edit3, RefreshCw, Eye, Search, Filter, RotateCcw } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Trash2, Plus, Image as ImageIcon, Type, Edit3, RefreshCw, Eye, Search, Filter, RotateCcw, Upload, Video, FileImage, X, Check, AlertCircle } from "lucide-react"
 import Navigation from "@/components/Navigation"
 import { AdminProtectedRoute } from "@/components/AdminAuth"
 
@@ -13,25 +14,56 @@ type PositionItem = {
   id: string
   title: string
   image: string
-  isDefault?: boolean
+  description?: string
   category?: string
+  difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Expert'
+  duration?: string
+  tags?: string[]
+  mediaType?: 'image' | 'gif' | 'video'
+  isDefault?: boolean
+}
+
+type UploadedFile = {
+  file: File
+  preview: string
+  type: 'image' | 'gif' | 'video'
 }
 
 const ScratchPositionsAdminContent = () => {
   const [title, setTitle] = useState("")
   const [image, setImage] = useState("")
+  const [description, setDescription] = useState("")
+  const [category, setCategory] = useState("Romantic")
+  const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard" | "Expert">("Easy")
+  const [duration, setDuration] = useState("")
+  const [tags, setTags] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [items, setItems] = useState<PositionItem[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // No default positions - admin will add manually
 
   const categories = [
     { id: "all", label: "All Categories" },
-    { id: "default", label: "Default Positions" },
-    { id: "custom", label: "Custom Positions" }
+    { id: "Romantic", label: "Romantic" },
+    { id: "Passionate", label: "Passionate" },
+    { id: "Adventurous", label: "Adventurous" },
+    { id: "Intimate", label: "Intimate" },
+    { id: "Playful", label: "Playful" },
+    { id: "Sensual", label: "Sensual" },
+    { id: "Erotic", label: "Erotic" }
+  ]
+
+  const difficulties = [
+    { id: "Easy", label: "Easy", color: "bg-green-100 text-green-800" },
+    { id: "Medium", label: "Medium", color: "bg-yellow-100 text-yellow-800" },
+    { id: "Hard", label: "Hard", color: "bg-orange-100 text-orange-800" },
+    { id: "Expert", label: "Expert", color: "bg-red-100 text-red-800" }
   ]
 
   useEffect(() => {
@@ -122,9 +154,93 @@ const ScratchPositionsAdminContent = () => {
 
   const toSlug = (t: string) => t.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
 
-  const addOrUpdateItem = () => {
+  // File upload handling
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Check file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'File size too large. Maximum 10MB allowed.' })
+      setTimeout(() => setMessage(null), 3000)
+      return
+    }
+
+    // Check file type
+    const fileType = file.type
+    let mediaType: 'image' | 'gif' | 'video' = 'image'
+    
+    if (fileType.startsWith('video/')) {
+      mediaType = 'video'
+    } else if (fileType === 'image/gif') {
+      mediaType = 'gif'
+    } else if (!fileType.startsWith('image/')) {
+      setMessage({ type: 'error', text: 'Unsupported file type. Please upload image, GIF, or video files only.' })
+      setTimeout(() => setMessage(null), 3000)
+      return
+    }
+
+    const preview = URL.createObjectURL(file)
+    setUploadedFile({ file, preview, type: mediaType })
+    setImage('') // Clear URL input when file is uploaded
+  }
+
+  // Convert file to base64 for storage
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = error => reject(error)
+    })
+  }
+
+  // Optimize image for display
+  const optimizeImage = (base64: string, maxWidth: number = 400, maxHeight: number = 300): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        
+        if (!ctx) {
+          resolve(base64)
+          return
+        }
+
+        // Calculate new dimensions maintaining aspect ratio
+        let { width, height } = img
+        const aspectRatio = width / height
+        
+        if (width > maxWidth) {
+          width = maxWidth
+          height = width / aspectRatio
+        }
+        
+        if (height > maxHeight) {
+          height = maxHeight
+          width = height * aspectRatio
+        }
+
+        canvas.width = width
+        canvas.height = height
+        
+        // Draw image with optimization
+        ctx.drawImage(img, 0, 0, width, height)
+        
+        // Convert to base64 with quality optimization
+        const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.8)
+        resolve(optimizedBase64)
+      }
+      img.src = base64
+    })
+  }
+
+  const addOrUpdateItem = async () => {
     const t = title.trim()
     const img = image.trim()
+    const desc = description.trim()
+    const tagList = tags.split(',').map(tag => tag.trim()).filter(Boolean)
 
     // Validation
     if (!t) {
@@ -132,23 +248,58 @@ const ScratchPositionsAdminContent = () => {
       setTimeout(() => setMessage(null), 3000)
       return
     }
-    if (!img) {
-      setMessage({type: 'error', text: 'Please enter an image URL'})
+    
+    if (!img && !uploadedFile) {
+      setMessage({type: 'error', text: 'Please upload a file or enter an image URL'})
       setTimeout(() => setMessage(null), 3000)
       return
     }
 
+    setIsUploading(true)
+    let finalImageUrl = img
+
+    // Handle file upload
+    if (uploadedFile) {
+      try {
+        const base64 = await fileToBase64(uploadedFile.file)
+        
+        // Optimize image if it's not a video or GIF
+        if (uploadedFile.type === 'image') {
+          finalImageUrl = await optimizeImage(base64)
+        } else {
+          finalImageUrl = base64
+        }
+      } catch (error) {
+        setMessage({type: 'error', text: 'Failed to process uploaded file'})
+        setTimeout(() => setMessage(null), 3000)
+        setIsUploading(false)
+        return
+      }
+    } else if (img) {
     // Check if URL is valid
     try {
       new URL(img)
     } catch {
       setMessage({type: 'error', text: 'Please enter a valid image URL (must start with http:// or https://)'})
       setTimeout(() => setMessage(null), 3000)
+        setIsUploading(false)
       return
+      }
     }
 
     const id = editingId || toSlug(t) || `custom-${Date.now()}`
-    const newItem: PositionItem = { id, title: t, image: img, isDefault: false }
+    const newItem: PositionItem = { 
+      id, 
+      title: t, 
+      image: finalImageUrl,
+      description: desc,
+      category,
+      difficulty,
+      duration: duration || undefined,
+      tags: tagList,
+      mediaType: uploadedFile?.type || 'image',
+      isDefault: false 
+    }
 
     if (editingId) {
       // Update existing - replace the item with matching ID
@@ -174,7 +325,19 @@ const ScratchPositionsAdminContent = () => {
     // Reset form
     setTitle("")
     setImage("")
+    setDescription("")
+    setCategory("Romantic")
+    setDifficulty("Easy")
+    setDuration("")
+    setTags("")
     setEditingId(null)
+    setUploadedFile(null)
+    setIsUploading(false)
+
+    // Clear file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
 
     setTimeout(() => setMessage(null), 5000)
   }
@@ -182,7 +345,23 @@ const ScratchPositionsAdminContent = () => {
   const editItem = (item: PositionItem) => {
     setTitle(item.title)
     setImage(item.image)
+    setDescription(item.description || "")
+    setCategory(item.category || "Romantic")
+    setDifficulty(item.difficulty || "Easy")
+    setDuration(item.duration || "")
+    setTags(item.tags?.join(", ") || "")
     setEditingId(item.id)
+    setUploadedFile(null) // Clear uploaded file when editing
+  }
+
+  const clearUploadedFile = () => {
+    if (uploadedFile) {
+      URL.revokeObjectURL(uploadedFile.preview)
+    }
+    setUploadedFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const removeItem = (id: string) => {
@@ -319,13 +498,17 @@ const ScratchPositionsAdminContent = () => {
           {/* Add/Edit Form */}
           <Card>
             <CardHeader>
-              <CardTitle>{editingId ? 'Edit Position' : 'Add New Position'}</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                {editingId ? <Edit3 className="w-5 h-5"/> : <Plus className="w-5 h-5"/>}
+                {editingId ? 'Edit Position' : 'Add New Position'}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
+              {/* Basic Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium flex items-center gap-2 mb-1">
-                    <Type className="w-4 h-4"/> Title
+                    <Type className="w-4 h-4"/> Title *
                   </label>
                   <Input
                     value={title}
@@ -336,41 +519,206 @@ const ScratchPositionsAdminContent = () => {
                 </div>
                 <div>
                   <label className="text-sm font-medium flex items-center gap-2 mb-1">
-                    <ImageIcon className="w-4 h-4"/> Image URL
+                    <ImageIcon className="w-4 h-4"/> Category
                   </label>
-                  <Input
-                    value={image}
-                    onChange={e=>setImage(e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">Must start with http:// or https://</p>
+                  <select
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    {categories.filter(c => c.id !== 'all').map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.label}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              {image && (
-                <div className="flex items-center gap-3">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden border">
-                    <img src={image} alt="Preview" className="w-full h-full object-cover" onError={(e) => {
-                      e.currentTarget.src = 'https://via.placeholder.com/80x80?text=Invalid+URL'
-                    }} />
+              {/* Description */}
+              <div>
+                <label className="text-sm font-medium mb-1 block">Description</label>
+                <Textarea
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="Describe this position in detail..."
+                  rows={3}
+                />
+              </div>
+
+              {/* Difficulty and Duration */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Difficulty Level</label>
+                  <div className="flex gap-2">
+                    {difficulties.map(diff => (
+                      <Button
+                        key={diff.id}
+                        variant={difficulty === diff.id ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setDifficulty(diff.id as any)}
+                        className={difficulty === diff.id ? diff.color : ""}
+                      >
+                        {diff.label}
+                      </Button>
+                    ))}
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => testImage(image)}>
-                    <Eye className="w-4 h-4 mr-2" />
-                    Test Image
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Duration (optional)</label>
+                  <Input
+                    value={duration}
+                    onChange={e => setDuration(e.target.value)}
+                    placeholder="e.g. 5-10 minutes, 15-30 minutes"
+                  />
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div>
+                <label className="text-sm font-medium mb-1 block">Tags (comma separated)</label>
+                <Input
+                  value={tags}
+                  onChange={e => setTags(e.target.value)}
+                  placeholder="e.g. romantic, intimate, adventurous, playful"
+                />
+              </div>
+
+              {/* Media Upload */}
+              <div className="space-y-4">
+                <label className="text-sm font-medium block">Media Upload *</label>
+                
+                {/* File Upload */}
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <div className="space-y-2">
+                    <Upload className="w-8 h-8 mx-auto text-gray-400" />
+                    <div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="mb-2"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Choose File
+                      </Button>
+                      <p className="text-sm text-gray-500">
+                        or drag and drop your file here
+                      </p>
+                    </div>
+                    <p className="text-xs text-gray-400">
+                      Supports: JPG, PNG, GIF, MP4, WebM (Max 10MB)
+                    </p>
+                  </div>
+                </div>
+
+                {/* URL Input */}
+                <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <Input
+                      value={image}
+                      onChange={e=>setImage(e.target.value)}
+                      placeholder="Or enter image/video URL..."
+                      disabled={!!uploadedFile}
+                    />
+                  </div>
+                  {uploadedFile && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={clearUploadedFile}
+                    >
+                      <X className="w-4 h-4" />
                   </Button>
+                  )}
+                </div>
+
+                {/* Preview */}
+                {(image || uploadedFile) && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Preview</label>
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden border bg-gray-50">
+                      {uploadedFile ? (
+                        uploadedFile.type === 'video' ? (
+                          <video
+                            src={uploadedFile.preview}
+                            controls
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={uploadedFile.preview}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        )
+                      ) : (
+                        <img
+                          src={image}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Invalid+URL'
+                          }}
+                        />
+                      )}
+                      <div className="absolute top-2 right-2">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          uploadedFile?.type === 'video' ? 'bg-blue-500 text-white' :
+                          uploadedFile?.type === 'gif' ? 'bg-purple-500 text-white' :
+                          'bg-green-500 text-white'
+                        }`}>
+                          {uploadedFile?.type?.toUpperCase() || 'IMAGE'}
+                        </span>
+                      </div>
+                    </div>
+                    {image && !uploadedFile && (
+                      <Button variant="outline" size="sm" onClick={() => testImage(image)}>
+                        <Eye className="w-4 h-4 mr-2" />
+                        Test URL
+                      </Button>
+                    )}
                 </div>
               )}
+              </div>
 
-              <div className="flex gap-2">
-                <Button onClick={addOrUpdateItem} variant="romantic" className="flex items-center gap-2">
+              {/* Action Buttons */}
+              <div className="flex gap-2 pt-4 border-t">
+                <Button 
+                  onClick={addOrUpdateItem} 
+                  variant="romantic" 
+                  className="flex items-center gap-2"
+                  disabled={isUploading}
+                >
+                  {isUploading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
                   {editingId ? <Edit3 className="w-4 h-4"/> : <Plus className="w-4 h-4"/>}
                   {editingId ? 'Update Position' : 'Add Position'}
+                    </>
+                  )}
                 </Button>
                 {editingId && (
                   <Button variant="outline" onClick={() => {
                     setTitle("")
                     setImage("")
+                    setDescription("")
+                    setCategory("Romantic")
+                    setDifficulty("Easy")
+                    setDuration("")
+                    setTags("")
                     setEditingId(null)
+                    clearUploadedFile()
                   }}>
                     Cancel Edit
                   </Button>
@@ -420,45 +768,87 @@ const ScratchPositionsAdminContent = () => {
                   <p>No positions found. Add some positions to get started!</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {filteredItems.map(item => (
-                    <div key={item.id} className={`border rounded-lg overflow-hidden ${item.isDefault ? 'border-blue-200 bg-blue-50/50' : 'border-green-200 bg-green-50/50'}`}>
-                      <div className="h-32 bg-muted overflow-hidden relative">
+                    <div key={item.id} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                      <div className="h-40 bg-muted overflow-hidden relative">
+                        {item.mediaType === 'video' ? (
+                          <video
+                            src={item.image}
+                            className="w-full h-full object-cover"
+                            muted
+                            onError={(e) => {
+                              e.currentTarget.src = 'https://via.placeholder.com/200x160?text=Invalid+Video'
+                            }}
+                          />
+                        ) : (
                         <img
                           src={item.image}
                           alt={item.title}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/200x128?text=Invalid+URL'
+                              e.currentTarget.src = 'https://via.placeholder.com/200x160?text=Invalid+URL'
                           }}
                         />
-                        <div className="absolute top-2 left-2">
+                        )}
+                        <div className="absolute top-2 left-2 flex gap-1">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            item.isDefault
-                              ? 'bg-blue-500 text-white'
-                              : 'bg-green-500 text-white'
+                            item.mediaType === 'video' ? 'bg-blue-500 text-white' :
+                            item.mediaType === 'gif' ? 'bg-purple-500 text-white' :
+                            'bg-green-500 text-white'
                           }`}>
-                            {item.isDefault ? 'Default' : 'Custom'}
+                            {item.mediaType?.toUpperCase() || 'IMAGE'}
+                          </span>
+                          {item.difficulty && (
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              difficulties.find(d => d.id === item.difficulty)?.color || 'bg-gray-500 text-white'
+                            }`}>
+                              {item.difficulty}
+                            </span>
+                          )}
+                        </div>
+                        <div className="absolute top-2 right-2">
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/90 text-gray-800">
+                            {item.category || 'Romantic'}
                           </span>
                         </div>
                       </div>
-                      <div className="p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="font-medium text-sm truncate">{item.title}</div>
-                          <div className="flex gap-1">
-                            <Button variant="outline" size="sm" onClick={() => editItem(item)}>
+                      <div className="p-3 space-y-2">
+                        <div className="flex items-start justify-between">
+                          <div className="font-medium text-sm line-clamp-2 flex-1">{item.title}</div>
+                          <div className="flex gap-1 ml-2">
+                            <Button variant="outline" size="sm" onClick={() => editItem(item)} title="Edit">
                               <Edit3 className="w-3 h-3" />
                             </Button>
-                            <Button variant="outline" size="sm" onClick={() => removeItem(item.id)}>
+                            <Button variant="outline" size="sm" onClick={() => removeItem(item.id)} title="Delete">
                               <Trash2 className="w-3 h-3" />
                             </Button>
-                            <Button variant="outline" size="sm" onClick={() => testImage(item.image)}>
+                            <Button variant="outline" size="sm" onClick={() => testImage(item.image)} title="Preview">
                               <Eye className="w-3 h-3" />
                             </Button>
                           </div>
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          ID: {item.id}
+                        
+                        {item.description && (
+                          <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>
+                        )}
+                        
+                        <div className="flex flex-wrap gap-1">
+                          {item.tags?.slice(0, 3).map((tag, index) => (
+                            <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                              {tag}
+                            </span>
+                          ))}
+                          {item.tags && item.tags.length > 3 && (
+                            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                              +{item.tags.length - 3}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>ID: {item.id}</span>
+                          {item.duration && <span>{item.duration}</span>}
                         </div>
                       </div>
                     </div>
@@ -469,20 +859,39 @@ const ScratchPositionsAdminContent = () => {
           </Card>
 
           {/* Usage Guide */}
-          <Card className="bg-blue-50/50 border-blue-200">
-            <CardContent className="p-4">
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+            <CardContent className="p-6">
               <div className="text-sm">
-                <p className="font-semibold text-blue-800 mb-2">📋 Management Guide:</p>
+                <p className="font-semibold text-blue-800 mb-3 text-lg">🚀 Enhanced Position Management Guide:</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-semibold text-blue-800 mb-2">📁 File Upload Features:</h4>
+                    <ul className="text-blue-700 space-y-1 text-xs">
+                      <li>• <strong>Local File Upload:</strong> Upload images/videos directly from your PC</li>
+                      <li>• <strong>Auto Optimization:</strong> Images automatically resized and optimized</li>
+                      <li>• <strong>GIF Support:</strong> Upload animated GIFs for dynamic content</li>
+                      <li>• <strong>Video Support:</strong> Upload MP4, WebM videos (max 10MB)</li>
+                      <li>• <strong>Smart Preview:</strong> Real-time preview before saving</li>
+                      <li>• <strong>URL Fallback:</strong> Still supports external image URLs</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-800 mb-2">🎯 Enhanced Features:</h4>
                 <ul className="text-blue-700 space-y-1 text-xs">
-                  <li>• <strong>Manual Management:</strong> Add all positions manually - no default positions provided</li>
-                  <li>• <strong>Permanent Deletion:</strong> Deleted positions are permanently removed and won't restore</li>
-                  <li>• <strong>Clear All:</strong> Remove all positions from localStorage completely</li>
-                  <li>• <strong>Permanent Reset:</strong> Complete system reset - clears everything and starts fresh</li>
-                  <li>• <strong>Real-time Updates:</strong> Changes appear instantly in Scratch Positions game</li>
-                  <li>• <strong>Image Management:</strong> All images must be added with valid URLs</li>
-                  <li>• <strong>Search & Filter:</strong> Find positions quickly by title or category</li>
-                  <li>• <strong>Complete Control:</strong> Admin has full control over all positions</li>
+                      <li>• <strong>Rich Metadata:</strong> Add descriptions, difficulty, duration, tags</li>
+                      <li>• <strong>Category System:</strong> Organize by Romantic, Passionate, etc.</li>
+                      <li>• <strong>Difficulty Levels:</strong> Easy, Medium, Hard, Expert</li>
+                      <li>• <strong>Tag System:</strong> Add multiple tags for better organization</li>
+                      <li>• <strong>Real-time Updates:</strong> Changes appear instantly in game</li>
+                      <li>• <strong>Complete Control:</strong> Full CRUD operations on all positions</li>
                 </ul>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-yellow-800 text-xs">
+                    <strong>💡 Pro Tip:</strong> Upload high-quality images (any size) - they'll be automatically optimized to fit perfectly in the scratch cards while maintaining aspect ratio!
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
