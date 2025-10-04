@@ -180,7 +180,16 @@ const CustomPoster = () => {
   // Check if user can reveal today's position
   const canRevealToday = () => {
     const today = new Date().toISOString().split('T')[0]
-    return journeyProgress.lastRevealDate !== today
+    const currentDay = journeyProgress.currentDay
+    
+    // Check if current day is already revealed
+    const currentSlot = posterSlots.find(slot => slot.day === currentDay)
+    if (currentSlot?.isRevealed) {
+      return false
+    }
+    
+    // Allow reveal if last reveal was not today OR if it's a fresh start
+    return journeyProgress.lastRevealDate !== today || journeyProgress.lastRevealDate === ''
   }
 
   // Reveal today's position
@@ -233,14 +242,21 @@ const CustomPoster = () => {
       startDate: new Date().toISOString().split('T')[0],
       lastRevealDate: ''
     }
+    
+    // Generate new random scratch positions for reset
+    const shuffled = [...scratchPositions].sort(() => 0.5 - Math.random())
+    const newRandom7 = shuffled.slice(0, 7)
+    
     const newSlots = Array.from({ length: 7 }, (_, i) => ({ 
       id: `slot-${i}`, 
       day: i + 1,
-      isRevealed: false
+      isRevealed: false,
+      scratchPosition: newRandom7[i] // Assign new random scratch position
     }))
     
     setJourneyProgress(newProgress)
     setPosterSlots(newSlots)
+    setRandomScratchPositions(newRandom7)
   }
 
   // Get days since journey started
